@@ -1,0 +1,1 @@
+window.VERBREG=[{"id":"m2-donga-2mid","level":"중등","grade":"중2","pub":"동아(윤)","school":"용아중","term":"2학기 중간고사"},{"id":"m2-mirae-2mid","level":"중등","grade":"중2","pub":"미래엔(문)","school":"용성중","term":"2학기 중간고사"}];
