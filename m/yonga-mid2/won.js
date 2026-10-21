@@ -36,7 +36,7 @@ function pageAns(){
  app.appendChild(el('h1',null,'용아중2 답안지'));
  var rc=el('div','rc');
  rc.appendChild(el('div','rh','<h3>교과서 7과</h3><small class="rng">동아(윤정미)</small>'));
- [['빈칸 우리말 정답','L7/hangeul.html'],['어법 선택형','L7/eobeop.html'],['동사형','L7/dongsa.html'],['Check 정답',''],['빈칸 영어 정답','L7/yeongeo.html'],['예상문제 PRE-STEP 정답·해설',''],['예상문제 1회 정답·해설',''],['예상문제 2회 정답·해설','']].forEach(function(x){
+ [['빈칸 우리말 정답','L7/hangeul.html'],['어법 선택형','L7/eobeop.html'],['동사형','L7/dongsa.html'],['Check 정답','L7/check.html'],['빈칸 영어 정답','L7/yeongeo.html'],['예상문제 PRE-STEP 정답·해설','L7/pre.html'],['예상문제 1회 정답·해설','L7/yesang1.html'],['예상문제 2회 정답·해설','L7/yesang2.html']].forEach(function(x){
   var r=el('div','arow','<b>'+x[0]+'<span class="cn">정답·해설</span></b>');
   var a;if(x[1]){a=el('a','cell','열기');a.href=x[1]}else{a=el('span','cell off','준비 중')}
   r.appendChild(a);rc.appendChild(r)});
