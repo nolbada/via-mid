@@ -183,15 +183,16 @@ function pageIndex(app){
  draw();
 
  /* 7. below the calendar: 유형 풀코스 */
- app.appendChild(el('h2',null,'유형 풀코스'));
  var g=el('div','grid');
  for(var r2=1;r2<=CFG.rounds;r2++){
   var card=el('div','rc'+(doneR(r2)?' all':''));
-  card.appendChild(el('div','rh','<b>'+r2+'회차</b><small>'+unitOf(r2)+'과</small>'+(doneR(r2)?'<em>완료</em>':'')));
-  var tb=el('div','tb');
-  CFG.types.forEach(function(t){var n=(D.R[r2][t.k]||[]).length;if(!n)return;
-   tb.appendChild(el('a',doneT(r2,t.k)?'dn':'','<span>'+t.n+'</span><small>'+n+'문항</small>')).href='test.html?r='+r2+'&t='+t.k});
-  card.appendChild(tb);g.appendChild(card);
+  card.appendChild(el('div','rh','<h3>유형 풀코스 '+r2+'회'+(doneR(r2)?'<span class="tg t">완료</span>':'')+'</h3><small class="rng">'+unitOf(r2)+'과</small>'));
+  var k2=0;
+  CFG.types.forEach(function(t){var n=(D.R[r2][t.k]||[]).length;if(!n)return;k2++;
+   var dn=doneT(r2,t.k);
+   card.appendChild(el('div','arow','<b>'+k2+'. '+t.n+'<span class="cn">'+n+'문제</span></b><i class="vr o">1회성</i><a class="cell'+(dn?' on':'')+'" href="test.html?r='+r2+'&t='+t.k+'">'+(dn?'했어요':'풀기')+'</a>'));
+  });
+  g.appendChild(card);
  }
  app.appendChild(g);
  if(D.VX.length){

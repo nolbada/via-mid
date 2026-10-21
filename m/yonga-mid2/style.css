@@ -165,3 +165,20 @@ body[data-page=index] .rc{border-radius:14px}
 .mode.off{opacity:.45}
 .chips button{padding:8px 14px;border:1.5px solid var(--line);border-radius:999px;background:var(--card);color:inherit;font:inherit;font-weight:700;font-size:15px}
 .chips button.on{border-color:var(--pri);background:var(--priL);color:var(--pri)}
+
+/* hub rows (high-school line shape, per new-screens-sample) */
+body[data-page=index] .rc{border:2px solid var(--line);border-radius:16px;padding:10px 12px 6px;background:var(--card)}
+body[data-page=index] .rc.all{border-color:var(--line);background:var(--card)}
+.rh{display:block;margin:0 0 6px}
+.rh h3{margin:2px 0 0;font-size:15.5px;line-height:1.4}
+.rh .rng{display:block;font-size:12px;font-weight:400;color:var(--sub);margin-top:2px}
+.tg{display:inline-block;font-size:11.5px;font-weight:800;border-radius:999px;padding:0 8px;margin-left:6px;border:1px solid var(--line);color:var(--sub)}
+.tg.t{border-color:var(--blue);color:var(--blue)}
+.arow{display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px solid var(--line)}
+.rh+.arow{border-top:0}
+.arow>b{flex:1;min-width:0;font-size:14px;line-height:1.35}
+.arow .cn{display:block;font-size:12px;font-weight:700;color:var(--sub);margin:0}
+.arow .vr{flex:none;font-style:normal;font-size:10.5px;padding:1px 6px;border-radius:8px;background:var(--blueBg);color:var(--blue)}
+.arow .vr.o{background:rgba(127,127,127,.16);color:var(--sub)}
+.arow a.cell{flex:none;width:86px;display:block;text-align:center;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:11px;padding:11px 3px;font-size:14px;font-weight:700;line-height:1.3}
+.arow a.cell.on{background:var(--blue);border-color:var(--blue);color:#fff}
