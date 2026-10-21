@@ -1,6 +1,6 @@
 /* 원문 탭: 목록(won) / 좌본문 우해석(jwa) / 문법 설명(gram) */
 (function(){
-var T=window.TX,pg=document.body.getAttribute('data-page'),app=document.getElementById('app');app.classList.add('xp');
+var UN=document.body.getAttribute('data-unit')||'7',T=UN==='8'?window.TX8:window.TX,pg=document.body.getAttribute('data-page'),app=document.getElementById('app');app.classList.add('xp');
 function el(tag,cls,h){var e=document.createElement(tag);if(cls)e.className=cls;if(h!=null)e.innerHTML=h;return e}
 function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 function tabs(){
@@ -27,7 +27,9 @@ function pageWon(){
  row('문장 성분 연습 심화','핵심 문장 26개','https://nolbada.github.io/via/mid/dongah-yun/l7/adv/');
  app.appendChild(rc);
  var r8=el('div','rc');r8.style.marginTop='10px';
- r8.appendChild(el('div','rh','<h3>교과서 8과</h3><small class="rng">준비 중</small>'));
+ r8.appendChild(el('div','rh','<h3>교과서 8과</h3><small class="rng">동아(윤정미) · 본문 4개</small>'));
+ [['좌본문 우해석','jwa8.html'],['문법 설명','gram8.html']].forEach(function(x){
+  var r=el('div','arow','<b>'+x[0]+'</b>');var a=el('a','cell','열기');a.href=x[1];r.appendChild(a);r8.appendChild(r)});
  app.appendChild(r8);
  app.appendChild(foot());tabs()}
 
@@ -42,7 +44,11 @@ function pageAns(){
   r.appendChild(a);rc.appendChild(r)});
  app.appendChild(rc);
  var r8=el('div','rc');r8.style.marginTop='10px';
- r8.appendChild(el('div','rh','<h3>교과서 8과</h3><small class="rng">준비 중</small>'));
+ r8.appendChild(el('div','rh','<h3>교과서 8과</h3><small class="rng">동아(윤정미)</small>'));
+ [['빈칸 우리말 정답','L8/hangeul.html'],['어법 선택형','L8/eobeop.html'],['동사형','L8/dongsa.html'],['Check 정답',''],['빈칸 영어 정답','L8/yeongeo.html'],['예상문제 PRE-STEP 정답·해설',''],['예상문제 1회 정답·해설',''],['예상문제 2회 정답·해설','']].forEach(function(x){
+  var r=el('div','arow','<b>'+x[0]+'<span class="cn">정답·해설</span></b>');
+  var a;if(x[1]){a=el('a','cell','열기');a.href=x[1]}else{a=el('span','cell off','준비 중')}
+  r.appendChild(a);r8.appendChild(r)});
  app.appendChild(r8);
  app.appendChild(foot());tabs()}
 
@@ -51,7 +57,7 @@ function pageJwa(){
  var cur=0,hide=false;
  try{var q=new URLSearchParams(location.search).get('s');if(q>=1&&q<=T.secs.length)cur=q-1}catch(e){}
  app.appendChild(back('won.html'));
- app.appendChild(el('h1',null,'7과 좌본문 우해석'));
+ app.appendChild(el('h1',null,UN+'과 좌본문 우해석'));
  var chips=el('div','xchips'),tog=el('div','xtog'),list=el('div','xlist');
  app.appendChild(chips);app.appendChild(el('div','sub',''));app.appendChild(tog);app.appendChild(list);
  app.appendChild(foot());tabs();
@@ -92,7 +98,7 @@ function pageGram(){
  function firstSent(i){var s=T.secs[cur];for(var k=0;k<s.sents.length;k++){if(new RegExp('\\['+i+'\\|').test(s.sents[k].mk))return s.sents[k].n}return s.sents[0].n}
  function goTo(e){if(!e)return;e.scrollIntoView({behavior:'smooth',block:'center'});e.classList.remove('flash');void e.offsetWidth;e.classList.add('flash')}
  function vMain(){
-  var s=T.secs[cur],h='<h1>7과 문법 설명</h1>';
+  var s=T.secs[cur],h='<h1>'+UN+'과 문법 설명</h1>';
   h+='<div class="xchips">'+T.secs.map(function(x,i){return '<button type="button" data-s="'+i+'" class="'+(i===cur?'on':'')+'">본문 '+x.sym+'</button>'}).join('')+'</div>';
   h+='<div class="sub">'+esc(s.ko)+' · '+secRange(s)+'</div>';
   h+='<div class="xlab">형광펜별 모아보기</div>'+drillBar('');
