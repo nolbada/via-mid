@@ -45,7 +45,7 @@ function pageAns(){
  app.appendChild(rc);
  var r8=el('div','rc');r8.style.marginTop='10px';
  r8.appendChild(el('div','rh','<h3>교과서 8과</h3><small class="rng">동아(윤정미)</small>'));
- [['빈칸 우리말 정답','L8/hangeul.html'],['어법 선택형','L8/eobeop.html'],['동사형','L8/dongsa.html'],['Check 정답',''],['빈칸 영어 정답','L8/yeongeo.html'],['예상문제 PRE-STEP 정답·해설',''],['예상문제 1회 정답·해설',''],['예상문제 2회 정답·해설','']].forEach(function(x){
+ [['빈칸 우리말 정답','L8/hangeul.html'],['어법 선택형','L8/eobeop.html'],['동사형','L8/dongsa.html'],['Check 정답','L8/check.html'],['빈칸 영어 정답','L8/yeongeo.html'],['예상문제 PRE-STEP 정답·해설','L8/pre.html'],['예상문제 1회 정답·해설','L8/yesang1.html'],['예상문제 2회 정답·해설','L8/yesang2.html']].forEach(function(x){
   var r=el('div','arow','<b>'+x[0]+'<span class="cn">정답·해설</span></b>');
   var a;if(x[1]){a=el('a','cell','열기');a.href=x[1]}else{a=el('span','cell off','준비 중')}
   r.appendChild(a);r8.appendChild(r)});
