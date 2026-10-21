@@ -252,3 +252,4 @@ body[data-page=index] .rc.all{border-color:var(--line);background:var(--card)}
 .xp .rv .xa{display:none;margin-top:4px;border:1.5px solid;border-radius:10px;padding:8px 10px;font-size:13.5px;line-height:1.6;color:#17202e}
 .xp .rv.open .xa{display:block}
 .xp .rv .xex{font-size:13px;color:#44545b;margin-top:6px}
+.arow .cell.off{color:var(--sub);background:transparent;border-style:dashed;font-weight:600;font-size:13px}

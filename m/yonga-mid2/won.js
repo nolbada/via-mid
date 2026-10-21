@@ -4,9 +4,9 @@ var T=window.TX,pg=document.body.getAttribute('data-page'),app=document.getEleme
 function el(tag,cls,h){var e=document.createElement(tag);if(cls)e.className=cls;if(h!=null)e.innerHTML=h;return e}
 function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 function tabs(){
- var t=el('nav','tabs');
- var a=el('a','on','원문');a.href='won.html';
- var b=el('a',null,'답안지');b.href='#';
+ var t=el('nav','tabs'),onAns=(pg==='ans');
+ var a=el('a',onAns?null:'on','원문');a.href='won.html';
+ var b=el('a',onAns?'on':null,'답안지');b.href='ans.html';
  var c=el('a',null,'유형 풀코스');c.href='index.html';
  t.appendChild(a);t.appendChild(b);t.appendChild(c);document.body.appendChild(t)}
 function foot(){return el('div','foot','비타민 영어클리닉 · 용아중2')}
@@ -25,6 +25,21 @@ function pageWon(){
  row('문법 설명','','gram.html');
  row('문장 성분 연습 기본','핵심 문장 26개','https://nolbada.github.io/via/mid/dongah-yun/l7/basic/');
  row('문장 성분 연습 심화','핵심 문장 26개','https://nolbada.github.io/via/mid/dongah-yun/l7/adv/');
+ app.appendChild(rc);
+ var r8=el('div','rc');r8.style.marginTop='10px';
+ r8.appendChild(el('div','rh','<h3>교과서 8과</h3><small class="rng">준비 중</small>'));
+ app.appendChild(r8);
+ app.appendChild(foot());tabs()}
+
+/* ---------- 답안지 목록 ---------- */
+function pageAns(){
+ app.appendChild(el('h1',null,'용아중2 답안지'));
+ var rc=el('div','rc');
+ rc.appendChild(el('div','rh','<h3>교과서 7과</h3><small class="rng">동아(윤정미)</small>'));
+ [['빈칸 우리말 정답','L7/hangeul.html'],['어법 선택형','L7/eobeop.html'],['동사형','L7/dongsa.html'],['Check 정답',''],['빈칸 영어 정답','L7/yeongeo.html'],['예상문제 PRE-STEP 정답·해설',''],['예상문제 1회 정답·해설',''],['예상문제 2회 정답·해설','']].forEach(function(x){
+  var r=el('div','arow','<b>'+x[0]+'<span class="cn">정답·해설</span></b>');
+  var a;if(x[1]){a=el('a','cell','열기');a.href=x[1]}else{a=el('span','cell off','준비 중')}
+  r.appendChild(a);rc.appendChild(r)});
  app.appendChild(rc);
  var r8=el('div','rc');r8.style.marginTop='10px';
  r8.appendChild(el('div','rh','<h3>교과서 8과</h3><small class="rng">준비 중</small>'));
@@ -110,5 +125,5 @@ function pageGram(){
  });
  draw()}
 
-({won:pageWon,jwa:pageJwa,gram:pageGram})[pg]();
+({won:pageWon,ans:pageAns,jwa:pageJwa,gram:pageGram})[pg]();
 })();
