@@ -194,3 +194,7 @@ body[data-page=index] .rc.all{border-color:var(--line);background:var(--card)}
 .st2 small{font-size:12.5px;color:var(--sub)} .st2 b{font-size:16px;color:var(--blue)}
 
 .stclr{display:block;margin:8px 0 0 auto;border:1px solid #f59e0b;color:#b45309;background:var(--card);border-radius:8px;padding:4px 10px;font:inherit;font-size:12px;font-weight:700}
+
+.rch{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.rch button{flex:1 1 15%;min-width:44px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:7px 0;font:inherit;font-weight:700}
+.rch button.on{background:var(--blue);border-color:var(--blue);color:#fff}

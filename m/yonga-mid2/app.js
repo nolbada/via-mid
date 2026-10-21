@@ -204,6 +204,7 @@ function pageIndex(app){
  var viewR=SH?1:curR;try{var sv=SH?0:+ST.getItem('mid7:view');if(sv>=1&&sv<=curR)viewR=sv}catch(e){}
  function drawRound(){
   g.innerHTML='';
+  if(SH){var cr=el('div','chips rch');for(var n3=1;n3<=CFG.rounds;n3++){(function(n){var b=el('button',n===viewR?'on':'',String(n));b.type='button';b.onclick=function(){viewR=n;drawRound()};cr.appendChild(b)})(n3)}g.appendChild(cr)}
   var r2=viewR;
   var built=r2<=CFG.rounds,card=el('div','rc'+(built&&doneR(r2)?' all':''));
   card.appendChild(el('div','rh rhn','<button type="button" class="ar" data-d="-1" aria-label="이전 회차"'+(r2<=1?' disabled':'')+'>&lsaquo;</button><div class="rht"><h3>유형 풀코스 '+r2+'회'+(built&&doneR(r2)?'<span class="tg t">완료</span>':'')+'</h3><small class="rng">'+(built?unitOf(r2)+'과':(r2<=20?'8과':(r2===21?'7과 최종점검':'8과 최종점검')))+'</small></div><button type="button" class="ar" data-d="1" aria-label="다음 회차"'+(r2>=curR?' disabled':'')+'>&rsaquo;</button>'));
