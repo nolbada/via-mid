@@ -114,6 +114,7 @@ function wrongCount(){return listGet('w').length}
 
 /* hub */
 var WD=['일','월','화','수','목','금','토'];
+function unitLabel(r){var u=unitOf(r);return typeof u==='number'?u+'과':String(u)}
 function unitOf(r){var u=null;CFG.units.forEach(function(x){if(r>=x.from&&r<=x.to)u=x.u});return u}
 function fmtMD(d,wd){return(d.getMonth()+1)+'/'+d.getDate()+(wd?'('+WD[d.getDay()]+')':'')}
 function mondayOf(d){var x=new Date(d.getFullYear(),d.getMonth(),d.getDate());x.setDate(x.getDate()-((x.getDay()+6)%7));return x}
@@ -122,7 +123,7 @@ function svgChev(){return '<svg viewBox="0 0 24 24" width="18" height="18" fill=
 function proofView(app){
  var now=new Date(),rows=[],tc=0,tn=0;
  for(var r=1;r<=CFG.rounds;r++){var parts=[];TY.forEach(function(t){if(!doneT(r,t.k))return;var ids=(D.R[r][t.k]||[]),st=jg('st:'+r+':'+t.k,{}),ok=0;ids.forEach(function(id){if(st[id]&&st[id][1])ok++});tc+=ok;tn+=ids.length;parts.push('<div class="pu"><span>'+t.n+'</span><b>'+ok+' / '+ids.length+'</b></div>')});
-  if(parts.length)rows.push('<div class="pr2"><h4>'+r+'회 <small>'+unitOf(r)+'과</small></h4>'+parts.join('')+'</div>')}
+  if(parts.length)rows.push('<div class="pr2"><h4>'+r+'회 <small>'+unitLabel(r)+'</small></h4>'+parts.join('')+'</div>')}
  var bar=el('div','bar');var home=el('a','pill','‹ 처음');home.href='index.html';bar.appendChild(home);app.appendChild(bar);
  var card=el('div','pcard','<div class="pk">학습 인증</div><h1>용아중2 유형 풀코스</h1><div class="pd">'+fmtMD(now,1)+' '+pad(now.getHours())+':'+pad(now.getMinutes())+'</div>'+(rows.length?rows.join('')+'<div class="ptot"><span>오늘 푼 문제</span><b>'+tn+'문제 · 정답 '+tc+'</b></div>':'<div class="empty">아직 푼 문제가 없습니다</div>'));
  app.appendChild(card);
@@ -214,7 +215,7 @@ function pageIndex(app){
   g.innerHTML='';
   var r2=viewR;
   var built=r2<=CFG.rounds,card=el('div','rc'+(built&&doneR(r2)?' all':''));
-  card.appendChild(el('div','rh rhn','<button type="button" class="ar" data-d="-1" aria-label="이전 회차"'+(r2<=1?' disabled':'')+'>&lsaquo;</button><div class="rht"><h3>유형 풀코스 '+r2+'회'+(built&&doneR(r2)?'<span class="tg t">완료</span>':'')+'</h3><small class="rng">'+(built?unitOf(r2)+'과':(r2<=20?'8과':(r2===21?'7과 최종점검':'8과 최종점검')))+'</small></div><button type="button" class="ar" data-d="1" aria-label="다음 회차"'+(r2>=(SH?CFG.rounds:curR)?' disabled':'')+'>&rsaquo;</button>'));
+  card.appendChild(el('div','rh rhn','<button type="button" class="ar" data-d="-1" aria-label="이전 회차"'+(r2<=1?' disabled':'')+'>&lsaquo;</button><div class="rht"><h3>유형 풀코스 '+r2+'회'+(built&&doneR(r2)?'<span class="tg t">완료</span>':'')+'</h3><small class="rng">'+(built?unitLabel(r2):(r2<=20?'8과':(r2===21?'7과 최종점검':'8과 최종점검')))+'</small></div><button type="button" class="ar" data-d="1" aria-label="다음 회차"'+(r2>=(SH?CFG.rounds:curR)?' disabled':'')+'>&rsaquo;</button>'));
   var k2=0;
       if(!built){card.appendChild(el('div','empty','준비 중'))}
   CFG.types.forEach(function(t){var n=((D.R[r2]||{})[t.k]||[]).length;if(!n)return;k2++;
@@ -336,7 +337,7 @@ function pageTest(app){
  TY.forEach(function(x){if(!(D.R[r][x.k]||[]).length)return;var a=el('a','pill'+(x.k===t?' on':(doneT(r,x.k)?' dn':'')),x.n);a.href='test.html?r='+r+'&t='+x.k;bar.appendChild(a)});
  app.appendChild(bar);
  app.appendChild(el('h1',null,r+'회차 · '+TN[t]));
- app.appendChild(el('p','sub',unitOf(r)+'과 · '+ids.length+'문항'));
+ app.appendChild(el('p','sub',unitLabel(r)+' · '+ids.length+'문항'));
  var cnt=0,wr=0,sum=el('div','sum');sum.style.display='none';
  function check(){
   if(cnt<ids.length)return;
@@ -480,7 +481,7 @@ function pageExam(app){
   var h=head()+'<div class="exs"><div class="sh">범위 (회차)</div><div class="chips">';
   var allR=built.every(function(r){return S.r.indexOf(r)>=0});
   h+=chip(allR,'rall','','전체');
-  built.forEach(function(r){h+=chip(S.r.indexOf(r)>=0,'r','data-v="'+r+'"',unitOf(r)+'과 '+r+'회')});
+  built.forEach(function(r){h+=chip(S.r.indexOf(r)>=0,'r','data-v="'+r+'"',unitLabel(r)+' '+r+'회')});
   h+='</div><div class="sh">유형</div><div class="chips">';
   var allT=TY.every(function(t){return S.t.indexOf(t.k)>=0});
   h+=chip(allT,'tall','','전체');
