@@ -184,16 +184,23 @@ function pageIndex(app){
 
  /* 7. below the calendar: 유형 풀코스 */
  var g=el('div','grid');
- for(var r2=1;r2<=CFG.rounds;r2++){
+ /* one 회차 at a time (calendar-like): opens on the first unfinished one; arrows go back to finished ones, forward stops at the unfinished one */
+ var curR=CFG.rounds;for(var q2=1;q2<=CFG.rounds;q2++){if(!doneR(q2)){curR=q2;break}}
+ var viewR=curR;
+ function drawRound(){
+  g.innerHTML='';
+  var r2=viewR;
   var card=el('div','rc'+(doneR(r2)?' all':''));
-  card.appendChild(el('div','rh','<h3>유형 풀코스 '+r2+'회'+(doneR(r2)?'<span class="tg t">완료</span>':'')+'</h3><small class="rng">'+unitOf(r2)+'과</small>'));
+  card.appendChild(el('div','rh rhn','<button type="button" class="ar" data-d="-1" aria-label="이전 회차"'+(r2<=1?' disabled':'')+'>&lsaquo;</button><div class="rht"><h3>유형 풀코스 '+r2+'회'+(doneR(r2)?'<span class="tg t">완료</span>':'')+'</h3><small class="rng">'+unitOf(r2)+'과</small></div><button type="button" class="ar" data-d="1" aria-label="다음 회차"'+(r2>=curR?' disabled':'')+'>&rsaquo;</button>'));
   var k2=0;
   CFG.types.forEach(function(t){var n=(D.R[r2][t.k]||[]).length;if(!n)return;k2++;
    var dn=doneT(r2,t.k);
    card.appendChild(el('div','arow','<b>'+k2+'. '+t.n+'<span class="cn">'+n+'문제</span></b><i class="vr o">1회성</i><a class="cell'+(dn?' on':'')+'" href="test.html?r='+r2+'&t='+t.k+'">'+(dn?'했어요':'풀기')+'</a>'));
   });
+  [].forEach.call(card.querySelectorAll('.ar'),function(bt){bt.onclick=function(){if(bt.disabled)return;viewR=Math.max(1,Math.min(curR,viewR+(+bt.dataset.d)));drawRound()}});
   g.appendChild(card);
  }
+ drawRound();
  app.appendChild(g);
  if(D.VX.length){
   app.appendChild(el('h2',null,'어휘 확장 (선택)'));
