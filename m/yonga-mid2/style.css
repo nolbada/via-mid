@@ -206,3 +206,6 @@ body[data-page=index] .rc.all{border-color:var(--line);background:var(--card)}
 .ot{display:flex;align-items:center;justify-content:flex-end;gap:8px;border-top:1px solid var(--line);padding:8px 0 4px;font-size:13px;color:var(--sub)}
 .ot span{flex:1}.ot button{border:1.5px solid var(--line);background:var(--card);color:var(--sub);border-radius:9px;padding:6px 12px;font:inherit;font-size:13px;font-weight:700}
 .ot .oty{background:var(--blue);border-color:var(--blue);color:#fff}
+
+.ot .opw{width:96px;border:1.5px solid var(--line);border-radius:9px;padding:6px 8px;font:inherit;font-size:14px;background:var(--card);color:var(--ink)}
+.ot .oer{flex:0 0 100%;text-align:right;color:#c2410c;font-weight:700;font-size:12px}.ot .oer:empty{display:none}.ot{flex-wrap:wrap}

@@ -214,20 +214,22 @@ function pageIndex(app){
   g.innerHTML='';
   var r2=viewR;
   var built=r2<=CFG.rounds,card=el('div','rc'+(built&&doneR(r2)?' all':''));
-  card.appendChild(el('div','rh rhn','<button type="button" class="ar" data-d="-1" aria-label="이전 회차"'+(r2<=1?' disabled':'')+'>&lsaquo;</button><div class="rht"><h3>유형 풀코스 '+r2+'회'+(built&&doneR(r2)?'<span class="tg t">완료</span>':'')+'</h3><small class="rng">'+(built?unitOf(r2)+'과':(r2<=20?'8과':(r2===21?'7과 최종점검':'8과 최종점검')))+'</small></div><button type="button" class="ar" data-d="1" aria-label="다음 회차"'+(r2>=curR?' disabled':'')+'>&rsaquo;</button>'));
+  card.appendChild(el('div','rh rhn','<button type="button" class="ar" data-d="-1" aria-label="이전 회차"'+(r2<=1?' disabled':'')+'>&lsaquo;</button><div class="rht"><h3>유형 풀코스 '+r2+'회'+(built&&doneR(r2)?'<span class="tg t">완료</span>':'')+'</h3><small class="rng">'+(built?unitOf(r2)+'과':(r2<=20?'8과':(r2===21?'7과 최종점검':'8과 최종점검')))+'</small></div><button type="button" class="ar" data-d="1" aria-label="다음 회차"'+(r2>=(SH?CFG.rounds:curR)?' disabled':'')+'>&rsaquo;</button>'));
   var k2=0;
       if(!built){card.appendChild(el('div','empty','준비 중'))}
   CFG.types.forEach(function(t){var n=((D.R[r2]||{})[t.k]||[]).length;if(!n)return;k2++;
    var dn=doneT(r2,t.k);
    card.appendChild(el('div','arow','<b>'+k2+'. '+t.n+'<span class="cn">'+n+'문제</span></b><i class="vr o">'+(sg('imp:'+r2+':'+t.k)==='1'?'타기기':'1회성')+'</i><a class="cell'+(dn?' on':'')+'" href="test.html?r='+r2+'&t='+t.k+'">'+(dn?'했어요':'풀기')+'</a>'));
   });
-  [].forEach.call(card.querySelectorAll('.ar'),function(bt){bt.onclick=function(){if(bt.disabled)return;viewR=Math.max(1,Math.min(curR,viewR+(+bt.dataset.d)));try{if(!SH)ST.setItem('mid7:view',viewR)}catch(e){}drawRound()}});
+  [].forEach.call(card.querySelectorAll('.ar'),function(bt){bt.onclick=function(){if(bt.disabled)return;viewR=Math.max(1,Math.min(SH?CFG.rounds:curR,viewR+(+bt.dataset.d)));try{if(!SH)ST.setItem('mid7:view',viewR)}catch(e){}drawRound()}});
   if(built&&!SH&&!doneR(r2)){
    var ob=el('div','ot','<button type="button" class="otb">타기기에서 했어요</button>');
    ob.querySelector('.otb').onclick=function(){
-    ob.innerHTML='<span>선생님이 확인한 회차만 눌러요</span><button type="button" class="oty">확인</button><button type="button" class="otn">취소</button>';
+    ob.innerHTML='<input type="password" inputmode="numeric" maxlength="4" class="opw" placeholder="선생님 번호" autocomplete="off"><button type="button" class="oty">확인</button><button type="button" class="otn">취소</button><span class="oer"></span>';
     ob.querySelector('.otn').onclick=drawRound;
-    ob.querySelector('.oty').onclick=function(){CFG.types.forEach(function(t){if((D.R[r2][t.k]||[]).length&&!doneT(r2,t.k)){markDone(r2,t.k);ss('imp:'+r2+':'+t.k,'1')}});location.reload()}};
+    ob.querySelector('.oty').onclick=function(){
+     var pv=ob.querySelector('.opw').value,hx=2166136261,ps='vit|'+pv+'|mid7';for(var pi=0;pi<ps.length;pi++){hx^=ps.charCodeAt(pi);hx=Math.imul(hx,16777619)>>>0}
+     if(hx.toString(36)!=='11szxpf'){ob.querySelector('.oer').textContent='번호가 달라요';ob.querySelector('.opw').value='';return}CFG.types.forEach(function(t){if((D.R[r2][t.k]||[]).length&&!doneT(r2,t.k)){markDone(r2,t.k);ss('imp:'+r2+':'+t.k,'1')}});location.reload()}};
    card.appendChild(ob)}
   g.appendChild(card);
  }
