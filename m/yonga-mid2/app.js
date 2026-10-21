@@ -40,7 +40,7 @@ function listGet(k){var a=jg(k,[]);return Array.isArray(a)?a:[]}
 function listAdd(k,id){var a=listGet(k);if(a.indexOf(id)<0){a.push(id);js(k,a)}}
 function wcGet(){var o=jg('wc',{});return(o&&typeof o==='object'&&!Array.isArray(o))?o:{}}
 function recWrong(id){var o=wcGet();o[id]=(o[id]||0)+1;js('wc',o);listAdd('w',id);if(o[id]>=2)listAdd('ws',id)}
-function recRight(id){listDel('w',id);listDel('ws',id);var o=wcGet();if(o[id]){delete o[id];js('wc',o)}}
+function recRight(id){}
 function isStar(id){return listGet('ws').indexOf(id)>=0}
 function listDel(k,id){var a=listGet(k),i=a.indexOf(id);if(i>=0){a.splice(i,1);js(k,a)}}
 
@@ -339,22 +339,33 @@ function pageTest(app){
 
 /* wrong */
 function pageWrong(app){
- var list=listGet('w').filter(function(id){return Q[id]&&IDX[id]});
- list.sort(function(a,b){var x=IDX[a],y=IDX[b];var xr=x.r||99,yr=y.r||99;if(xr!==yr)return xr-yr;var xt=TY.map(function(z){return z.k}).indexOf(x.t),yt=TY.map(function(z){return z.k}).indexOf(y.t);if(xt!==yt)return xt-yt;return x.n-y.n});
+ var p=qs(),only=p.s==='1';
+ var all=listGet('w').filter(function(id){return Q[id]&&IDX[id]});
+ all.sort(function(a,b){var x=IDX[a],y=IDX[b];var xr=x.r||99,yr=y.r||99;if(xr!==yr)return xr-yr;var xt=TY.map(function(z){return z.k}).indexOf(x.t),yt=TY.map(function(z){return z.k}).indexOf(y.t);if(xt!==yt)return xt-yt;return x.n-y.n});
+ var stars=all.filter(isStar),list=only?stars:all;
  var bar=el('div','bar');var home=el('a','pill','‹ 처음');home.href='index.html';bar.appendChild(home);app.appendChild(bar);
  app.appendChild(el('h1',null,'오답 노트'));
- app.appendChild(el('p','sub',list.length+'문항'));
- app.appendChild(el('div','rule','<b>이렇게 쌓여요</b>1차 오답은 자동 저장돼요.<br>2차 오답은 별표(★)로 표시돼요.<br>담긴 문제는 직접 뺄 수 없어요.'));
- if(!list.length){app.appendChild(el('div','empty','남은 오답이 없습니다.'));app.appendChild(foot());return}
+ app.appendChild(el('p','sub',(only?'별표 ':'')+list.length+'문항'));
+ app.appendChild(el('div','rule','<b>이렇게 쌓여요</b>1차 오답은 자동 저장돼요.<br>2차 오답은 별표(★)로 표시돼요.<br>맞혀도 노트에서 빠지지 않아요. 별표만 직접 지울 수 있어요.'));
+ if(all.length){
+  var m1=el('a','mode'+(only?'':' pr'),'<b>담긴 오답 전체 풀기</b><small>'+all.length+'문항</small>');m1.href='wrong.html';app.appendChild(m1);
+  var m2=el('a','mode'+(only?' pr':'')+(stars.length?'':' off'),'<b>별표만 풀기</b><small>'+stars.length+'문항</small>');m2.href=stars.length?'wrong.html?s=1':'#';if(!stars.length)m2.onclick=function(e){e.preventDefault()};app.appendChild(m2);
+ }
+ if(!list.length){app.appendChild(el('div','empty',only?'별표가 없습니다.':'담긴 오답이 없습니다.'));app.appendChild(foot());return}
  var cnt=0,left=0,sum=el('div','sum');sum.style.display='none';
  list.forEach(function(id,i){
-  var q=Q[id],o=IDX[id],star=isStar(id);
-  var c=buildCard(q,i+1,{tag:(star?'<b class="stm">별표</b> ':'')+o.r+'회차 · '+TN[o.t],onDone:function(q,sel,ok,silent){
+  var q=Q[id],o=IDX[id];
+  var c=buildCard(q,i+1,{tag:(isStar(id)?'<b class="stm">별표</b> ':'')+o.r+'회차 · '+TN[o.t],onDone:function(q,sel,ok,silent){
    cnt++;
-   if(!silent){if(ok)recRight(id);else{recWrong(id);left++}}
-   if(cnt===list.length){sum.innerHTML='<p>다시 틀린 문제 '+left+'개</p><div class="lk">'+(left?'<a class="pr" href="wrong.html">남은 문제 다시 풀기</a>':'')+'<a href="index.html">처음 화면</a></div>';sum.style.display='block'}
+   if(!silent){if(!ok){recWrong(id);left++}}
+   if(cnt===list.length){sum.innerHTML='<p>다시 틀린 문제 '+left+'개</p><div class="lk"><a href="index.html">처음 화면</a></div>';sum.style.display='block'}
   }});
-  if(star)c.classList.add('starred');
+  if(isStar(id)){
+   c.classList.add('starred');
+   var cl=el('button','stclr','별표 지우기');cl.type='button';
+   cl.onclick=function(){listDel('ws',id);c.classList.remove('starred');var b=c.querySelector('.stm');if(b)b.remove();cl.remove()};
+   c.appendChild(cl);
+  }
   app.appendChild(c);
  });
  app.appendChild(sum);app.appendChild(foot());

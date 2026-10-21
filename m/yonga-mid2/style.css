@@ -192,3 +192,5 @@ body[data-page=index] .rc.all{border-color:var(--line);background:var(--card)}
 .sv small{display:block;font-size:11px;color:var(--sub)} .sv b{font-size:14px}
 .st2{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px;padding-top:8px;border-top:1px solid var(--line)}
 .st2 small{font-size:12.5px;color:var(--sub)} .st2 b{font-size:16px;color:var(--blue)}
+
+.stclr{display:block;margin:8px 0 0 auto;border:1px solid #f59e0b;color:#b45309;background:var(--card);border-radius:8px;padding:4px 10px;font:inherit;font-size:12px;font-weight:700}
