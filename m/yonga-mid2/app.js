@@ -431,6 +431,21 @@ function ansText(q){
  if(isLab(q))return q.c[q.n];
  var ct=strip(q.c[q.n]);return LAB[q.n]+(/^\(/.test(ct)?' '+ct:' ('+ct+')');
 }
+function renderRich(c,q){
+ var r=q.r;
+ if(r.cm&&q.c){var ml=el('div','cm');r.cm.forEach(function(m,j){if(m)ml.appendChild(el('div','cml','<b>'+(isLab(q)?'':LAB[j]+' ')+'</b>'+m))});c.appendChild(el('span','lbl','보기 해석'));c.appendChild(ml)}
+ c.appendChild(el('span','lbl','해설'));
+ (r.w||[]).forEach(function(p){
+  var b=el('div','part');
+  if(p.h)b.appendChild(el('div','ph',p.h));
+  (p.l||[]).forEach(function(l){b.appendChild(el('div','ln',l))});
+  if(p.o&&p.o.length){var wr=el('div','wr');wr.appendChild(el('b',null,'다른 보기'));p.o.forEach(function(l){wr.appendChild(el('div','wl',l))});b.appendChild(wr)}
+  if(p.p){var pit=el('div','pit');pit.appendChild(el('span','pt',p.p.k||'쉬운 문법'));pit.appendChild(el('div','tt',p.p.t));
+   if(p.p.l&&p.p.l.length){var ul=el('ul');p.p.l.forEach(function(l){ul.appendChild(el('li',null,l))});pit.appendChild(ul)}
+   if(p.p.e){pit.appendChild(el('div','pex','<div>'+p.p.e[0]+'<span>'+(p.p.e[1]||'')+'</span></div>'))}
+   b.appendChild(pit)}
+  c.appendChild(b)});
+}
 function pageAnswer(app){
  var p=qs(),ids,title,back;
  if(p.x){var set=null;D.VX.forEach(function(v){if(String(v.s)===p.x)set=v});ids=set&&set.ids;title='어휘 확장 · 세트 '+p.x+' 해설';back='vocabx.html?s='+p.x}
@@ -455,9 +470,11 @@ function pageAnswer(app){
   c.appendChild(el('div','answ','정답: '+ansText(q)));
   if(q.pk)c.appendChild(el('div','ko',q.pk));
   if(q.gk)c.appendChild(el('div','ko',q.gk));
+  if(q.r){renderRich(c,q)}else{
   if(q.e&&q.e.length){c.appendChild(el('span','lbl','해설'));q.e.forEach(function(l){c.appendChild(el('div','ln',l))})}
-  if(q.x&&q.x.length){c.appendChild(el('div','exb','<span class="et">쉬운 예</span>'+q.x[0]+(q.x[1]?'<span class="k">'+q.x[1]+'</span>':'')))}
-  if(q.x2)q.x2.forEach(function(pr){c.appendChild(el('div','exb','<span class="et">쉬운 예</span>'+pr[0]+(pr[1]?'<span class="k">'+pr[1]+'</span>':'')))});
+  }
+  if(!q.r&&q.x&&q.x.length){c.appendChild(el('div','exb','<span class="et">쉬운 예</span>'+q.x[0]+(q.x[1]?'<span class="k">'+q.x[1]+'</span>':'')))}
+  if(!q.r&&q.x2)q.x2.forEach(function(pr){c.appendChild(el('div','exb','<span class="et">쉬운 예</span>'+pr[0]+(pr[1]?'<span class="k">'+pr[1]+'</span>':'')))});
   app.appendChild(c);
  });
  app.appendChild(foot());
