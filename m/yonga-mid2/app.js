@@ -125,7 +125,7 @@ function pageIndex(app){
  var dd=Math.round((exS-today)/86400000),dtxt=dd>0?'D-'+dd:(dd===0?'D-day':'D+'+(-dd));
  var recs=records(),byDate={};recs.forEach(function(e){byDate[e.d]=(byDate[e.d]||0)+1});
  var M=0;for(var r=1;r<=CFG.rounds;r++)if(doneR(r))M++;
- var N=CFG.rounds;
+ var PLAN=22;var N=PLAN;
 
  /* 1. badge card */
  var bc=el('details','bc');
@@ -194,15 +194,16 @@ function pageIndex(app){
  /* 7. below the calendar: 유형 풀코스 */
  var g=el('div','grid');
  /* one 회차 at a time (calendar-like): opens on the first unfinished one; arrows go back to finished ones, forward stops at the unfinished one */
- var curR=CFG.rounds;for(var q2=1;q2<=CFG.rounds;q2++){if(!doneR(q2)){curR=q2;break}}
+ var curR=PLAN;for(var q2=1;q2<=PLAN;q2++){if(q2>CFG.rounds||!doneR(q2)){curR=q2;break}}
  var viewR=curR;try{var sv=+localStorage.getItem('mid7:view');if(sv>=1&&sv<=curR)viewR=sv}catch(e){}
  function drawRound(){
   g.innerHTML='';
   var r2=viewR;
-  var card=el('div','rc'+(doneR(r2)?' all':''));
-  card.appendChild(el('div','rh rhn','<button type="button" class="ar" data-d="-1" aria-label="이전 회차"'+(r2<=1?' disabled':'')+'>&lsaquo;</button><div class="rht"><h3>유형 풀코스 '+r2+'회'+(doneR(r2)?'<span class="tg t">완료</span>':'')+'</h3><small class="rng">'+unitOf(r2)+'과</small></div><button type="button" class="ar" data-d="1" aria-label="다음 회차"'+(r2>=curR?' disabled':'')+'>&rsaquo;</button>'));
+  var built=r2<=CFG.rounds,card=el('div','rc'+(built&&doneR(r2)?' all':''));
+  card.appendChild(el('div','rh rhn','<button type="button" class="ar" data-d="-1" aria-label="이전 회차"'+(r2<=1?' disabled':'')+'>&lsaquo;</button><div class="rht"><h3>유형 풀코스 '+r2+'회'+(built&&doneR(r2)?'<span class="tg t">완료</span>':'')+'</h3><small class="rng">'+(built?unitOf(r2)+'과':(r2<=20?'8과':(r2===21?'7과 최종점검':'8과 최종점검')))+'</small></div><button type="button" class="ar" data-d="1" aria-label="다음 회차"'+(r2>=curR?' disabled':'')+'>&rsaquo;</button>'));
   var k2=0;
-  CFG.types.forEach(function(t){var n=(D.R[r2][t.k]||[]).length;if(!n)return;k2++;
+      if(!built){card.appendChild(el('div','empty','준비 중'))}
+  CFG.types.forEach(function(t){var n=((D.R[r2]||{})[t.k]||[]).length;if(!n)return;k2++;
    var dn=doneT(r2,t.k);
    card.appendChild(el('div','arow','<b>'+k2+'. '+t.n+'<span class="cn">'+n+'문제</span></b><i class="vr o">1회성</i><a class="cell'+(dn?' on':'')+'" href="test.html?r='+r2+'&t='+t.k+'">'+(dn?'했어요':'풀기')+'</a>'));
   });
