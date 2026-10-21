@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#b45309">
+<meta name="apple-mobile-web-app-title" content="내신 공용">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=1">
+<link rel="icon" type="image/png" href="icon-192.png?v=1">
 <title>내신 링크 모음 (공용)</title>
 <style>
 :root{--bg:#fff8eb;--card:#fff;--line:#f1dcb4;--ink:#2b2110;--sub:#7a6a4a;--acc:#b45309;--accbg:#fde7c2}
@@ -16,24 +19,21 @@ body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 -apple-system,
 h1{margin:0;font-size:24px}
 .top p{margin:6px 0 0;color:var(--sub);font-size:14px}
 h2{font-size:15px;margin:22px 0 8px;color:var(--acc)}
-.row{display:flex;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px}
-.row .t{flex:1;min-width:0}
-.row .t b{display:block;font-size:16px}
-.row .t small{display:block;color:var(--sub);font-size:12.5px;margin-top:2px;word-break:keep-all}
-.row a.go,.row button{flex:none;border:1.5px solid var(--acc);color:var(--acc);background:var(--card);border-radius:10px;padding:8px 12px;font:inherit;font-size:14px;font-weight:700;text-decoration:none}
-.row a.go{background:var(--acc);color:#fff}
+a.row{display:flex;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px;color:inherit;text-decoration:none}
+a.row:active{background:var(--accbg)}
+a.row .t{flex:1;min-width:0}
+a.row .t b{display:block;font-size:16px}
+a.row .t small{display:block;color:var(--sub);font-size:12.5px;margin-top:2px;word-break:keep-all}
+a.row .ar{flex:none;color:var(--acc);font-size:22px;line-height:1}
 .note{color:var(--sub);font-size:13px;margin-top:18px}
 </style>
 </head>
 <body>
 <div class="top"><b>공용</b><h1>내신 링크 모음</h1><p>학원 공용폰 전용 · 풀이 기록이 남지 않음</p></div>
 <h2>중2</h2>
-<div class="row"><div class="t"><b>용아중 2학년 2학기 기말</b><small>동아(윤정미) · 7과 · 유형 풀코스 1~10회 · 아무 회차나 열림</small></div><button type="button" data-u="https://nolbada.github.io/via-mid/m/yonga-mid2/?shared=1">복사</button><a class="go" href="https://nolbada.github.io/via-mid/m/yonga-mid2/?shared=1">열기</a></div>
-<p class="note">고1·고2 학교 앱은 공용 주소가 준비되는 대로 한 칸씩 더해져요.</p>
-<script>
-[].forEach.call(document.querySelectorAll('button[data-u]'),function(b){b.onclick=function(){var u=b.getAttribute('data-u');function ok(){b.textContent='복사됨';setTimeout(function(){b.textContent='복사'},1400)}
-if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(ok,function(){fb()})}else fb();
-function fb(){var t=document.createElement('textarea');t.value=u;document.body.appendChild(t);t.select();try{document.execCommand('copy');ok()}catch(e){}t.remove()}}});
-</script>
+<a class="row" href="https://nolbada.github.io/via-mid/m/yonga-mid2/?shared=1"><div class="t"><b>용아중 2학년 2학기 기말</b><small>동아(윤정미) · 7과 · 유형 풀코스 1~10회 · 아무 회차나 열림</small></div><span class="ar">&rsaquo;</span></a>
+<h2>고1</h2>
+<a class="row" href="https://nolbada.github.io/via-high/h/geumcheon-go1/?shared=1"><div class="t"><b>금천고 1학년 2학기 기말</b><small>능률(민) 공통영어2 · 3과 · 4과 · 유형 풀코스 · 아무 회차나 열림</small></div><span class="ar">&rsaquo;</span></a>
+<p class="note">고2 학교 앱은 공용 주소가 준비되는 대로 한 칸씩 더해져요.</p>
 </body>
 </html>
