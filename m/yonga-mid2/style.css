@@ -271,3 +271,6 @@ body[data-page=index] .rc.all{border-color:var(--line);background:var(--card)}
 .wq .wh{display:flex;align-items:center;gap:6px;margin-bottom:6px}
 .wq .wa{font-size:16.5px;line-height:1.5;font-weight:700}
 .wq .wl{display:inline-block;margin-top:6px;font-size:14px;color:var(--blue)}
+
+/* index: one 회차 card at a time, full width on tablets */
+body[data-page=index] .grid{grid-template-columns:1fr}
