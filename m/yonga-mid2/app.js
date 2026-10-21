@@ -219,7 +219,7 @@ function pageIndex(app){
       if(!built){card.appendChild(el('div','empty','준비 중'))}
   CFG.types.forEach(function(t){var n=((D.R[r2]||{})[t.k]||[]).length;if(!n)return;k2++;
    var dn=doneT(r2,t.k);
-   card.appendChild(el('div','arow','<b>'+k2+'. '+t.n+'<span class="cn">'+n+'문제</span></b><i class="vr o">'+(sg('imp:'+r2+':'+t.k)==='1'?'타기기':'1회성')+'</i><a class="cell'+(dn?' on':'')+'" href="test.html?r='+r2+'&t='+t.k+'">'+(dn?'했어요':'풀기')+'</a>'));
+   card.appendChild(el('div','arow','<b>'+k2+'. '+t.n+'<span class="cn">'+n+'문제</span></b><i class="vr o">'+(sg('imp:'+r2+':'+t.k)==='1'?'타기기':'1회성')+'</i><a class="cell'+(dn?' pk':'')+'" href="test.html?r='+r2+'&t='+t.k+'">'+(dn?'했어요':'풀기')+'</a>'));
   });
   [].forEach.call(card.querySelectorAll('.ar'),function(bt){bt.onclick=function(){if(bt.disabled)return;viewR=Math.max(1,Math.min(SH?CFG.rounds:curR,viewR+(+bt.dataset.d)));try{if(!SH)ST.setItem('mid7:view',viewR)}catch(e){}drawRound()}});
   if(built&&!SH&&!doneR(r2)){
@@ -462,7 +462,120 @@ function pageAnswer(app){
  app.appendChild(foot());
 }
 
+
+/* teacher exam (선생님 TEST) */
+function pageExam(app){
+ var K_SET='midex:set',K_CUR='midex:cur',K_USED='midex:used';
+ function lg(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}
+ function ls(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+ function ld(k){try{localStorage.removeItem(k)}catch(e){}}
+ function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),x=a[i];a[i]=a[j];a[j]=x}return a}
+ var COUNTS=[5,7,15],built=[];
+ for(var r=1;r<=CFG.rounds;r++)built.push(r);
+ var S=lg(K_SET)||{};S.r=S.r||[];S.t=S.t||TY.map(function(t){return t.k});S.n=S.n||7;
+ var EX=null;
+ function head(){return '<h1>'+CFG.school+' TEST</h1><p class="lede">선생님 확인용 · 유형 풀코스 문제에서 섞어 출제</p>'}
+ function chip(on,act,attr,txt){return '<button type="button" class="ch2'+(on?' pk':'')+'" data-act="'+act+'" '+attr+'>'+txt+'</button>'}
+ function setup(){
+  var h=head()+'<div class="exs"><div class="sh">범위 (회차)</div><div class="chips">';
+  var allR=built.every(function(r){return S.r.indexOf(r)>=0});
+  h+=chip(allR,'rall','','전체');
+  built.forEach(function(r){h+=chip(S.r.indexOf(r)>=0,'r','data-v="'+r+'"',unitOf(r)+'과 '+r+'회')});
+  h+='</div><div class="sh">유형</div><div class="chips">';
+  var allT=TY.every(function(t){return S.t.indexOf(t.k)>=0});
+  h+=chip(allT,'tall','','전체');
+  TY.forEach(function(t){h+=chip(S.t.indexOf(t.k)>=0,'t','data-v="'+t.k+'"',t.n)});
+  h+='</div><div class="sh">문항 수</div><div class="chips">';
+  COUNTS.forEach(function(n){h+=chip(S.n===n,'n','data-v="'+n+'"',n+'문항')});
+  var pool=poolOf();
+  h+='</div><button type="button" class="go" data-act="start"'+(pool.length?'':' disabled')+'>시험 시작</button>';
+  h+='<p class="mut">'+(pool.length?'출제 가능한 문제 '+pool.length+'개':'회차와 유형을 하나 이상 고르세요')+'</p></div>';
+  var cur=lg(K_CUR);
+  if(cur&&cur.q&&!cur.done)h+='<div class="resume">진행 중이던 시험이 있어요 ('+cur.q.length+'문항)<button type="button" class="go2" data-act="resume">이어서 풀기</button></div>';
+  h+='<div class="foot">비타민 영어클리닉 · '+CFG.school+'</div>';
+  app.innerHTML=h;
+ }
+ function poolOf(){var o=[];S.r.forEach(function(r){TY.forEach(function(t){if(S.t.indexOf(t.k)<0)return;((D.R[r]||{})[t.k]||[]).forEach(function(id){if(Q[id])o.push({id:id,r:r,t:t.k})})})});return o}
+ function pick(){
+  var used=lg(K_USED)||{},pool=poolOf(),by={};
+  pool.forEach(function(c){(by[c.t]=by[c.t]||[]).push(c)});
+  Object.keys(by).forEach(function(t){var f=shuffle(by[t].filter(function(c){return !used[c.id]})),o=shuffle(by[t].filter(function(c){return used[c.id]}));by[t]=f.concat(o)});
+  var types=shuffle(Object.keys(by)),out=[],i=0;
+  while(out.length<S.n&&types.some(function(t){return by[t].length})){var t=types[i%types.length];i++;if(by[t].length)out.push(by[t].shift())}
+  out.forEach(function(c){used[c.id]=1});ls(K_USED,used);
+  return shuffle(out);
+ }
+ function init(q){return q.k==='bk'?q.n.map(function(){return -1}):q.k==='ms'?[]:q.k==='tf'?null:-1}
+ function ansd(q,st){if(q.k==='bk')return st.every(function(v){return v>=0});if(q.k==='ms')return st.length>0;if(q.k==='tf')return st!==null;return st>=0}
+ function ok(q,st){if(q.k==='bk')return q.n.every(function(a,i){return st[i]===a});if(q.k==='ms')return sameSet(st,q.n);return st===q.n}
+ function nAns(){var n=0;EX.q.forEach(function(c,i){if(ansd(Q[c.id],EX.a[i]))n++});return n}
+ function card(i){
+  var c=EX.q[i],q=Q[c.id],st=EX.a[i];
+  var h='<div class="th"><span class="tn">'+(i+1)+'</span><div class="ask">'+q.a+'</div></div>';
+  if(q.g)h+='<div class="gv"><span>주어진 문장</span>'+q.g+'</div>';
+  if(q.k==='bk'){
+   h+='<div class="ps">'+q.p.replace(/\[\[(\d+)\]\]/g,function(m,b){b=+b;var s='<span class="bk"><i>(</i>';q.b[b].forEach(function(op,j){if(j)s+='<i>/</i>';s+='<button type="button" class="'+(st[b]===j?'sel':'')+'" data-b="'+b+'" data-o="'+j+'">'+op+'</button>'});return s+'<i>)</i></span>'})+'</div>';
+  }else{
+   if(q.p)h+='<div class="ps">'+q.p+'</div>';
+   var lb=isLab(q);
+   if(q.k==='tf')h+='<div class="ch row">'+[[true,'T (일치)'],[false,'F (불일치)']].map(function(a){return '<button type="button" class="'+(st===a[0]?'sel':'')+'" data-v="'+a[0]+'">'+a[1]+'</button>'}).join('')+'</div>';
+   else h+='<div class="ch'+(lb?' lab':'')+'">'+q.c.map(function(t,j){var on=q.k==='ms'?st.indexOf(j)>=0:st===j;return '<button type="button" class="'+(on?'sel':'')+'" data-v="'+j+'">'+(lb?'':'<i>'+LAB[j]+'</i>')+'<span>'+t+'</span></button>'}).join('')+'</div>';
+  }
+  document.getElementById('q'+i).innerHTML=h;
+ }
+ function save(){ls(K_CUR,EX)}
+ function upd(){var n=nAns(),c=document.getElementById('cnt');if(c)c.innerHTML='답한 문제 <b>'+n+'</b> / '+EX.q.length;[].forEach.call(app.querySelectorAll('[data-act=submit]'),function(b){b.textContent=EX.confirm?'안 푼 문제 '+(EX.q.length-n)+'개 · 그래도 제출':'제출하기'})}
+ function test(){
+  var h=head()+'<div class="exbar"><span id="cnt"></span><button type="button" class="sub" data-act="submit">제출하기</button></div>';
+  EX.q.forEach(function(c,i){h+='<section class="tq" id="q'+i+'"></section>'});
+  h+='<button type="button" class="go" data-act="submit">제출하기</button>';
+  app.innerHTML=h;EX.q.forEach(function(c,i){card(i)});upd();
+ }
+ function result(){
+  var N=EX.q.length,wrong=[],sc=0;
+  EX.q.forEach(function(c,i){if(ok(Q[c.id],EX.a[i]))sc++;else wrong.push(i)});
+  var need=Math.ceil(N*0.8),pass=sc>=need,d=new Date(EX.done),p2=function(n){return(n<10?'0':'')+n};
+  var h=head()+'<div class="exr '+(pass?'pass':'fail')+'"><div class="vd">'+(pass?'합격':'불합격')+'</div><div class="sc"><b>'+sc+'</b> / '+N+'</div><div class="meta">합격 기준 '+need+'문항 이상 · '+(d.getMonth()+1)+'/'+d.getDate()+'('+WD[d.getDay()]+') '+p2(d.getHours())+':'+p2(d.getMinutes())+'</div></div>';
+  if(wrong.length){
+   h+='<div class="sh">틀린 문제 '+wrong.length+'개</div>';
+   wrong.forEach(function(i){var c=EX.q[i],q=Q[c.id];
+    h+='<div class="wq"><div class="wh"><span class="tn">'+(i+1)+'</span><span class="tg">'+TN[c.t]+'</span><span class="tg">'+c.r+'회</span></div><div class="wa">정답 '+ansText(q)+'</div><a class="wl" href="'+ansHref(c.id)+'">해설 보기</a></div>'});
+  }else h+='<p class="lede" style="text-align:center">전부 맞았어요.</p>';
+  h+='<button type="button" class="go" data-act="again">새 시험</button><div class="foot">비타민 영어클리닉 · '+CFG.school+'</div>';
+  app.innerHTML=h;window.scrollTo(0,0);
+ }
+ function tog(arr,v){var i=arr.indexOf(v);if(i>=0)arr.splice(i,1);else arr.push(v)}
+ app.addEventListener('click',function(e){
+  var t=e.target.closest('button');if(!t)return;
+  var a=t.getAttribute('data-act');
+  if(!EX||EX.done){
+   if(!a)return;
+   var v=t.getAttribute('data-v');
+   if(a==='r'){tog(S.r,+v);S.r.sort(function(x,y){return x-y})}
+   else if(a==='rall'){S.r=built.every(function(r){return S.r.indexOf(r)>=0})?[]:built.slice()}
+   else if(a==='t'){tog(S.t,v)}
+   else if(a==='tall'){S.t=TY.every(function(x){return S.t.indexOf(x.k)>=0})?[]:TY.map(function(x){return x.k})}
+   else if(a==='n'){S.n=+v}
+   else if(a==='start'){var q=pick();if(!q.length)return;ls(K_SET,S);EX={q:q,a:q.map(function(c){return init(Q[c.id])}),n:S.n,done:0,confirm:0};save();test();window.scrollTo(0,0);return}
+   else if(a==='resume'){var c=lg(K_CUR);if(c&&c.q&&!c.done){EX=c;test()}return}
+   else if(a==='again'){EX=null;ld(K_CUR)}
+   else return;
+   ls(K_SET,S);setup();return;
+  }
+  if(a==='submit'){if(nAns()<EX.q.length&&!EX.confirm){EX.confirm=1;upd();return}EX.done=Date.now();EX.confirm=0;save();result();return}
+  var cardEl=t.closest('.tq');if(!cardEl)return;
+  var i=+cardEl.id.slice(1),q=Q[EX.q[i].id];EX.confirm=0;
+  if(q.k==='bk'){EX.a[i][+t.dataset.b]=+t.dataset.o}
+  else if(q.k==='tf'){EX.a[i]=t.dataset.v==='true'}
+  else if(q.k==='ms'){tog(EX.a[i],+t.dataset.v)}
+  else EX.a[i]=+t.dataset.v;
+  card(i);upd();save();
+ });
+ var cur=lg(K_CUR);if(cur&&cur.done)ld(K_CUR);
+ setup();
+}
+
 var pg=document.body.getAttribute('data-page'),app=document.getElementById('app');
-({index:pageIndex,test:pageTest,wrong:pageWrong,vocabx:pageVx,answer:pageAnswer,mix:pageMix})[pg](app);
+({index:pageIndex,test:pageTest,wrong:pageWrong,vocabx:pageVx,answer:pageAnswer,mix:pageMix,exam:pageExam})[pg](app);
 if(location.hash){var h=document.getElementById(location.hash.slice(1));if(h)h.scrollIntoView()}
 })();

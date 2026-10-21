@@ -253,3 +253,21 @@ body[data-page=index] .rc.all{border-color:var(--line);background:var(--card)}
 .xp .rv.open .xa{display:block}
 .xp .rv .xex{font-size:13px;color:#44545b;margin-top:6px}
 .arow .cell.off{color:var(--sub);background:transparent;border-style:dashed;font-weight:600;font-size:13px}
+
+/* teacher exam */
+.exs .sh,.exr+.sh,.wq~.sh{font-weight:800;font-size:14px;color:var(--sub);margin:18px 0 8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.ch2{border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:8px 14px;font-size:15.5px;font-weight:700;color:var(--ink)}
+.ch2.pk{border-color:var(--pri);background:var(--pri);color:#fff}
+.mut{color:var(--sub);font-size:13.5px;text-align:center;margin:8px 0 0}
+.resume{margin:16px 0;padding:12px;border:1px dashed var(--line);border-radius:12px;text-align:center;font-size:15px}
+.go2{display:block;margin:8px auto 0;border:1.5px solid var(--pri);color:var(--pri);background:var(--card);border-radius:10px;padding:8px 18px;font-weight:800;font-size:15px}
+.exbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--bg);padding:8px 0;font-size:15px}
+.exbar .sub{border:0;border-radius:10px;background:var(--pri);color:#fff;font-weight:800;padding:8px 14px;font-size:14.5px}
+.exr{text-align:center;border-radius:16px;padding:22px 12px;margin:14px 0;border:2px solid var(--line)}
+.exr.pass{border-color:var(--ok);background:var(--okBg)}.exr.fail{border-color:var(--ng);background:var(--ngBg)}
+.exr .vd{font-size:30px;font-weight:900}.exr .sc{font-size:22px;margin:6px 0}.exr .sc b{font-size:34px}.exr .meta{font-size:13.5px;color:var(--sub)}
+.wq{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin:10px 0}
+.wq .wh{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.wq .wa{font-size:16.5px;line-height:1.5;font-weight:700}
+.wq .wl{display:inline-block;margin-top:6px;font-size:14px;color:var(--blue)}
