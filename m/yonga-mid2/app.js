@@ -141,8 +141,8 @@ function pageIndex(app){
  app.appendChild(el('div','pc','<div class="pt"><b>전체 진행</b><span>'+(all?'전체 완료':N+'회 중 '+M+'회')+'</span></div><div class="pb"><i style="width:'+(N?Math.round(M/N*1000)/10:0)+'%"></i></div>'));
 
  /* 3,4. link cards */
- var lo=el('a','lc or','<div><b>오답 노트</b><small>1회 틀리면 담김 · 2회 틀리면 별표</small></div><span>열기</span>');lo.href='wrong.html';app.appendChild(lo);
- var lb=el('a','lc bl','<div><b>전체 랜덤 20문항</b><small>전체에서 20문항씩, 또는 원하는 유형만 골라서</small></div><span>시작</span>');lb.href='mix.html';app.appendChild(lb);
+ var lo=el('a','lc or','<div><b>오답 노트</b><small>1회 틀리면 담기고, 2회 틀리면 별표가 생겨요</small></div><span>열기</span>');lo.href='wrong.html';app.appendChild(lo);
+ var lb=el('a','lc bl','<div><b>랜덤 문제 풀기</b><small>범위와 유형을 골라서 풀어요</small></div><span>시작</span>');lb.href='mix.html';app.appendChild(lb);
 
  /* 5. exam title row */
  var wk0=mondayOf(today),wk1=addDays(wk0,6),wcnt=0;
@@ -186,7 +186,7 @@ function pageIndex(app){
  var g=el('div','grid');
  /* one 회차 at a time (calendar-like): opens on the first unfinished one; arrows go back to finished ones, forward stops at the unfinished one */
  var curR=CFG.rounds;for(var q2=1;q2<=CFG.rounds;q2++){if(!doneR(q2)){curR=q2;break}}
- var viewR=curR;
+ var viewR=curR;try{var sv=+localStorage.getItem('mid7:view');if(sv>=1&&sv<=curR)viewR=sv}catch(e){}
  function drawRound(){
   g.innerHTML='';
   var r2=viewR;
@@ -197,7 +197,7 @@ function pageIndex(app){
    var dn=doneT(r2,t.k);
    card.appendChild(el('div','arow','<b>'+k2+'. '+t.n+'<span class="cn">'+n+'문제</span></b><i class="vr o">1회성</i><a class="cell'+(dn?' on':'')+'" href="test.html?r='+r2+'&t='+t.k+'">'+(dn?'했어요':'풀기')+'</a>'));
   });
-  [].forEach.call(card.querySelectorAll('.ar'),function(bt){bt.onclick=function(){if(bt.disabled)return;viewR=Math.max(1,Math.min(curR,viewR+(+bt.dataset.d)));drawRound()}});
+  [].forEach.call(card.querySelectorAll('.ar'),function(bt){bt.onclick=function(){if(bt.disabled)return;viewR=Math.max(1,Math.min(curR,viewR+(+bt.dataset.d)));try{localStorage.setItem('mid7:view',viewR)}catch(e){}drawRound()}});
   g.appendChild(card);
  }
  drawRound();
@@ -258,7 +258,7 @@ function pageMix(app){
  if(req){cur=draw(req.m,req.types);if(history.replaceState)history.replaceState(null,'','mix.html')}
  else if(p.pick==='1'||!cur||!Array.isArray(cur.ids)||(cur.fin&&!isReload)){chooser(app);return}
  var isAll=cur.m!=='t';
- app.appendChild(el('h1',null,isAll?'전체 랜덤 20문항':'유형 골라 풀기'));
+ app.appendChild(el('h1',null,'랜덤 문제 풀기'));
  app.appendChild(el('p','sub',(isAll?'':cur.types.map(function(k){return TN[k]}).join(' · ')+' · ')+cur.ids.length+'문항'));
  var cnt=0,sum=el('div','sum');sum.style.display='none';var cards=[];
  var nextHref='mix.html?next=1&m='+(isAll?'all':'t&t='+cur.types.join(','));
@@ -278,7 +278,7 @@ function pageMix(app){
  app.appendChild(foot());
 }
 function chooser(app){
- app.appendChild(el('h1',null,'전체 랜덤 20문항'));
+ app.appendChild(el('h1',null,'랜덤 문제 풀기'));
  var a=el('a','mode pr','<b>전체에서 20문항</b><small>모든 회차에서 섞어서 20문항</small>');a.href='mix.html?next=1&m=all';app.appendChild(a);
  app.appendChild(el('h2',null,'유형 골라서 10문항'));
  var sel=[],ch=el('div','chips');
@@ -334,7 +334,7 @@ function pageWrong(app){
  var bar=el('div','bar');var home=el('a','pill','‹ 처음');home.href='index.html';bar.appendChild(home);app.appendChild(bar);
  app.appendChild(el('h1',null,'오답 노트'));
  app.appendChild(el('p','sub',list.length+'문항'));
- app.appendChild(el('div','rule','한 문제를 처음 틀리면 오답 노트에 담기고, 같은 문제를 두 번째로 틀리면 별표가 붙어요. 담긴 문제는 여기서 맞혀야만 빠집니다.'));
+ app.appendChild(el('div','rule','<b>이렇게 쌓여요</b>1회 틀리면 오답 노트에 담겨요.<br>2회 틀리면 별표가 생겨요.<br>담긴 문제는 직접 뺄 수 없어요.'));
  if(!list.length){app.appendChild(el('div','empty','남은 오답이 없습니다.'));app.appendChild(foot());return}
  var cnt=0,left=0,sum=el('div','sum');sum.style.display='none';
  list.forEach(function(id,i){
