@@ -4,8 +4,10 @@ var CFG=window.CFG,D=window.D,Q=D.Q,PFX=CFG.pfx,TY=CFG.types,TN={};
 TY.forEach(function(t){TN[t.k]=t.n});
 var LAB=['①','②','③','④','⑤','⑥','⑦'];
 var mem={};
-function sg(k){var v=null;try{v=localStorage.getItem(PFX+k)}catch(e){}if(v==null&&mem[k]!=null)v=mem[k];return v}
-function ss(k,v){mem[k]=v;try{localStorage.setItem(PFX+k,v)}catch(e){}}
+var SH=false;try{var _u=new URLSearchParams(location.search);if(_u.get('shared')==='1')sessionStorage.setItem('mid7:shared','1');if(_u.get('shared')==='0')sessionStorage.removeItem('mid7:shared');SH=sessionStorage.getItem('mid7:shared')==='1'}catch(e){}
+var ST=null;try{ST=SH?sessionStorage:localStorage}catch(e){}
+function sg(k){var v=null;try{v=ST.getItem(PFX+k)}catch(e){}if(v==null&&mem[k]!=null)v=mem[k];return v}
+function ss(k,v){mem[k]=v;try{ST.setItem(PFX+k,v)}catch(e){}}
 function jg(k,d){try{var v=sg(k);return v==null?d:JSON.parse(v)}catch(e){return d}}
 function js(k,v){ss(k,JSON.stringify(v))}
 function $(s,e){return(e||document).querySelector(s)}
@@ -127,6 +129,7 @@ function pageIndex(app){
  var M=0;for(var r=1;r<=CFG.rounds;r++)if(doneR(r))M++;
  var PLAN=22;var N=PLAN;
 
+ var n0=app.children.length;
  /* 1. badge card */
  var bc=el('details','bc');
  var sm=el('summary',null,'<div class="bdg"><b>'+CFG.school+'</b><span>기말 '+fmtMD(exS,1)+'</span><strong>'+dtxt+'</strong></div><div class="bq"><div class="bqt">'+CFG.quote+'</div></div><span class="cv">'+svgChev()+'</span>');
@@ -191,11 +194,14 @@ function pageIndex(app){
  }
  draw();
 
+ var drop=[].slice.call(app.children,n0);
+ if(SH){drop.forEach(function(x){if(x!==lb)x.remove()});var hd=el('h1',null,'용아중2 유형 풀코스');app.insertBefore(hd,app.firstChild)}
  /* 7. below the calendar: 유형 풀코스 */
  var g=el('div','grid');
  /* one 회차 at a time (calendar-like): opens on the first unfinished one; arrows go back to finished ones, forward stops at the unfinished one */
  var curR=PLAN;for(var q2=1;q2<=PLAN;q2++){if(q2>CFG.rounds||!doneR(q2)){curR=q2;break}}
- var viewR=curR;try{var sv=+localStorage.getItem('mid7:view');if(sv>=1&&sv<=curR)viewR=sv}catch(e){}
+ if(SH)curR=CFG.rounds;
+ var viewR=SH?1:curR;try{var sv=SH?0:+ST.getItem('mid7:view');if(sv>=1&&sv<=curR)viewR=sv}catch(e){}
  function drawRound(){
   g.innerHTML='';
   var r2=viewR;
@@ -207,7 +213,7 @@ function pageIndex(app){
    var dn=doneT(r2,t.k);
    card.appendChild(el('div','arow','<b>'+k2+'. '+t.n+'<span class="cn">'+n+'문제</span></b><i class="vr o">1회성</i><a class="cell'+(dn?' on':'')+'" href="test.html?r='+r2+'&t='+t.k+'">'+(dn?'했어요':'풀기')+'</a>'));
   });
-  [].forEach.call(card.querySelectorAll('.ar'),function(bt){bt.onclick=function(){if(bt.disabled)return;viewR=Math.max(1,Math.min(curR,viewR+(+bt.dataset.d)));try{localStorage.setItem('mid7:view',viewR)}catch(e){}drawRound()}});
+  [].forEach.call(card.querySelectorAll('.ar'),function(bt){bt.onclick=function(){if(bt.disabled)return;viewR=Math.max(1,Math.min(curR,viewR+(+bt.dataset.d)));try{if(!SH)ST.setItem('mid7:view',viewR)}catch(e){}drawRound()}});
   g.appendChild(card);
  }
  drawRound();
