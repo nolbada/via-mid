@@ -137,11 +137,20 @@ function pageIndex(app){
  bc.appendChild(sl);app.appendChild(bc);
 
  /* 2. overall progress */
+ function solvedHtml(){
+  var per={},tot=0;
+  CFG.types.forEach(function(t){per[t.k]=0});
+  for(var r3=1;r3<=CFG.rounds;r3++)CFG.types.forEach(function(t){if(doneT(r3,t.k)){var n=(D.R[r3][t.k]||[]).length;per[t.k]+=n;tot+=n}});
+  if(!tot)return '';
+  var chips=CFG.types.filter(function(t){return per[t.k]}).map(function(t){return '<span><small>'+t.n+'</small><b>'+per[t.k]+'</b></span>'}).join('');
+  return '<div class="sv">'+chips+'</div><div class="st2"><small>지금까지 푼 문제</small><b>'+tot+'문제</b></div>';
+ }
+
  var all=M>=N&&N>0;
- app.appendChild(el('div','pc','<div class="pt"><b>전체 진행</b><span>'+(all?'전체 완료':N+'회 중 '+M+'회')+'</span></div><div class="pb"><i style="width:'+(N?Math.round(M/N*1000)/10:0)+'%"></i></div>'));
+ app.appendChild(el('div','pc','<div class="pt"><b>전체 진행</b><span>'+(all?'전체 완료':N+'회 중 '+M+'회')+'</span></div><div class="pb"><i style="width:'+(N?Math.round(M/N*1000)/10:0)+'%"></i></div>'+solvedHtml()));
 
  /* 3,4. link cards */
- var lo=el('a','lc or','<div><b>오답 노트</b><small>1회 틀리면 담기고, 2회 틀리면 별표가 생겨요</small></div><span>열기</span>');lo.href='wrong.html';app.appendChild(lo);
+ var lo=el('a','lc or','<div><b>오답 노트</b><small>1차 오답은 자동 저장, 2차 오답은 별표(★) 표시</small></div><span>열기</span>');lo.href='wrong.html';app.appendChild(lo);
  var lb=el('a','lc bl','<div><b>랜덤 문제 풀기</b><small>범위와 유형을 골라서 풀어요</small></div><span>시작</span>');lb.href='mix.html';app.appendChild(lb);
 
  /* 5. exam title row */
@@ -334,7 +343,7 @@ function pageWrong(app){
  var bar=el('div','bar');var home=el('a','pill','‹ 처음');home.href='index.html';bar.appendChild(home);app.appendChild(bar);
  app.appendChild(el('h1',null,'오답 노트'));
  app.appendChild(el('p','sub',list.length+'문항'));
- app.appendChild(el('div','rule','<b>이렇게 쌓여요</b>1회 틀리면 오답 노트에 담겨요.<br>2회 틀리면 별표가 생겨요.<br>담긴 문제는 직접 뺄 수 없어요.'));
+ app.appendChild(el('div','rule','<b>이렇게 쌓여요</b>1차 오답은 자동 저장돼요.<br>2차 오답은 별표(★)로 표시돼요.<br>담긴 문제는 직접 뺄 수 없어요.'));
  if(!list.length){app.appendChild(el('div','empty','남은 오답이 없습니다.'));app.appendChild(foot());return}
  var cnt=0,left=0,sum=el('div','sum');sum.style.display='none';
  list.forEach(function(id,i){
