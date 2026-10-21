@@ -119,7 +119,16 @@ function fmtMD(d,wd){return(d.getMonth()+1)+'/'+d.getDate()+(wd?'('+WD[d.getDay(
 function mondayOf(d){var x=new Date(d.getFullYear(),d.getMonth(),d.getDate());x.setDate(x.getDate()-((x.getDay()+6)%7));return x}
 function addDays(d,n){var x=new Date(d.getFullYear(),d.getMonth(),d.getDate());x.setDate(x.getDate()+n);return x}
 function svgChev(){return '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>'}
+function proofView(app){
+ var now=new Date(),rows=[],tc=0,tn=0;
+ for(var r=1;r<=CFG.rounds;r++){var parts=[];TY.forEach(function(t){if(!doneT(r,t.k))return;var ids=(D.R[r][t.k]||[]),st=jg('st:'+r+':'+t.k,{}),ok=0;ids.forEach(function(id){if(st[id]&&st[id][1])ok++});tc+=ok;tn+=ids.length;parts.push('<div class="pu"><span>'+t.n+'</span><b>'+ok+' / '+ids.length+'</b></div>')});
+  if(parts.length)rows.push('<div class="pr2"><h4>'+r+'회 <small>'+unitOf(r)+'과</small></h4>'+parts.join('')+'</div>')}
+ var bar=el('div','bar');var home=el('a','pill','‹ 처음');home.href='index.html';bar.appendChild(home);app.appendChild(bar);
+ var card=el('div','pcard','<div class="pk">학습 인증</div><h1>용아중2 유형 풀코스</h1><div class="pd">'+fmtMD(now,1)+' '+pad(now.getHours())+':'+pad(now.getMinutes())+'</div>'+(rows.length?rows.join('')+'<div class="ptot"><span>오늘 푼 문제</span><b>'+tn+'문제 · 정답 '+tc+'</b></div>':'<div class="empty">아직 푼 문제가 없습니다</div>'));
+ app.appendChild(card);
+}
 function pageIndex(app){
+ if(qs().proof==='1'){proofView(app);return}
  app.classList.add('hubw');
  var now=new Date(),today=new Date(now.getFullYear(),now.getMonth(),now.getDate()),todayS=ymd(today);
  var exS=pYmd(CFG.exam.start),exE=pYmd(CFG.exam.end),exStr={};
@@ -154,6 +163,7 @@ function pageIndex(app){
 
  /* 3,4. link cards */
  var lo=el('a','lc or','<div><b>오답 노트</b><small>1차 오답은 자동 저장, 2차 오답은 별표(★) 표시</small></div><span>열기</span>');lo.href='wrong.html';app.appendChild(lo);
+ if(SH){var lp=el('a','lc','<div><b>학습 인증</b><small>오늘 푼 내용 확인 화면</small></div><span>열기</span>');lp.href='index.html?proof=1';app.appendChild(lp)}
  var lb=el('a','lc bl','<div><b>랜덤 문제 풀기</b><small>범위와 유형을 골라서 풀어요</small></div><span>시작</span>');lb.href='mix.html';app.appendChild(lb);
 
  /* 5. exam title row */
@@ -195,16 +205,13 @@ function pageIndex(app){
  draw();
 
  var drop=[].slice.call(app.children,n0);
- if(SH){drop.forEach(function(x){if(x!==lb)x.remove()});var hd=el('h1',null,'용아중2 유형 풀코스');app.insertBefore(hd,app.firstChild)}
  /* 7. below the calendar: 유형 풀코스 */
  var g=el('div','grid');
  /* one 회차 at a time (calendar-like): opens on the first unfinished one; arrows go back to finished ones, forward stops at the unfinished one */
  var curR=PLAN;for(var q2=1;q2<=PLAN;q2++){if(q2>CFG.rounds||!doneR(q2)){curR=q2;break}}
- if(SH)curR=CFG.rounds;
- var viewR=SH?1:curR;try{var sv=SH?0:+ST.getItem('mid7:view');if(sv>=1&&sv<=curR)viewR=sv}catch(e){}
+ var viewR=curR;try{var sv=SH?0:+ST.getItem('mid7:view');if(sv>=1&&sv<=curR)viewR=sv}catch(e){}
  function drawRound(){
   g.innerHTML='';
-  if(SH){var cr=el('div','chips rch');for(var n3=1;n3<=CFG.rounds;n3++){(function(n){var b=el('button',n===viewR?'on':'',String(n));b.type='button';b.onclick=function(){viewR=n;drawRound()};cr.appendChild(b)})(n3)}g.appendChild(cr)}
   var r2=viewR;
   var built=r2<=CFG.rounds,card=el('div','rc'+(built&&doneR(r2)?' all':''));
   card.appendChild(el('div','rh rhn','<button type="button" class="ar" data-d="-1" aria-label="이전 회차"'+(r2<=1?' disabled':'')+'>&lsaquo;</button><div class="rht"><h3>유형 풀코스 '+r2+'회'+(built&&doneR(r2)?'<span class="tg t">완료</span>':'')+'</h3><small class="rng">'+(built?unitOf(r2)+'과':(r2<=20?'8과':(r2===21?'7과 최종점검':'8과 최종점검')))+'</small></div><button type="button" class="ar" data-d="1" aria-label="다음 회차"'+(r2>=curR?' disabled':'')+'>&rsaquo;</button>'));
@@ -212,9 +219,16 @@ function pageIndex(app){
       if(!built){card.appendChild(el('div','empty','준비 중'))}
   CFG.types.forEach(function(t){var n=((D.R[r2]||{})[t.k]||[]).length;if(!n)return;k2++;
    var dn=doneT(r2,t.k);
-   card.appendChild(el('div','arow','<b>'+k2+'. '+t.n+'<span class="cn">'+n+'문제</span></b><i class="vr o">1회성</i><a class="cell'+(dn?' on':'')+'" href="test.html?r='+r2+'&t='+t.k+'">'+(dn?'했어요':'풀기')+'</a>'));
+   card.appendChild(el('div','arow','<b>'+k2+'. '+t.n+'<span class="cn">'+n+'문제</span></b><i class="vr o">'+(sg('imp:'+r2+':'+t.k)==='1'?'타기기':'1회성')+'</i><a class="cell'+(dn?' on':'')+'" href="test.html?r='+r2+'&t='+t.k+'">'+(dn?'했어요':'풀기')+'</a>'));
   });
   [].forEach.call(card.querySelectorAll('.ar'),function(bt){bt.onclick=function(){if(bt.disabled)return;viewR=Math.max(1,Math.min(curR,viewR+(+bt.dataset.d)));try{if(!SH)ST.setItem('mid7:view',viewR)}catch(e){}drawRound()}});
+  if(built&&!SH&&!doneR(r2)){
+   var ob=el('div','ot','<button type="button" class="otb">타기기에서 했어요</button>');
+   ob.querySelector('.otb').onclick=function(){
+    ob.innerHTML='<span>선생님이 확인한 회차만 눌러요</span><button type="button" class="oty">확인</button><button type="button" class="otn">취소</button>';
+    ob.querySelector('.otn').onclick=drawRound;
+    ob.querySelector('.oty').onclick=function(){CFG.types.forEach(function(t){if((D.R[r2][t.k]||[]).length&&!doneT(r2,t.k)){markDone(r2,t.k);ss('imp:'+r2+':'+t.k,'1')}});location.reload()}};
+   card.appendChild(ob)}
   g.appendChild(card);
  }
  drawRound();
@@ -327,7 +341,7 @@ function pageTest(app){
   markDone(r,t);
   var w=ids.filter(function(id){return st[id]&&!st[id][1]}).length;
   var nx=nextLoc(r,t);
-  sum.innerHTML='<p>'+TN[t]+' 마침 · 틀린 문제 '+w+'개</p><div class="lk">'+(w?'<a href="answer.html?r='+r+'&t='+t+'">해설 보기</a>':'')+'<a class="pr" href="'+nx.h+'">'+nx.l+'</a></div>';
+  sum.innerHTML='<p>'+TN[t]+' 마침 · 틀린 문제 '+w+'개</p><div class="lk">'+(w?'<a href="answer.html?r='+r+'&t='+t+'">해설 보기</a>':'')+(SH?'<a href="index.html?proof=1">학습 인증</a>':'')+'<a class="pr" href="'+nx.h+'">'+nx.l+'</a></div>';
   sum.style.display='block';
   var pills=bar.querySelectorAll('.pill');for(var i=0;i<pills.length;i++){if(pills[i].textContent===TN[t]&&!pills[i].classList.contains('on')){}}
  }
