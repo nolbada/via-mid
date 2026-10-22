@@ -266,10 +266,6 @@ function pageIndex(app){
   while(days[ymd(cd)]){stk++;cd=addDays(cd,-1)}
   app.appendChild(el('div','lrc','<div class="lrh"><b>나의 학습 기록</b></div><div class="lrs"><div><em>완료 회차</em><b>'+M+'<small> / '+N+'회</small></b></div><div><em>푼 문제</em><b>'+solved+'<small>개</small></b></div><div><em>연속 학습</em><b>'+stk+'<small>일</small></b></div></div><div class="lrr"><em>누적 이용 시간</em><b>'+(tot?fmtDur(tot):'-')+'</b><span class="lrd">문제 풀이 '+fmtDur(TS.q)+' · 오답 복습 '+fmtDur(TS.w)+' · 그 외 '+fmtDur(TS.h)+'</span></div><div class="lrr"><em>오늘 · '+fmtMD(today,1)+'</em><b>'+(tt?fmtDur(tt):'-')+'</b><span class="lrd">문제 풀이 '+fmtDur(TS.tq)+' · 오답 복습 '+fmtDur(TS.tw)+' · 그 외 '+fmtDur(TS.th)+'</span></div>'));
  }
- if(D.VX.length){
-  app.appendChild(el('h2',null,'어휘 확장 (선택)'));
-  var e3=el('div','ent');var a3=el('a',null,'어휘 확장<small>선택 코너</small>');a3.href='vocabx.html';e3.appendChild(a3);app.appendChild(e3);
- }
  app.appendChild(foot());
  /* fixed tabs */
  var tabs=el('nav','tabs');
