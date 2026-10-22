@@ -120,7 +120,7 @@
     if(!name)box.style.cssText='margin:12px 0;padding:14px;border:2px solid #e0a800;border-radius:12px;background:#fff4c2;color:#3a2e00;font-size:15px;display:flex;gap:8px;align-items:center;flex-wrap:wrap';
     else box.style.cssText='margin:6px 0;padding:5px 10px;border:0;border-radius:8px;background:transparent;color:var(--mute,#7a8683);font-size:12px;display:flex;gap:8px;align-items:center;justify-content:space-between';
     if(!name){
-      box.innerHTML='<b style="flex:1 1 100%">이름을 넣어야 기록이 저장돼요</b><input id="rec-n" type="text" autocomplete="off" placeholder="이름" style="flex:1;min-width:120px;font-size:16px;padding:9px 10px;border:1px solid var(--line,#dbe4e1);border-radius:8px;background:transparent;color:inherit"><button id="rec-b" type="button" style="font-size:15px;font-weight:700;padding:9px 16px;border:0;border-radius:8px;background:var(--pri,#1d4ed8);color:#fff">시작</button><div id="rec-m" style="flex:1 1 100%;font-size:13px;color:var(--sub,#5a6b67)"></div>';
+      box.innerHTML='<b style="flex:1 1 100%">이름을 넣어야 기록이 저장돼요</b><input id="rec-n" type="text" autocomplete="off" placeholder="이름" style="flex:1;min-width:120px;font-size:16px;padding:9px 10px;border:1px solid var(--line,#dbe4e1);border-radius:8px;background:transparent;color:inherit"><button id="rec-b" type="button" style="font-size:15px;font-weight:700;padding:9px 16px;border:0;border-radius:8px;background:var(--pri,#1d4ed8);color:var(--onpri,#fff)">시작</button><div id="rec-m" style="flex:1 1 100%;font-size:13px;color:var(--sub,#5a6b67)"></div>';
       host.insertBefore(box,host.firstChild);
       D.getElementById('rec-b').onclick=function(){
         var v=(D.getElementById('rec-n').value||'').replace(/\s+/g,'');
