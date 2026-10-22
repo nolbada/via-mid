@@ -165,7 +165,7 @@ function pageIndex(app){
  /* 3,4. link cards */
  var lo=el('a','lc or','<div><b>오답 노트</b><small>1차 오답은 자동 저장, 2차 오답은 별표(★) 표시</small></div><span>열기</span>');lo.href='wrong.html';app.appendChild(lo);
  if(SH){var lp=el('a','lc','<div><b>학습 인증</b><small>오늘 푼 내용 확인 화면</small></div><span>열기</span>');lp.href='index.html?proof=1';app.appendChild(lp)}
- var lb=el('a','lc bl','<div><b>랜덤 문제 풀기</b><small>범위와 유형을 골라서 풀어요</small></div><span>시작</span>');lb.href='mix.html';app.appendChild(lb);
+ var lb=el('a','lc bl','<div><b>전체 랜덤 20문항</b><small>전체에서 20문항씩, 또는 원하는 유형만 골라 풀어요</small></div><span>시작</span>');lb.href='mix.html';app.appendChild(lb);
 
  /* 5. exam title row */
  var wk0=mondayOf(today),wk1=addDays(wk0,6),wcnt=0;
@@ -243,9 +243,10 @@ function pageIndex(app){
  app.appendChild(foot());
  /* fixed tabs */
  var tabs=el('nav','tabs');
- var t1=el('a',null,'원문');t1.href=(CFG.tabs&&CFG.tabs.won)||'#';
- var t2=el('a',null,'답안지');t2.href=(CFG.tabs&&CFG.tabs.ans)||'#';
- var t3=el('a','on','유형 풀코스');t3.href='index.html';
+ var SV0='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
+ var t1=el('a',null,SV0+'<path d="M6 3h9l4 4v14H6z"></path><path d="M14 3v5h5"></path><path d="M9 13h7M9 17h7"></path></svg>원문');t1.href=(CFG.tabs&&CFG.tabs.won)||'#';
+ var t2=el('a',null,SV0+'<rect x="3" y="3" width="18" height="18" rx="3"></rect><path d="M8 12l3 3 5-6"></path></svg>답안지');t2.href=(CFG.tabs&&CFG.tabs.ans)||'#';
+ var t3=el('a','on',SV0+'<rect x="3" y="5" width="18" height="16" rx="3"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg>유형 풀코스');t3.href='index.html';
  tabs.appendChild(t1);tabs.appendChild(t2);tabs.appendChild(t3);document.body.appendChild(tabs);
 }
 
