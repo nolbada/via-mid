@@ -2,13 +2,19 @@
 <html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#1d4ed8">
+<meta name="theme-color" content="#c2540a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="REC 중등">
 <title>REC 중등 기록</title>
+<script>
+(function(){try{var c=document.createElement('canvas');c.width=c.height=180;var x=c.getContext('2d');var g=x.createLinearGradient(0,0,0,180);g.addColorStop(0,'#fdba4a');g.addColorStop(1,'#c9961f');x.fillStyle=g;x.fillRect(0,0,180,180);x.fillStyle='#fff';
+function rr(a,b,w,h){x.beginPath();x.moveTo(a+6,b);x.arcTo(a+w,b,a+w,b+h,6);x.arcTo(a+w,b+h,a,b+h,6);x.arcTo(a,b+h,a,b,6);x.arcTo(a,b,a+w,b,6);x.fill()}
+rr(48,78,22,26);rr(80,58,22,57);rr(112,38,22,77);x.fillRect(44,121,104,3);x.font='bold 24px -apple-system,Helvetica,Arial,sans-serif';x.textAlign='center';x.textBaseline='middle';if(x.letterSpacing!==undefined)x.letterSpacing='5px';x.fillText('REC',92,148);
+var u=c.toDataURL('image/png');['icon','apple-touch-icon'].forEach(function(r){var l=document.createElement('link');l.rel=r;if(r==='icon')l.type='image/png';l.href=u;document.head.appendChild(l)})}catch(e){}})();
+</script>
 <style>
-:root{--bg:#f6f8fb;--card:#fff;--ink:#16202e;--sub:#5b6878;--line:#dbe2ea;--pri:#1d4ed8;--warn:#b45309;--warnL:#fff4e0}
-@media(prefers-color-scheme:dark){:root{--bg:#0f1520;--card:#18212f;--ink:#e8eef6;--sub:#9aa9bb;--line:#2a3648;--pri:#8ab4ff;--warn:#fbbf24;--warnL:#33270a}}
+:root{--bg:#f6f8fb;--card:#fff;--ink:#16202e;--sub:#5b6878;--line:#dbe2ea;--pri:#c2540a;--warn:#b45309;--warnL:#fff4e0}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1520;--card:#18212f;--ink:#e8eef6;--sub:#9aa9bb;--line:#2a3648;--pri:#fbbf24;--warn:#fbbf24;--warnL:#33270a}}
 *{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;line-height:1.55;font-size:16px}
 .w{max-width:720px;margin:0 auto;padding:16px 16px 60px}
@@ -17,6 +23,7 @@ h1{font-size:22px;margin:4px 0 2px}.sub{color:var(--sub);font-size:14px;margin-b
 button,input,textarea{font:inherit}
 .bt{padding:9px 14px;border:1px solid var(--pri);border-radius:9px;background:transparent;color:var(--pri)}
 .bt.p{background:var(--pri);color:#fff;font-weight:700}
+@media(prefers-color-scheme:dark){.bt.p{color:#1a1206}}
 .pw{display:flex;gap:8px;margin:12px 0}
 .pw input{flex:1;padding:10px;border:1px solid var(--line);border-radius:9px;font-size:17px;background:var(--card);color:inherit}
 .msg{margin:10px 0;color:var(--sub);font-size:15px}
