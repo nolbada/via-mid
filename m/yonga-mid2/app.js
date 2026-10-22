@@ -266,7 +266,7 @@ function pageIndex(app){
   var CNK={},qg=0,qd=0;Object.keys(CNK).forEach(function(k){var at=sg('ans:'+k);if(at){qg+=CNK[k];if(ymd(new Date(+at))===dsT)qd+=CNK[k]}});
   function trio(x){var o='<div class="lrv">';for(var i=0;i<x.length;i+=2)o+='<div><small>'+x[i]+'</small><b>'+x[i+1]+'</b></div>';return o+'</div>'}
   function lsub(p){return '<span class="lrd">문제 풀이 '+fmtDur(TS[p+'q'])+' · 오답 복습 '+fmtDur(TS[p+'w'])+' · 그 외 '+fmtDur(TS[p+'h'])+'</span>'}
-  app.appendChild(el('div','lrc','<div class="lrh"><b>나의 학습 기록</b></div><div class="lrs"><div><em>누적 채점 문항</em><b>'+qg+'<small>개</small></b></div><div><em>누적 유형 풀코스</em><b>'+solved+'<small>문제</small></b></div></div><div class="lrr"><em>누적 이용 시간</em><b>'+(tot?fmtDur(tot):'-')+'</b>'+lsub('')+'</div><div class="lrr"><em>오늘 · '+fmtMD(today,1)+'</em>'+trio(['이용 시간',tt?fmtDur(tt):'-','완료 회차',M+' / '+N+'회','채점 문항',qd+'개'])+lsub('t')+'</div>'));
+  app.appendChild(el('div','lrc','<div class="lrh"><b>나의 학습 기록</b></div><div class="lrs"><div><em>누적 채점 문항</em><b>'+qg+'<small>문제</small></b></div><div><em>누적 유형 풀코스</em><b>'+solved+'<small>문제</small></b></div></div><div class="lrr"><em>누적 이용 시간</em><b>'+(tot?fmtDur(tot):'-')+'</b>'+lsub('')+'</div><div class="lrr"><em>오늘 · '+fmtMD(today,1)+'</em>'+trio(['이용 시간',tt?fmtDur(tt):'-','완료 회차',M+' / '+N+'회','채점 문항',qd+'문제'])+lsub('t')+'</div>'));
  }
  app.appendChild(foot());
  /* fixed tabs */
