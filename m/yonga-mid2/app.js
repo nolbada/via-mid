@@ -256,19 +256,15 @@ function pageIndex(app){
  drawRound();
  app.appendChild(g);
  if(!SH){
-  var dsT=ymd(today),rowsH='',totSec=0,allSec=0,anyT=false,nxt=null,days={};
+  var dsT=ymd(today),solved=0,days={};
   function fmtDur(s){return s>=3600?Math.floor(s/3600)+'시간 '+Math.round(s%3600/60)+'분':s>=60?Math.round(s/60)+'분':s+'초'}
-  for(var rr=1;rr<=CFG.rounds;rr++){var hit=false,sec=0,pins='',ix=0;
-   CFG.types.forEach(function(t){if(!((D.R[rr]||{})[t.k]||[]).length)return;ix++;var at=sg('doneAt:'+rr+':'+t.k),dn=doneT(rr,t.k);
-    if(at){days[ymd(new Date(at))]=1;allSec+=(+sg('dur:'+rr+':'+t.k)||0)}
-    if(at&&ymd(new Date(at))===dsT){hit=true;sec+=(+sg('dur:'+rr+':'+t.k)||0)}
-    if(!dn&&!nxt)nxt={r:rr,i:ix,n:t.n};
-    pins+='<span class="lrn'+(dn?' on':'')+'"><i>'+ix+'</i></span>'});
-   if(!hit)continue;anyT=true;totSec+=sec;
-   rowsH+='<div class="lrp"><div class="lrk"><b>'+rr+'회 ('+unitLabel(rr)+')</b><span>'+(sec?'소요 '+fmtDur(sec):'')+'</span></div><div class="lrpins">'+pins+'</div></div>'}
-  var TS=tmSum(),stk=0,cd=new Date(today);if(!days[ymd(cd)])cd=addDays(cd,-1);
+  for(var rr=1;rr<=CFG.rounds;rr++){
+   CFG.types.forEach(function(t){var n=((D.R[rr]||{})[t.k]||[]).length;if(!n)return;var at=sg('doneAt:'+rr+':'+t.k);
+    if(doneT(rr,t.k))solved+=n;
+    if(at)days[ymd(new Date(at))]=1})}
+  var TS=tmSum(),tot=TS.q+TS.w+TS.h,tt=TS.tq+TS.tw+TS.th,stk=0,cd=new Date(today);if(!days[ymd(cd)])cd=addDays(cd,-1);
   while(days[ymd(cd)]){stk++;cd=addDays(cd,-1)}
-  app.appendChild(el('div','lrc','<div class="lrh"><b>내 학습 기록</b></div><div class="lrs"><div><em>완료 회차</em><b>'+M+'<small> / '+N+'</small></b></div><div><em>총 이용 시간</em><b>'+(TS.q+TS.w+TS.h?fmtDur(TS.q+TS.w+TS.h):'-')+'</b></div><div><em>연속 학습일</em><b>'+stk+'<small>일</small></b></div></div><div class="lrr"><em>오늘의 학습 · '+fmtMD(today,1)+'</em>'+(anyT?rowsH+'':'<b>아직 없어요</b>')+'<div class="lrt">오늘 이용 <b>'+((TS.tq+TS.tw+TS.th)?fmtDur(TS.tq+TS.tw+TS.th):'-')+'</b><span>문제 풀이 '+fmtDur(TS.tq)+' · 오답 복습 '+fmtDur(TS.tw)+' · 그 외 '+fmtDur(TS.th)+'</span></div></div><div class="lrr nx"><em>다음에 할 활동</em><b>'+(nxt?nxt.r+'회 ('+unitLabel(nxt.r)+') · '+nxt.i+'. '+nxt.n:'모두 끝냈어요')+'</b></div>'));
+  app.appendChild(el('div','lrc','<div class="lrh"><b>나의 학습 기록</b></div><div class="lrs"><div><em>완료 회차</em><b>'+M+'<small> / '+N+'회</small></b></div><div><em>푼 문제</em><b>'+solved+'<small>개</small></b></div><div><em>연속 학습</em><b>'+stk+'<small>일</small></b></div></div><div class="lrr"><em>누적 이용 시간</em><b>'+(tot?fmtDur(tot):'-')+'</b><span class="lrd">문제 풀이 '+fmtDur(TS.q)+' · 오답 복습 '+fmtDur(TS.w)+' · 그 외 '+fmtDur(TS.h)+'</span></div><div class="lrr"><em>오늘 · '+fmtMD(today,1)+'</em><b>'+(tt?fmtDur(tt):'-')+'</b><span class="lrd">문제 풀이 '+fmtDur(TS.tq)+' · 오답 복습 '+fmtDur(TS.tw)+' · 그 외 '+fmtDur(TS.th)+'</span></div>'));
  }
  if(D.VX.length){
   app.appendChild(el('h2',null,'어휘 확장 (선택)'));
