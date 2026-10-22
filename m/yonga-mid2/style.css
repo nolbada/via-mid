@@ -349,3 +349,4 @@ body[data-page=index]{--onpri:#fff}
 .lrt{margin-top:8px;padding-top:7px;border-top:1px dashed var(--line);font-size:13px;color:var(--sub)}
 .lrt span{display:block;font-size:12px;margin-top:2px}
 .lrt b{color:var(--navy,var(--ink));font-size:15px}
+.lrd{display:block;font-size:12px;color:var(--sub);margin-top:2px}
