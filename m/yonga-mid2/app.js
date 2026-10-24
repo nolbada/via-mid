@@ -527,7 +527,7 @@ function pageExam(app){
  function head(){return '<h1>'+CFG.school+' TEST</h1><p class="lede">선생님 확인용 · 유형 풀코스 문제에서 섞어 출제</p>'}
  function chip(on,act,attr,txt){return '<button type="button" class="ch2'+(on?' pk':'')+'" data-act="'+act+'" '+attr+'>'+txt+'</button>'}
  function setup(){
-  var h=head()+'<div class="exs"><div class="sh">범위 (회차)</div><div class="chips">';
+  var h='<a href="https://nolbada.github.io/via-high/h/exit/" style="display:inline-block;margin:2px 0 6px;padding:9px 16px;border:1.5px solid var(--pri);border-radius:999px;background:var(--card);color:var(--pri);font-size:15px;font-weight:800;text-decoration:none">← TEST 링크 모음</a>'+head()+'<div class="exs"><div class="sh">범위 (회차)</div><div class="chips">';
   var allR=built.every(function(r){return S.r.indexOf(r)>=0});
   h+=chip(allR,'rall','','전체');
   built.forEach(function(r){h+=chip(S.r.indexOf(r)>=0,'r','data-v="'+r+'"',unitLabel(r)+' '+r+'회')});
@@ -591,7 +591,7 @@ function pageExam(app){
    wrong.forEach(function(i){var c=EX.q[i],q=Q[c.id];
     h+='<div class="wq"><div class="wh"><span class="tn">'+(i+1)+'</span><span class="tg">'+TN[c.t]+'</span><span class="tg">'+c.r+'회</span></div><div class="wa">정답 '+ansText(q)+'</div><a class="wl" href="'+ansHref(c.id)+'">해설 보기</a></div>'});
   }else h+='<p class="lede" style="text-align:center">전부 맞았어요.</p>';
-  h+='<button type="button" class="go" data-act="again">새 시험</button><div class="foot">비타민 영어클리닉 · '+CFG.school+'</div>';
+  h+='<button type="button" class="go" data-act="again">새 시험</button><a href="https://nolbada.github.io/via-high/h/exit/" style="display:block;box-sizing:border-box;width:100%;margin:12px 0 0;padding:14px;border:1.5px solid var(--pri);border-radius:12px;background:var(--card);color:var(--pri);font-size:16px;font-weight:800;text-align:center;text-decoration:none">메인으로 (TEST 링크 모음)</a><div class="foot">비타민 영어클리닉 · '+CFG.school+'</div>';
   app.innerHTML=h;window.scrollTo(0,0);
  }
  function tog(arr,v){var i=arr.indexOf(v);if(i>=0)arr.splice(i,1);else arr.push(v)}
