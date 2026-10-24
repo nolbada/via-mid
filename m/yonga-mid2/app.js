@@ -215,34 +215,42 @@ function pageIndex(app){
  var g=el('div','grid');
  /* one 회차 at a time (calendar-like): opens on the first unfinished one; arrows go back to finished ones, forward stops at the unfinished one */
  var curR=PLAN;for(var q2=1;q2<=PLAN;q2++){if(q2>CFG.rounds||!doneR(q2)){curR=q2;break}}
- var viewR=curR;try{var sv=SH?0:+ST.getItem('mid7:view');if(sv>=1&&sv<=curR)viewR=sv}catch(e){}
+ var viewR=0;
  var QS={};
  function drawRound(){
   g.innerHTML='';
-  var r2=viewR;
-  var built=r2<=CFG.rounds,card=el('div','rc'+(built&&doneR(r2)?' all':''));
-  card.appendChild(el('div','rh rhn','<button type="button" class="ar" data-d="-1" aria-label="이전 회차"'+(r2<=1?' disabled':'')+'>&lsaquo;</button><div class="rht"><h3>유형 풀코스 '+r2+'회'+(built&&doneR(r2)?'<span class="tg t">완료</span>':'')+'</h3><small class="rng">'+(built?unitLabel(r2):(r2<=20?'8과':(r2===21?'7과 최종점검':'8과 최종점검')))+'</small></div><button type="button" class="ar" data-d="1" aria-label="다음 회차"'+(r2>=(SH?CFG.rounds:curR)?' disabled':'')+'>&rsaquo;</button>'));
+  function bOf(r){var u=unitOf(r);return typeof u==='number'?u+'과':'최종'}
+  function nOf(r){var u=null;CFG.units.forEach(function(x){if(r>=x.from&&r<=x.to)u=x});return u&&typeof u.u==='number'?r-u.from+1:r-20}
+  function stOf(r){if(r>CFG.rounds)return 'lock';if(doneR(r))return 'done';if(!SH)for(var j=1;j<r;j++)if(!doneR(j))return 'lock';return 'now'}
+  g.appendChild(el('div','sgh','<b>유형 풀코스</b><span>'+PLAN+'회 중 '+M+'회</span>'));
+  var sg2=el('div','sgrid');
+  for(var rb=1;rb<=PLAN;rb++)sg2.appendChild(el('button','stb '+stOf(rb)+(rb===viewR?' sel':''),'<span class="sbd">'+bOf(rb)+'</span><span class="sno">'+nOf(rb)+'</span>')).setAttribute('data-stage',rb);
+  [].forEach.call(sg2.querySelectorAll('.stb'),function(b){b.type='button';b.onclick=function(){var x=+b.getAttribute('data-stage');viewR=(viewR===x)?0:x;drawRound()}});
+  g.appendChild(sg2);
+  if(!viewR)return;
+  var r2=viewR,stt=stOf(r2),need=0;
+  if(stt==='lock')for(var j2=1;j2<r2;j2++)if(!doneR(j2)){need=j2;break}
+  var built=r2<=CFG.rounds,card=el('div','rc');
+  if(stt==='lock')card.appendChild(el('div','slk',need?bOf(need)+' '+nOf(need)+'회 먼저 끝내요':'준비 중이에요'));
   var k2=0;
-      if(!built){card.appendChild(el('div','empty','준비 중'))}
-  CFG.types.forEach(function(t){var n=((D.R[r2]||{})[t.k]||[]).length;if(!n)return;k2++;
+  CFG.types.forEach(function(t){if(stt==='lock')return;var n=((D.R[r2]||{})[t.k]||[]).length;if(!n)return;k2++;
    var dn=doneT(r2,t.k),qk=r2+':'+t.k,chk=QS[qk]!==undefined?QS[qk]:!dn;
    card.appendChild(el('div','arow'+(dn?' dn':''),(dn?'<span class="ck"><i class="okb">\u2713</i></span>':'<label class="ck"><input type="checkbox" data-q="'+qk+'"'+(chk?' checked':'')+'></label>')+'<a class="at" href="test.html?r='+r2+'&t='+t.k+'"><b>'+k2+'. '+t.n+'</b><span class="cn">'+n+'문제</span><i class="vr o">'+(sg('imp:'+r2+':'+t.k)==='1'?'타기기':'1회성')+'</i></a>'));
   });
   var qOpen=0,qSum=0;
   CFG.types.forEach(function(t){var n=((D.R[r2]||{})[t.k]||[]).length;if(!n)return;qSum+=n;if(!doneT(r2,t.k))qOpen++});
-  if(built&&qOpen){
+  if(built&&qOpen&&stt!=='lock'){
    card.appendChild(el('div','qsel','<button type="button" data-qall="1">전체 선택</button><button type="button" data-qall="0">전체 해제</button>'));
    card.appendChild(el('button','qgo','체크한 유형 이어서 풀기 (<span id="qn">0</span>)')).setAttribute('type','button');
   }
-  if(built&&qSum)card.appendChild(el('div','qtot','<span>이 회 합계</span><b>약 '+qSum+'문제</b>'));
+  if(built&&qSum&&stt!=='lock')card.appendChild(el('div','qtot','<span>이 회 합계</span><b>약 '+qSum+'문제</b>'));
   function qCount(){var n=0;[].forEach.call(card.querySelectorAll('input[data-q]'),function(c){if(c.checked)n++});var s=card.querySelector('#qn');if(s)s.textContent=n;var b=card.querySelector('.qgo');if(b)b.disabled=!n}
   [].forEach.call(card.querySelectorAll('input[data-q]'),function(c){c.onchange=function(){QS[c.getAttribute('data-q')]=c.checked;qCount()}});
   [].forEach.call(card.querySelectorAll('[data-qall]'),function(b){b.onclick=function(){var on=b.getAttribute('data-qall')==='1';[].forEach.call(card.querySelectorAll('input[data-q]'),function(c){c.checked=on;QS[c.getAttribute('data-q')]=on});qCount()}});
   var qg=card.querySelector('.qgo');
   if(qg)qg.onclick=function(){var items=[];CFG.types.forEach(function(t){var cb=card.querySelector('input[data-q="'+r2+':'+t.k+'"]');if(cb&&cb.checked)items.push({u:'test.html?r='+r2+'&t='+t.k,k:r2+':'+t.k,n:t.n,r:r2})});if(!items.length)return;try{ST.setItem('midq:q',JSON.stringify({l:items,t:Date.now()}))}catch(e){}location.href=items[0].u};
   qCount();
-  [].forEach.call(card.querySelectorAll('.ar'),function(bt){bt.onclick=function(){if(bt.disabled)return;viewR=Math.max(1,Math.min(SH?CFG.rounds:curR,viewR+(+bt.dataset.d)));try{if(!SH)ST.setItem('mid7:view',viewR)}catch(e){}drawRound()}});
-  if(built&&!SH&&!doneR(r2)){
+  if(built&&!SH&&!doneR(r2)&&stt!=='lock'){
    var ob=el('div','ot','<button type="button" class="otb">타기기에서 했어요</button>');
    ob.querySelector('.otb').onclick=function(){
     ob.innerHTML='<input type="password" inputmode="numeric" maxlength="4" class="opw" placeholder="선생님 번호" autocomplete="off"><button type="button" class="oty">확인</button><button type="button" class="otn">취소</button><span class="oer"></span>';
