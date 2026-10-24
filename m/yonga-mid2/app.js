@@ -220,7 +220,7 @@ function pageIndex(app){
  function drawRound(){
   g.innerHTML='';
   function bOf(r){var u=unitOf(r);return typeof u==='number'?u+'과':'최종'}
-  function nOf(r){var u=null;CFG.units.forEach(function(x){if(r>=x.from&&r<=x.to)u=x});return u&&typeof u.u==='number'?r-u.from+1:r-20}
+  function nOf(r){return r}
   function stOf(r){if(r>CFG.rounds)return 'lock';if(doneR(r))return 'done';if(!SH)for(var j=1;j<r;j++)if(!doneR(j))return 'lock';return 'now'}
   g.appendChild(el('div','sgh','<b>유형 풀코스</b><span>'+PLAN+'회 중 '+M+'회</span>'));
   var sg2=el('div','sgrid');
@@ -231,8 +231,8 @@ function pageIndex(app){
   var r2=viewR,stt=stOf(r2),need=0;
   if(stt==='lock')for(var j2=1;j2<r2;j2++)if(!doneR(j2)){need=j2;break}
   var built=r2<=CFG.rounds,card=el('div','rc');
-  card.appendChild(el('h3','rt',bOf(r2)+' '+nOf(r2)+'회'));
-  if(stt==='lock')card.appendChild(el('div','slk',need?bOf(need)+' '+nOf(need)+'회 먼저 끝내요':'준비 중이에요'));
+  card.appendChild(el('h3','rt',r2+'회 ('+bOf(r2)+')'));
+  if(stt==='lock')card.appendChild(el('div','slk',need?need+'회 먼저 끝내요':'준비 중이에요'));
   var k2=0;
   CFG.types.forEach(function(t){if(stt==='lock')return;var n=((D.R[r2]||{})[t.k]||[]).length;if(!n)return;k2++;
    var dn=doneT(r2,t.k),qk=r2+':'+t.k,chk=QS[qk]!==undefined?QS[qk]:!dn;
