@@ -224,13 +224,14 @@ function pageIndex(app){
   function stOf(r){if(r>CFG.rounds)return 'lock';if(doneR(r))return 'done';if(!SH)for(var j=1;j<r;j++)if(!doneR(j))return 'lock';return 'now'}
   g.appendChild(el('div','sgh','<b>유형 풀코스</b><span>'+PLAN+'회 중 '+M+'회</span>'));
   var sg2=el('div','sgrid');
-  for(var rb=1;rb<=PLAN;rb++)sg2.appendChild(el('button','stb '+stOf(rb)+(rb===viewR?' sel':''),'<span class="sbd">'+bOf(rb)+'</span><span class="sno">'+nOf(rb)+'</span>')).setAttribute('data-stage',rb);
+  for(var rb=1;rb<=PLAN;rb++)sg2.appendChild(el('button','stb '+stOf(rb)+(rb===viewR?' sel':''),'<span class="sbd">'+bOf(rb)+'</span><span class="sno">'+nOf(rb)+'회</span>')).setAttribute('data-stage',rb);
   [].forEach.call(sg2.querySelectorAll('.stb'),function(b){b.type='button';b.onclick=function(){var x=+b.getAttribute('data-stage');viewR=(viewR===x)?0:x;drawRound()}});
   g.appendChild(sg2);
   if(!viewR)return;
   var r2=viewR,stt=stOf(r2),need=0;
   if(stt==='lock')for(var j2=1;j2<r2;j2++)if(!doneR(j2)){need=j2;break}
   var built=r2<=CFG.rounds,card=el('div','rc');
+  card.appendChild(el('h3','rt',bOf(r2)+' '+nOf(r2)+'회'));
   if(stt==='lock')card.appendChild(el('div','slk',need?bOf(need)+' '+nOf(need)+'회 먼저 끝내요':'준비 중이에요'));
   var k2=0;
   CFG.types.forEach(function(t){if(stt==='lock')return;var n=((D.R[r2]||{})[t.k]||[]).length;if(!n)return;k2++;
