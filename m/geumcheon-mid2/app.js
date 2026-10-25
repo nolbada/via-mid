@@ -546,7 +546,11 @@ function pageExam(app){
   var h='<a href="https://nolbada.github.io/via-high/h/exit/" style="display:inline-block;margin:2px 0 6px;padding:9px 16px;border:1.5px solid var(--pri);border-radius:999px;background:var(--card);color:var(--pri);font-size:15px;font-weight:800;text-decoration:none">← TEST 링크 모음</a>'+head()+'<div class="exs"><div class="sh">범위 (회차)</div><div class="chips">';
   var allR=built.every(function(r){return S.r.indexOf(r)>=0});
   h+=chip(allR,'rall','','전체');
-  built.forEach(function(r){h+=chip(S.r.indexOf(r)>=0,'r','data-v="'+r+'"',unitLabel(r)+' '+r+'회')});
+  if(!document.getElementById('rgcss')){var rs=document.createElement('style');rs.id='rgcss';rs.textContent='.rgh{margin:14px 0 6px}.rgb{border:0;background:transparent;color:var(--sub);font:inherit;font-weight:800;font-size:14px;padding:2px 2px}.rgb.pk{color:var(--pri)}.rgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.rgrid .ch2{width:100%;padding:10px 0;text-align:center;border-radius:12px}';document.head.appendChild(rs)}
+  var gs=[];built.forEach(function(r){var lb=unitLabel(r);if(/최종점검/.test(lb))lb='최종점검';var g=gs[gs.length-1];if(!g||g.l!==lb){g={l:lb,r:[]};gs.push(g)}g.r.push(r)});
+  h+='</div>';
+  gs.forEach(function(g){var on=g.r.every(function(x){return S.r.indexOf(x)>=0});h+='<div class="rgh"><button type="button" class="rgb'+(on?' pk':'')+'" data-act="rg" data-v="'+g.r.join(',')+'">'+g.l+'</button></div><div class="rgrid">';g.r.forEach(function(r){h+=chip(S.r.indexOf(r)>=0,'r','data-v="'+r+'"',r+'회')});h+='</div>'});
+  h+='<div>';
   h+='</div><div class="sh">유형</div><div class="chips">';
   var allT=TY.every(function(t){return S.t.indexOf(t.k)>=0});
   h+=chip(allT,'tall','','전체');
@@ -618,6 +622,7 @@ function pageExam(app){
    if(!a)return;
    var v=t.getAttribute('data-v');
    if(a==='r'){tog(S.r,+v);S.r.sort(function(x,y){return x-y})}
+   else if(a==='rg'){var ids=v.split(',').map(Number),allOn=ids.every(function(x){return S.r.indexOf(x)>=0});ids.forEach(function(x){var i=S.r.indexOf(x);if(allOn){if(i>=0)S.r.splice(i,1)}else if(i<0)S.r.push(x)});S.r.sort(function(x,y){return x-y})}
    else if(a==='rall'){S.r=built.every(function(r){return S.r.indexOf(r)>=0})?[]:built.slice()}
    else if(a==='t'){tog(S.t,v)}
    else if(a==='tall'){S.t=TY.every(function(x){return S.t.indexOf(x.k)>=0})?[]:TY.map(function(x){return x.k})}
