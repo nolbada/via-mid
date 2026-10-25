@@ -145,7 +145,7 @@ function pageIndex(app){
  var n0=app.children.length;
  /* 1. badge card */
  var bc=el('details','bc');
- var sm=el('summary',null,'<div class="bdg"><b>'+CFG.school+'</b><span>기말 '+fmtMD(exS,1)+'</span><strong>'+dtxt+'</strong></div><div class="bq"><div class="bqt">'+CFG.quote+'</div></div><span class="cv">'+svgChev()+'</span>');
+ var sm=el('summary',null,'<div class="bdg"><b>'+CFG.school+'</b><span>기말 '+fmtMD(exS,1)+'</span><strong>'+dtxt+'</strong></div><div class="bq"><div class="bqt">'+CFG.quote+'<em class="bqe">비타민영어클리닉 학원</em></div></div><span class="cv">'+svgChev()+'</span>');
  bc.appendChild(sm);
  var sl=el('div','sl');
  var slides=[['기말고사',fmtMD(exS,1)+' ~ '+fmtMD(exE,1)],['유형 풀코스',N+'회 · '+CFG.types.length+'개 유형'],['주간 목표',CFG.goal+'회']];
@@ -277,7 +277,7 @@ function pageIndex(app){
   function lsub(p){return '<span class="lrd">문제 풀이 '+fmtDur(TS[p+'q'])+' · 오답 복습 '+fmtDur(TS[p+'w'])+' · 그 외 '+fmtDur(TS[p+'h'])+'</span>'}
   app.appendChild(el('div','lrc','<div class="lrh"><b>나의 학습 기록</b></div><div class="lrs"><div><em>누적 채점 문항</em><b>'+qg+'<small>문제</small></b></div><div><em>누적 유형 풀코스</em><b>'+solved+'<small>문제</small></b></div></div><div class="lrr"><em>누적 이용 시간</em><b>'+(tot?fmtDur(tot):'-')+'</b>'+lsub('')+'</div><div class="lrr"><em>오늘 · '+fmtMD(today,1)+'</em>'+trio(['이용 시간',tt?fmtDur(tt):'-','완료 회차',M+' / '+N+'회','채점 문항',qd+'문제'])+lsub('t')+'</div>'));
  }
- app.appendChild(foot());
+ app.appendChild(el('div','note','내 진도는 내가 정해요. 활동을 누르면 바로 열리고, 풀던 곳부터 이어서 할 수 있어요. 기록은 이 폰에만 저장돼요.'));app.appendChild(foot());
  /* fixed tabs */
  var tabs=el('nav','tabs');
  var SV0='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
