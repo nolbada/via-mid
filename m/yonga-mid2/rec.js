@@ -114,7 +114,7 @@
   }
   /* 이름 입력 카드 (첫 화면에서만) */
   function mountCard(){
-    if(!new RegExp('/'+SCH+'/(index\\.html)?$').test(P))return;
+    if(!new RegExp('/'+SCH+'/(index\\.html|won\\.html|ans\\.html)?$').test(P))return;
     var host=D.querySelector('.wrap')||D.body;if(!host)return;
     var name=g(NK),box=D.createElement('div');
     if(!name)box.style.cssText='margin:12px 0;padding:14px;border:2px solid #e0a800;border-radius:12px;background:#fff4c2;color:#3a2e00;font-size:15px;display:flex;gap:8px;align-items:center;flex-wrap:wrap';

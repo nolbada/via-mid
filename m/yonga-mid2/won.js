@@ -9,47 +9,28 @@ function tabs(){
  var b=el('a',onAns?'on':null,'답안지');b.href='ans.html';
  var c=el('a',null,'유형 풀코스');c.href='index.html';
  t.appendChild(a);t.appendChild(b);t.appendChild(c);document.body.appendChild(t)}
+function lrow(href,t,sm){return href?'<a class="row" href="'+href+'"><span>'+t+(sm?'<small>'+sm+'</small>':'')+'</span><span class="go">열기</span></a>':'<div class="row soon"><span>'+t+'<small>준비 중</small></span></div>'}
+function acc(title,open,inner){return '<details class="acc"'+(open?' open':'')+'><summary>'+title+'</summary><div class="in">'+inner+'</div></details>'}
 function foot(){return el('div','foot','비타민 영어클리닉 · 용아중2')}
 function back(href,label){var d=el('div','top');var a=el('a','pill','‹ '+(label||'목록'));a.href=href||'won.html';d.appendChild(a);return d}
 function secRange(s){return s.sents[0].n+'~'+s.sents[s.sents.length-1].n+'번'}
 
 /* ---------- 목록 ---------- */
 function pageWon(){
- app.appendChild(el('h1',null,'용아중2 원문'));
- var rc=el('div','rc');
- rc.appendChild(el('div','rh','<h3>교과서 7과</h3><small class="rng">동아(윤정미) · 본문 4개</small>'));
- function row(name,sub,href,ext){
-  var r=el('div','arow','<b>'+name+(sub?'<span class="cn">'+sub+'</span>':'')+'</b>');
-  var a=el('a','cell','열기');a.href=href;r.appendChild(a);rc.appendChild(r)}
- row('좌본문 우해석','','jwa.html');
- row('문법 설명','','gram.html');
- row('문장 성분 연습 기본','핵심 문장 26개','https://nolbada.github.io/via/mid/dongah-yun/l7/basic/');
- row('문장 성분 연습 심화','핵심 문장 26개','https://nolbada.github.io/via/mid/dongah-yun/l7/adv/');
- app.appendChild(rc);
- var r8=el('div','rc');r8.style.marginTop='10px';
- r8.appendChild(el('div','rh','<h3>교과서 8과</h3><small class="rng">동아(윤정미) · 본문 4개</small>'));
- [['좌본문 우해석','jwa8.html'],['문법 설명','gram8.html']].forEach(function(x){
-  var r=el('div','arow','<b>'+x[0]+'</b>');var a=el('a','cell','열기');a.href=x[1];r.appendChild(a);r8.appendChild(r)});
- app.appendChild(r8);
+ var h='';
+ h+=acc('교과서 7과',true,lrow('jwa.html','좌본문 우해석')+lrow('gram.html','문법 설명')+lrow('https://nolbada.github.io/via/mid/dongah-yun/l7/basic/','문장 성분 연습','기본 · 핵심 문장 26개')+lrow('https://nolbada.github.io/via/mid/dongah-yun/l7/adv/','문장 성분 연습','심화 · 핵심 문장 26개'));
+ h+=acc('교과서 8과',false,lrow('jwa8.html','좌본문 우해석')+lrow('gram8.html','문법 설명'));
+ app.innerHTML=h;
  app.appendChild(foot());tabs()}
 
 /* ---------- 답안지 목록 ---------- */
 function pageAns(){
- app.appendChild(el('h1',null,'용아중2 답안지'));
- var rc=el('div','rc');
- rc.appendChild(el('div','rh','<h3>교과서 7과</h3><small class="rng">동아(윤정미)</small>'));
- [['빈칸 우리말 정답','L7/hangeul.html'],['어법 선택형','L7/eobeop.html'],['동사형','L7/dongsa.html'],['Check 정답','L7/check.html'],['빈칸 영어 정답','L7/yeongeo.html'],['예상문제 PRE-STEP 정답·해설','L7/pre.html'],['예상문제 1회 정답·해설','L7/yesang1.html'],['예상문제 2회 정답·해설','L7/yesang2.html']].forEach(function(x){
-  var r=el('div','arow','<b>'+x[0]+'</b>');
-  var a;if(x[1]){a=el('a','cell','열기');a.href=x[1]}else{a=el('span','cell off','준비 중')}
-  r.appendChild(a);rc.appendChild(r)});
- app.appendChild(rc);
- var r8=el('div','rc');r8.style.marginTop='10px';
- r8.appendChild(el('div','rh','<h3>교과서 8과</h3><small class="rng">동아(윤정미)</small>'));
- [['빈칸 우리말 정답','L8/hangeul.html'],['어법 선택형','L8/eobeop.html'],['동사형','L8/dongsa.html'],['Check 정답','L8/check.html'],['빈칸 영어 정답','L8/yeongeo.html'],['예상문제 PRE-STEP 정답·해설','L8/pre.html'],['예상문제 1회 정답·해설','L8/yesang1.html'],['예상문제 2회 정답·해설','L8/yesang2.html']].forEach(function(x){
-  var r=el('div','arow','<b>'+x[0]+'</b>');
-  var a;if(x[1]){a=el('a','cell','열기');a.href=x[1]}else{a=el('span','cell off','준비 중')}
-  r.appendChild(a);r8.appendChild(r)});
- app.appendChild(r8);
+ var h='';
+ [7,8].forEach(function(u,i){
+  var inn='';
+  [['hangeul','빈칸 우리말 정답'],['eobeop','어법 선택형'],['dongsa','동사형'],['check','Check 정답'],['yeongeo','빈칸 영어 정답'],['pre','예상문제 PRE-STEP 정답·해설'],['yesang1','예상문제 1회 정답·해설'],['yesang2','예상문제 2회 정답·해설']].forEach(function(x){inn+=lrow('L'+u+'/'+x[0]+'.html',x[1],'정답·해설')});
+  h+=acc('교과서 '+u+'과',i===0,inn)});
+ app.innerHTML=h;
  app.appendChild(foot());tabs()}
 
 /* ---------- 좌본문 우해석 ---------- */

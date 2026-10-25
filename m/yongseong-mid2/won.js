@@ -9,32 +9,28 @@ function tabs(){
  var b=el('a',onAns?'on':null,'답안지');b.href='ans.html';
  var c=el('a',null,'유형 풀코스');c.href='index.html';
  t.appendChild(a);t.appendChild(b);t.appendChild(c);document.body.appendChild(t)}
+function lrow(href,t,sm){return href?'<a class="row" href="'+href+'"><span>'+t+(sm?'<small>'+sm+'</small>':'')+'</span><span class="go">열기</span></a>':'<div class="row soon"><span>'+t+'<small>준비 중</small></span></div>'}
+function acc(title,open,inner){return '<details class="acc"'+(open?' open':'')+'><summary>'+title+'</summary><div class="in">'+inner+'</div></details>'}
 function foot(){return el('div','foot','비타민 영어클리닉 · '+APP.school)}
 function back(href,label){var d=el('div','top');var a=el('a','pill','‹ '+(label||'목록'));a.href=href||'won.html';d.appendChild(a);return d}
 function secRange(s){return s.sents[0].n+'~'+s.sents[s.sents.length-1].n+'번'}
 
 /* ---------- 목록 ---------- */
 function pageWon(){
- app.appendChild(el('h1',null,APP.school+' 원문'));
+ var h='';
  APP.lessons.forEach(function(L,i){
-  var rc=el('div','rc');if(i)rc.style.marginTop='10px';
-  rc.appendChild(el('div','rh','<h3>교과서 '+L.u+'과</h3><small class="rng">'+esc(APP.pub)+' · 본문 '+L.n+'개</small>'));
-  [['좌본문 우해석','jwa.html?u='+L.u],['문법 설명','gram.html?u='+L.u]].forEach(function(x){
-   var r=el('div','arow','<b>'+x[0]+'</b>');var a=el('a','cell','열기');a.href=x[1];r.appendChild(a);rc.appendChild(r)});
-  app.appendChild(rc)});
+  h+=acc('교과서 '+L.u+'과',i===0,lrow('jwa.html?u='+L.u,'좌본문 우해석')+lrow('gram.html?u='+L.u,'문법 설명'))});
+ app.innerHTML=h;
  app.appendChild(foot());tabs()}
 
 /* ---------- 답안지 목록 ---------- */
 function pageAns(){
- app.appendChild(el('h1',null,APP.school+' 답안지'));
+ var h='';
  APP.lessons.forEach(function(L,i){
-  var rc=el('div','rc');if(i)rc.style.marginTop='10px';
-  rc.appendChild(el('div','rh','<h3>교과서 '+L.u+'과</h3><small class="rng">'+esc(APP.pub)+'</small>'));
-  [['hangeul','빈칸 우리말 정답'],['eobeop','어법 선택형'],['dongsa','동사형'],['check','Check 정답'],['yeongeo','빈칸 영어 정답'],['pre','예상문제 PRE-STEP 정답·해설'],['yesang1','예상문제 1회 정답·해설'],['yesang2','예상문제 2회 정답·해설']].forEach(function(x){
-   var r=el('div','arow','<b>'+x[1]+'</b>'),has=(L.ans||[]).indexOf(x[0])>=0,a;
-   if(has){a=el('a','cell','열기');a.href='L'+L.u+'/'+x[0]+'.html'}else a=el('span','cell off','준비 중');
-   r.appendChild(a);rc.appendChild(r)});
-  app.appendChild(rc)});
+  var inn='';
+  [['hangeul','빈칸 우리말 정답'],['eobeop','어법 선택형'],['dongsa','동사형'],['check','Check 정답'],['yeongeo','빈칸 영어 정답'],['pre','예상문제 PRE-STEP 정답·해설'],['yesang1','예상문제 1회 정답·해설'],['yesang2','예상문제 2회 정답·해설']].forEach(function(x){inn+=lrow((L.ans||[]).indexOf(x[0])>=0?'L'+L.u+'/'+x[0]+'.html':'',x[1],'정답·해설')});
+  h+=acc('교과서 '+L.u+'과',i===0,inn)});
+ app.innerHTML=h;
  app.appendChild(foot());tabs()}
 
 /* ---------- 좌본문 우해석 ---------- */
