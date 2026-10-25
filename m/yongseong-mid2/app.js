@@ -45,6 +45,8 @@ function recWrong(id){var o=wcGet();o[id]=(o[id]||0)+1;js('wc',o);listAdd('w',id
 function recRight(id){}
 function isStar(id){return listGet('ws').indexOf(id)>=0}
 function listDel(k,id){var a=listGet(k),i=a.indexOf(id);if(i>=0){a.splice(i,1);js(k,a)}}
+function seenGet(){return listGet('seen')}
+function markSeen(id){listAdd('seen',id)}
 
 /* cards */
 function isLab(q){return q.c&&q.c.every(function(c){return /^[ⓐ-ⓔ]$/.test(c)})}
@@ -59,8 +61,9 @@ function buildCard(q,no,o){
  function bkHtml(p){return p.replace(/\[\[(\d+)\]\]/g,function(m,i){i=+i;var h='<span class="bk" data-b="'+i+'"><i>(</i>';q.b[i].forEach(function(op,j){if(j)h+='<i>/</i>';h+='<button type="button" data-b="'+i+'" data-o="'+j+'">'+op+'</button>'});return h+'<i>)</i></span>'})}
  var fb=el('div','fb');
  function finish(sel,ok,silent){
-  done=true;c.classList.add('done');
-  fb.innerHTML='<span class="res '+(ok?'o':'x')+'">'+(ok?'정답':'오답')+'</span><a href="'+(o.ansHref||ansHref(q.id))+'">해설</a>';
+  done=true;c.classList.add('done');markSeen(q.id);
+  fb.innerHTML='<span class="res '+(ok?'o':'x')+'">'+(ok?'정답':'오답')+'</span>';
+  var xe=el('div','xin');explain(xe,q);fb.appendChild(xe);
   if(o.onDone)o.onDone(q,sel,ok,!!silent);
  }
  if(q.k==='bk'){
@@ -109,6 +112,38 @@ function buildCard(q,no,o){
  return c;
 }
 
+/* this question's answer + explanation (used inline after answering and on the answer page) */
+function explain(c,q){
+ c.appendChild(el('div','answ','정답: '+ansText(q)));
+ if(q.pk)c.appendChild(el('div','ko',q.pk));
+ if(q.gk)c.appendChild(el('div','ko',q.gk));
+ if(q.r){renderRich(c,q)}else{
+  if(q.e&&q.e.length){c.appendChild(el('span','lbl','해설'));q.e.forEach(function(l){c.appendChild(el('div','ln',l))})}
+ }
+ if(!q.r&&q.x&&q.x.length){c.appendChild(el('div','exb','<span class="et">쉬운 예</span>'+q.x[0]+(q.x[1]?'<span class="k">'+q.x[1]+'</span>':'')))}
+ if(!q.r&&q.x2)q.x2.forEach(function(pr){c.appendChild(el('div','exb','<span class="et">쉬운 예</span>'+pr[0]+(pr[1]?'<span class="k">'+pr[1]+'</span>':'')))});
+}
+/* one question on screen at a time. items:[{id,tag}], o.get(id)->[sel,ok]|null, o.save(id,sel,ok), o.fin()->summary html, o.deco(card,id) */
+function seq(app,items,o){
+ var n=items.length,i=0;
+ while(i<n&&o.get(items[i].id))i++;
+ var stage=el('div','stage');app.appendChild(stage);
+ function show(){
+  stage.innerHTML='';
+  if(i>=n){var sm=el('div','sum');sm.innerHTML=o.fin();stage.appendChild(sm);return}
+  var it=items[i],q=Q[it.id],k=i;
+  stage.appendChild(el('div','sq','<span>'+(i+1)+' / '+n+'</span><div class="sqb"><i style="width:'+Math.round(i/n*100)+'%"></i></div>'));
+  var c=buildCard(q,i+1,{tag:it.tag,onDone:function(q2,sel,ok){
+   o.save(it.id,sel,ok);
+   var nb=el('button','go seqnext',k+1>=n?'결과 보기':'다음 문제');nb.type='button';
+   nb.onclick=function(){i=k+1;show();window.scrollTo(0,0)};
+   stage.appendChild(nb);
+  }});
+  if(o.deco)o.deco(c,it.id);
+  stage.appendChild(c);
+ }
+ show();
+}
 function foot(){return el('div','foot','비타민 영어클리닉 · '+CFG.school)}
 function wrongCount(){return listGet('w').length}
 
@@ -332,21 +367,15 @@ function pageMix(app){
  var isAll=cur.m!=='t';
  app.appendChild(el('h1',null,'랜덤 문제 풀기'));
  app.appendChild(el('p','sub',(isAll?'':cur.types.map(function(k){return TN[k]}).join(' · ')+' · ')+cur.ids.length+'문항'));
- var cnt=0,sum=el('div','sum');sum.style.display='none';var cards=[];
  var nextHref='mix.html?next=1&m='+(isAll?'all':'t&t='+cur.types.join(','));
- cur.ids.forEach(function(id,i){
-  var q=Q[id],o=IDX[id];
-  var c=buildCard(q,i+1,{tag:o?(o.r+'회차 · '+TN[o.t]):'',onDone:function(q,sel,ok,silent){
-   cnt++;
-   if(!silent){cur.st[id]=[sel,ok?1:0];if(!ok)recWrong(id);js('mix:cur',cur)}
-   if(cnt===cur.ids.length){
-    var w=cur.ids.filter(function(x){return cur.st[x]&&!cur.st[x][1]}).length;
-    cur.fin=1;js('mix:cur',cur);
-    sum.innerHTML='<p>'+cur.ids.length+'문항 마침 · 틀린 문제 '+w+'개</p><div class="lk"><a class="pr" href="'+nextHref+'">다음 '+(isAll?20:10)+'문항</a><a href="mix.html?pick=1">방식 다시 고르기</a><a href="index.html">처음 화면</a></div>';sum.style.display='block'}
-  }});
-  app.appendChild(c);cards.push(c)});
- app.appendChild(sum);
- cur.ids.forEach(function(id,i){if(cur.st[id]!=null&&cards[i].apply)cards[i].apply(cur.st[id][0])});
+ seq(app,cur.ids.map(function(id){var o=IDX[id];return{id:id,tag:o?(o.r+'회차 · '+TN[o.t]):''}}),{
+  get:function(id){return cur.st[id]},
+  save:function(id,sel,ok){cur.st[id]=[sel,ok?1:0];if(!ok)recWrong(id);js('mix:cur',cur)},
+  fin:function(){
+   var w=cur.ids.filter(function(x){return cur.st[x]&&!cur.st[x][1]}).length;
+   cur.fin=1;js('mix:cur',cur);
+   return '<p>'+cur.ids.length+'문항 마침 · 틀린 문제 '+w+'개</p><div class="lk"><a class="pr" href="'+nextHref+'">다음 '+(isAll?20:10)+'문항</a><a href="mix.html?pick=1">방식 다시 고르기</a><a href="index.html">처음 화면</a></div>'}
+ });
  app.appendChild(foot());
 }
 function chooser(app){
@@ -379,26 +408,19 @@ function pageTest(app){
  app.appendChild(bar);
  app.appendChild(el('h1',null,r+'회차 · '+TN[t]));
  app.appendChild(el('p','sub',unitLabel(r)+' · '+ids.length+'문항'));
- var cnt=0,wr=0,sum=el('div','sum');sum.style.display='none';
- function check(){
-  if(cnt<ids.length)return;
-  var first0=!doneT(r,t);markDone(r,t);if(first0)ss('dur:'+r+':'+t,String(Math.min(1800,Math.max(5,Math.round((Date.now()-T0)/1000)))));
-  var w=ids.filter(function(id){return st[id]&&!st[id][1]}).length;
-  var nx=qNext(r,t)||nextLoc(r,t);
-  sum.innerHTML='<p>'+TN[t]+' 마침 · 틀린 문제 '+w+'개</p><div class="lk">'+(w?'<a href="answer.html?r='+r+'&t='+t+'">해설 보기</a>':'')+(SH?'<a href="index.html?proof=1">학습 인증</a>':'')+'<a class="pr" href="'+nx.h+'">'+nx.l+'</a></div>';
-  sum.style.display='block';
-  var pills=bar.querySelectorAll('.pill');for(var i=0;i<pills.length;i++){if(pills[i].textContent===TN[t]&&!pills[i].classList.contains('on')){}}
- }
- var cards=[];
- ids.forEach(function(id,i){
-  var q=Q[id];
-  var c=buildCard(q,i+1,{onDone:function(q,sel,ok,silent){
-    if(!silent){cnt++;st[id]=[sel,ok?1:0];js('st:'+r+':'+t,st);if(!ok)recWrong(id)}else{cnt++}
-    check()}});
-  app.appendChild(c);cards.push(c);
+ function allDone(){return ids.every(function(id){return st[id]})}
+ if(allDone()&&!doneT(r,t))markDone(r,t);
+ seq(app,ids.map(function(id){return{id:id}}),{
+  get:function(id){return st[id]},
+  save:function(id,sel,ok){
+   st[id]=[sel,ok?1:0];js('st:'+r+':'+t,st);if(!ok)recWrong(id);
+   if(allDone()){var first0=!doneT(r,t);markDone(r,t);if(first0)ss('dur:'+r+':'+t,String(Math.min(1800,Math.max(5,Math.round((Date.now()-T0)/1000)))))}
+  },
+  fin:function(){
+   var w=ids.filter(function(id){return st[id]&&!st[id][1]}).length;
+   var nx=qNext(r,t)||nextLoc(r,t);
+   return '<p>'+TN[t]+' 마침 · 틀린 문제 '+w+'개</p><div class="lk">'+(w?'<a href="answer.html?r='+r+'&t='+t+'">해설 보기</a>':'')+(SH?'<a href="index.html?proof=1">학습 인증</a>':'')+'<a class="pr" href="'+nx.h+'">'+nx.l+'</a></div>'}
  });
- app.appendChild(sum);
- ids.forEach(function(id,i){if(st[id]!=null&&cards[i].apply){cards[i].apply(st[id][0])}});
  app.appendChild(foot());
 }
 
@@ -417,23 +439,21 @@ function pageWrong(app){
   var m2=el('a','mode'+(only?' pr':'')+(stars.length?'':' off'),'<b>별표만 풀기</b><small>'+stars.length+'문항</small>');m2.href=stars.length?'wrong.html?s=1':'#';if(!stars.length)m2.onclick=function(e){e.preventDefault()};app.appendChild(m2);
  }
  if(!list.length){app.appendChild(el('div','empty',only?'별표가 없습니다.':'담긴 오답이 없습니다.'));app.appendChild(foot());return}
- var cnt=0,left=0,sum=el('div','sum');sum.style.display='none';
- list.forEach(function(id,i){
-  var q=Q[id],o=IDX[id];
-  var c=buildCard(q,i+1,{tag:(isStar(id)?'<b class="stm">별표</b> ':'')+o.r+'회차 · '+TN[o.t],onDone:function(q,sel,ok,silent){
-   cnt++;
-   if(!silent){if(!ok){recWrong(id);left++}}
-   if(cnt===list.length){sum.innerHTML='<p>다시 틀린 문제 '+left+'개</p><div class="lk"><a href="index.html">처음 화면</a></div>';sum.style.display='block'}
-  }});
-  if(isStar(id)){
-   c.classList.add('starred');
-   var cl=el('button','stclr','별표 지우기');cl.type='button';
-   cl.onclick=function(){listDel('ws',id);c.classList.remove('starred');var b=c.querySelector('.stm');if(b)b.remove();cl.remove()};
-   c.appendChild(cl);
-  }
-  app.appendChild(c);
+ var left=0,res={};
+ seq(app,list.map(function(id){var o=IDX[id];return{id:id,tag:(isStar(id)?'<b class="stm">별표</b> ':'')+o.r+'회차 · '+TN[o.t]}}),{
+  get:function(id){return res[id]},
+  save:function(id,sel,ok){res[id]=[sel,ok?1:0];if(!ok){recWrong(id);left++}},
+  deco:function(c,id){
+   if(isStar(id)){
+    c.classList.add('starred');
+    var cl=el('button','stclr','별표 지우기');cl.type='button';
+    cl.onclick=function(){listDel('ws',id);c.classList.remove('starred');var b=c.querySelector('.stm');if(b)b.remove();cl.remove()};
+    c.appendChild(cl);
+   }
+  },
+  fin:function(){return '<p>다시 틀린 문제 '+left+'개</p><div class="lk"><a href="index.html">처음 화면</a></div>'}
  });
- app.appendChild(sum);app.appendChild(foot());
+ app.appendChild(foot());
 }
 
 /* vocabx */
@@ -450,17 +470,17 @@ function pageVx(app){
  var set=null;D.VX.forEach(function(v){if(String(v.s)===s)set=v});
  if(!set){app.appendChild(el('div','empty','세트를 찾을 수 없습니다.'));return}
  app.appendChild(el('h1',null,'어휘 확장 · 세트 '+set.s));
- var st=jg('xst:'+set.s,{}),cnt=0,sum=el('div','sum');sum.style.display='none';var cards=[];
- set.ids.forEach(function(id,i){
-  var c=buildCard(Q[id],i+1,{onDone:function(q,sel,ok,silent){
-   cnt++;if(!silent){st[id]=[sel,ok?1:0];js('xst:'+set.s,st)}
-   if(cnt===set.ids.length){ss('xdone:'+set.s,'1');var w=set.ids.filter(function(x){return st[x]&&!st[x][1]}).length;
-    var nx=null;D.VX.forEach(function(v){if(v.s>set.s&&!nx)nx=v});
-    sum.innerHTML='<p>세트 '+set.s+' 마침 · 틀린 문제 '+w+'개</p><div class="lk">'+(w?'<a href="answer.html?x='+set.s+'">해설 보기</a>':'')+'<a class="pr" href="'+(nx?'vocabx.html?s='+nx.s:'vocabx.html')+'">'+(nx?'세트 '+nx.s:'세트 목록')+'</a></div>';sum.style.display='block'}
-  }});
-  app.appendChild(c);cards.push(c)});
- app.appendChild(sum);
- set.ids.forEach(function(id,i){if(st[id]!=null&&cards[i].apply)cards[i].apply(st[id][0])});
+ var st=jg('xst:'+set.s,{});
+ function allX(){return set.ids.every(function(id){return st[id]})}
+ seq(app,set.ids.map(function(id){return{id:id}}),{
+  get:function(id){return st[id]},
+  save:function(id,sel,ok){st[id]=[sel,ok?1:0];js('xst:'+set.s,st);if(allX())ss('xdone:'+set.s,'1')},
+  fin:function(){
+   ss('xdone:'+set.s,'1');
+   var w=set.ids.filter(function(x){return st[x]&&!st[x][1]}).length;
+   var nx=null;D.VX.forEach(function(v){if(v.s>set.s&&!nx)nx=v});
+   return '<p>세트 '+set.s+' 마침 · 틀린 문제 '+w+'개</p><div class="lk">'+(w?'<a href="answer.html?x='+set.s+'">해설 보기</a>':'')+'<a class="pr" href="'+(nx?'vocabx.html?s='+nx.s:'vocabx.html')+'">'+(nx?'세트 '+nx.s:'세트 목록')+'</a></div>'}
+ });
  app.appendChild(foot());
 }
 
@@ -494,12 +514,16 @@ function pageAnswer(app){
  if(!ids||!ids.length){app.appendChild(el('div','empty','해설을 찾을 수 없습니다.'));return}
  var top=el('div','top');var a1=el('a','pill','‹ 문제로');a1.href=back;top.appendChild(a1);var a2=el('a','pill','처음 화면');a2.href='index.html';top.appendChild(a2);app.appendChild(top);
  app.appendChild(el('h1',null,title));
+ var seen=seenGet(),opened=ids.filter(function(id){return seen.indexOf(id)>=0});
+ if(!opened.length){app.appendChild(el('div','empty','푼 문제의 해설만 열려요. 먼저 문제를 풀어 보세요.'));return}
+ if(opened.length<ids.length)app.appendChild(el('p','sub','푼 문제 '+opened.length+'개의 해설만 보여요.'));
  app.appendChild(el('h2',null,'빠른정답')).id='quick';
  var qk=el('div','quick');
- ids.forEach(function(id,i){var q=Q[id];var a=el('a',null,'<span class="qn">'+(i+1)+')</span> 정답: <span class="qa">'+ansText(q)+'</span>');a.href='#q'+(i+1);qk.appendChild(a)});
+ ids.forEach(function(id,i){if(seen.indexOf(id)<0)return;var q=Q[id];var a=el('a',null,'<span class="qn">'+(i+1)+')</span> 정답: <span class="qa">'+ansText(q)+'</span>');a.href='#q'+(i+1);qk.appendChild(a)});
  app.appendChild(qk);
  app.appendChild(el('h2',null,'해설'));
  ids.forEach(function(id,i){
+  if(seen.indexOf(id)<0)return;
   var q=Q[id],no=i+1,c=el('article','q');c.id='q'+no;
   var qh=el('div','qh','<span class="no">'+no+'</span>');
   var tq=el('a','toq','↑ 빠른정답');tq.href='#quick';qh.appendChild(tq);
@@ -508,14 +532,7 @@ function pageAnswer(app){
   if(q.g)c.appendChild(el('div','gv','<span>주어진 문장</span>'+q.g));
   if(q.p){var ph=q.p;if(q.k==='bk')ph=ph.replace(/\[\[(\d+)\]\]/g,function(m,i){return '<b>'+q.b[+i][q.n[+i]]+'</b>'});c.appendChild(el('div','ps',ph))}
   if(q.c){var ol=el('ol');q.c.forEach(function(t,j){var on=(q.k==='ms')?q.n.indexOf(j)>=0:j===q.n;ol.appendChild(el('li',on?'c':'',(isLab(q)?'':LAB[j]+' ')+t+(on?'  (정답)':'')))});c.appendChild(ol)}
-  c.appendChild(el('div','answ','정답: '+ansText(q)));
-  if(q.pk)c.appendChild(el('div','ko',q.pk));
-  if(q.gk)c.appendChild(el('div','ko',q.gk));
-  if(q.r){renderRich(c,q)}else{
-  if(q.e&&q.e.length){c.appendChild(el('span','lbl','해설'));q.e.forEach(function(l){c.appendChild(el('div','ln',l))})}
-  }
-  if(!q.r&&q.x&&q.x.length){c.appendChild(el('div','exb','<span class="et">쉬운 예</span>'+q.x[0]+(q.x[1]?'<span class="k">'+q.x[1]+'</span>':'')))}
-  if(!q.r&&q.x2)q.x2.forEach(function(pr){c.appendChild(el('div','exb','<span class="et">쉬운 예</span>'+pr[0]+(pr[1]?'<span class="k">'+pr[1]+'</span>':'')))});
+  explain(c,q);
   app.appendChild(c);
  });
  app.appendChild(foot());
@@ -621,7 +638,7 @@ function pageExam(app){
    else return;
    ls(K_SET,S);setup();return;
   }
-  if(a==='submit'){if(nAns()<EX.q.length&&!EX.confirm){EX.confirm=1;upd();return}EX.done=Date.now();EX.confirm=0;save();result();return}
+  if(a==='submit'){if(nAns()<EX.q.length&&!EX.confirm){EX.confirm=1;upd();return}EX.done=Date.now();EX.confirm=0;EX.q.forEach(function(c){markSeen(c.id)});save();result();return}
   var cardEl=t.closest('.tq');if(!cardEl)return;
   var i=+cardEl.id.slice(1),q=Q[EX.q[i].id];EX.confirm=0;
   if(q.k==='bk'){EX.a[i][+t.dataset.b]=+t.dataset.o}
@@ -646,6 +663,18 @@ function tmKey(b){return 'tm:'+ymd(new Date())+':'+devId()+':'+b}
  document.addEventListener('visibilitychange',function(){if(document.visibilityState!=='visible')flush();else{last=Date.now();act=Date.now()}});
  addEventListener('pagehide',flush)})();
 
-({index:pageIndex,test:pageTest,wrong:pageWrong,vocabx:pageVx,answer:pageAnswer,mix:pageMix,exam:pageExam})[pg](app);
+/* 등록된 이름이 없으면 문제 화면을 열지 않는다 (공폰 모드·선생님 TEST 제외) */
+var RK=(/\/via-mid\/m\/([a-z0-9-]+)\//.exec(location.pathname)||[])[1]||'';
+function regOK(){
+ if(!RK||SH||pg==='exam')return true;
+ try{return !!localStorage.getItem('recm_name'+(RK==='yonga-mid2'?'':'_'+RK))}catch(e){return true}
+}
+function lockPage(app){
+ app.appendChild(el('h1',null,CFG.school+' 풀코스'));
+ if(pg==='index'){app.appendChild(el('p','sub','이름을 입력하면 시작돼요.'))}
+ else{app.appendChild(el('div','empty','이름을 먼저 등록해야 문제를 풀 수 있어요.'));var a=el('a','mode pr','<b>처음 화면에서 이름 등록</b>');a.href='index.html';app.appendChild(a)}
+ app.appendChild(foot());
+}
+(regOK()?({index:pageIndex,test:pageTest,wrong:pageWrong,vocabx:pageVx,answer:pageAnswer,mix:pageMix,exam:pageExam})[pg]:lockPage)(app);
 if(location.hash){var h=document.getElementById(location.hash.slice(1));if(h)h.scrollIntoView()}
 })();
