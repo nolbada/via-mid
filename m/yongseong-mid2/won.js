@@ -31,7 +31,7 @@ function pageAns(){
   var rc=el('div','rc');if(i)rc.style.marginTop='10px';
   rc.appendChild(el('div','rh','<h3>교과서 '+L.u+'과</h3><small class="rng">'+esc(APP.pub)+'</small>'));
   [['hangeul','빈칸 우리말 정답'],['eobeop','어법 선택형'],['dongsa','동사형'],['check','Check 정답'],['yeongeo','빈칸 영어 정답'],['pre','예상문제 PRE-STEP 정답·해설'],['yesang1','예상문제 1회 정답·해설'],['yesang2','예상문제 2회 정답·해설']].forEach(function(x){
-   var r=el('div','arow','<b>'+x[1]+'<span class="cn">정답·해설</span></b>'),has=(L.ans||[]).indexOf(x[0])>=0,a;
+   var r=el('div','arow','<b>'+x[1]+'</b>'),has=(L.ans||[]).indexOf(x[0])>=0,a;
    if(has){a=el('a','cell','열기');a.href='L'+L.u+'/'+x[0]+'.html'}else a=el('span','cell off','준비 중');
    r.appendChild(a);rc.appendChild(r)});
   app.appendChild(rc)});
