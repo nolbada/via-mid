@@ -36,9 +36,16 @@
     return b;
   }
   function merge(loc,rem){try{return JSON.stringify(dm(JSON.parse(loc),JSON.parse(rem)))}catch(e){return rem}}
+  /* 서버가 "명단에 없는 이름"이라고 하면 이 기기의 이름 등록을 풀어 잠금 화면으로 돌린다 */
+  function deny(){if(!g(NK))return;d(NK);d(UK);d(MK);reloadOnce()}
   function post(body,keep){
     return fetch(URL_,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(body),keepalive:!!keep})
-      .then(function(r){return r.json()}).then(function(r){if(!r||!r.ok)throw new Error('rec');return r});
+      .then(function(r){return r.json()}).then(function(r){if(!r||!r.ok){var e=new Error('rec');e.code=r&&r.err;if(e.code==='noname')deny();throw e}return r});
+  }
+  /* 이름 등록 전 확인(기존 등록을 건드리지 않는다) */
+  function chk(id){
+    return fetch(URL_,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({act:'put',id:id,data:{}})})
+      .then(function(r){return r.json()}).then(function(r){if(!r)throw new Error('rec');return r});
   }
   function unwrap(v){return(v&&typeof v==='object'&&typeof v.s==='string')?v.s:null}
   var busy=false,again=false;
@@ -120,20 +127,27 @@
     if(!name)box.style.cssText='margin:12px 0;padding:14px;border:2px solid #e0a800;border-radius:12px;background:#fff4c2;color:#3a2e00;font-size:15px;display:flex;gap:8px;align-items:center;flex-wrap:wrap';
     else box.style.cssText='margin:6px 0;padding:5px 10px;border:0;border-radius:8px;background:transparent;color:var(--mute,#7a8683);font-size:12px;display:flex;gap:8px;align-items:center;justify-content:space-between';
     if(!name){
-      box.innerHTML='<b style="flex:1 1 100%">이름을 넣어야 기록이 저장돼요</b><input id="rec-n" type="text" autocomplete="off" placeholder="이름" style="flex:1;min-width:120px;font-size:16px;padding:9px 10px;border:1px solid var(--line,#dbe4e1);border-radius:8px;background:transparent;color:inherit"><button id="rec-b" type="button" style="font-size:15px;font-weight:700;padding:9px 16px;border:0;border-radius:8px;background:var(--pri,#1d4ed8);color:var(--onpri,#fff)">시작</button><div id="rec-m" style="flex:1 1 100%;font-size:13px;color:var(--sub,#5a6b67)"></div>';
+      box.innerHTML='<b style="flex:1 1 100%">이름을 등록해야 시작할 수 있어요</b><input id="rec-n" type="text" autocomplete="off" placeholder="이름" style="flex:1;min-width:120px;font-size:16px;padding:9px 10px;border:1px solid var(--line,#dbe4e1);border-radius:8px;background:transparent;color:inherit"><button id="rec-b" type="button" style="font-size:15px;font-weight:700;padding:9px 16px;border:0;border-radius:8px;background:var(--pri,#1d4ed8);color:var(--onpri,#fff)">시작</button><div id="rec-m" style="flex:1 1 100%;font-size:13px;color:var(--sub,#5a6b67)"></div>';
       host.insertBefore(box,host.firstChild);
       D.getElementById('rec-b').onclick=function(){
         var v=(D.getElementById('rec-n').value||'').replace(/\s+/g,'');
         if(!v){D.getElementById('rec-m').textContent='이름을 적어 주세요.';return}
-        var b=this;b.disabled=true;D.getElementById('rec-m').textContent='기록을 불러오는 중...';
-        var prevId=g(UK);
+        var b=this;b.disabled=true;D.getElementById('rec-m').textContent='확인하는 중...';
+        var prevId=g(UK),newId='RECM|'+SCH+'|'+v+'|'+NUM;
+        var fail=function(t){b.disabled=false;D.getElementById('rec-m').textContent=t};
+        var net='연결이 안 됐어요. 인터넷을 확인하고 다시 눌러 주세요.';
         var go=function(){
+          D.getElementById('rec-m').textContent='기록을 불러오는 중...';
           s(NK,v);var id=ident();
           if(prevId&&prevId!==id){wipe()}
           s(UK,id);d(MK);
-          sync(id,true).then(function(){location.reload()},function(){d(NK);d(UK);b.disabled=false;D.getElementById('rec-m').textContent='연결이 안 됐어요. 인터넷을 확인하고 다시 눌러 주세요.'});
+          sync(id,true).then(function(){location.reload()},function(){d(NK);d(UK);fail(net)});
         };
-        if(prevId&&prevId!==('RECM|'+SCH+'|'+v+'|'+NUM))push(prevId,false).then(go,function(){b.disabled=false;D.getElementById('rec-m').textContent='이전 기록을 저장하지 못했어요. 인터넷을 확인하고 다시 눌러 주세요.'});else go();
+        chk(newId).then(function(r){
+          if(!r.ok){fail(r.err==='noname'?'등록된 학생 이름이 아니에요. 이름을 다시 확인하거나 선생님께 알려 주세요.':net);return}
+          if(prevId&&prevId!==newId)push(prevId,false).then(go,function(e){if(e&&e.code==='noname')go();else fail('이전 기록을 저장하지 못했어요. 인터넷을 확인하고 다시 눌러 주세요.')});
+          else go();
+        },function(){fail(net)});
       };
     }else{
       box.innerHTML='<span style="flex:1"><b>'+name.replace(/[<>&"]/g,'')+'</b> 기록 저장 중</span><button id="rec-x" type="button" style="font-size:11.5px;padding:4px 9px;border:1px solid var(--line,#dbe4e1);border-radius:8px;background:transparent;color:inherit">저장하고 나가기</button>';
