@@ -388,3 +388,5 @@ body[data-page=index]{--off:#e9eef8;--offInk:#6b7a93}
 .note{background:#fff7d6;border:1px solid #f1dd8a;color:#6b5200;border-radius:12px;padding:9px 12px;font-size:13px;margin:10px 0}
 
 .bqe{display:block;font-style:normal;font-size:12px;margin-top:4px;color:var(--sub);font-weight:700}
+
+.acc .row .go{color:inherit;font-weight:700}

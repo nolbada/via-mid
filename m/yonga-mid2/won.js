@@ -5,9 +5,10 @@ function el(tag,cls,h){var e=document.createElement(tag);if(cls)e.className=cls;
 function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 function tabs(){
  var t=el('nav','tabs'),onAns=(pg==='ans');
- var a=el('a',onAns?null:'on','원문');a.href='won.html';
- var b=el('a',onAns?'on':null,'답안지');b.href='ans.html';
- var c=el('a',null,'유형 풀코스');c.href='index.html';
+ var S='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
+ var a=el('a',onAns?null:'on',S+'<path d="M6 3h9l4 4v14H6z"></path><path d="M14 3v5h5"></path><path d="M9 13h7M9 17h7"></path></svg>원문');a.href='won.html';
+ var b=el('a',onAns?'on':null,S+'<rect x="3" y="3" width="18" height="18" rx="3"></rect><path d="M8 12l3 3 5-6"></path></svg>답안지');b.href='ans.html';
+ var c=el('a',null,S+'<rect x="3" y="5" width="18" height="16" rx="3"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg>유형 풀코스');c.href='index.html';
  t.appendChild(a);t.appendChild(b);t.appendChild(c);document.body.appendChild(t)}
 function lrow(href,t,sm){return href?'<a class="row" href="'+href+'"><span>'+t+(sm?'<small>'+sm+'</small>':'')+'</span><span class="go">열기</span></a>':'<div class="row soon"><span>'+t+'<small>준비 중</small></span></div>'}
 function acc(title,open,inner){return '<details class="acc"'+(open?' open':'')+'><summary>'+title+'</summary><div class="in">'+inner+'</div></details>'}
