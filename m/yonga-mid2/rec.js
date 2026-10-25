@@ -1,15 +1,15 @@
-/* REC 중등: 용아중2 학생 기록을 기기 간에 잇는 스크립트(고등 rec.js의 중등판). 이름+6900.
+/* REC 중등: 학생 기록을 기기 간에 잇는 스크립트(고등 rec.js의 중등판). 이름+6900.
    고등과 같은 구글 시트 서버를 쓰되 id가 RECM 으로 시작해 고등(REC)·허브 기록과 섞이지 않는다.
    저장 키(recm_*)와 연동 대상 키(mid7:*)도 고등과 겹치지 않는다. 공폰 모드(?shared=1)에서는 아무것도 하지 않는다. */
 (function(){
   var W=window,D=document,P=location.pathname;
-  var m=/\/via-mid\/m\/(yonga-mid2)\//.exec(P);
+  var m=/\/via-mid\/m\/(yonga-mid2|geumcheon-mid2|yongseong-mid2)\//.exec(P);
   if(!m||W.__recm)return;
   W.__recm=1;
-  try{if(sessionStorage.getItem('mid7:shared')==='1'||/[?&]shared=1/.test(location.search))return}catch(e){}
+  try{if(sessionStorage.getItem(PFX+'shared')==='1'||/[?&]shared=1/.test(location.search))return}catch(e){}
   var URL_=W.REC_URL||'https://script.google.com/macros/s/AKfycbw1YQfKsgAXNk8NYoxOfz4bsCSy66fiim7HoFAUk162ksxrEbmspMs2UifNZ-93sdf05A/exec';
-  var SCH=m[1],NUM='6900';
-  var UK='recm_uid',MK='recm_meta',NK='recm_name',AK='recm_at',MAXV=45000;
+  var SCH=m[1],NUM='6900',PFX=({'yonga-mid2':'mid7:','geumcheon-mid2':'gcm2:','yongseong-mid2':'ysm2:'})[SCH],SFX=(SCH==='yonga-mid2'?'':'_'+SCH);
+  var UK='recm_uid'+SFX,MK='recm_meta'+SFX,NK='recm_name'+SFX,AK='recm_at'+SFX,MAXV=45000;
   var LS=null;try{LS=W.localStorage;LS.getItem('x')}catch(e){return}
   function g(k){try{return LS.getItem(k)}catch(e){return null}}
   function s(k,v){try{LS.setItem(k,v)}catch(e){}}
@@ -17,8 +17,8 @@
   function jg(k){try{return JSON.parse(g(k)||'null')}catch(e){return null}}
   function mirrored(k){
     if(!k||typeof k!=='string')return false;
-    if(k.indexOf('mid7:')!==0)return false;
-    if(k==='mid7:shared'||k==='mid7:view')return false;
+    if(k.indexOf(PFX)!==0)return false;
+    if(k===PFX+'shared'||k===PFX+'view')return false;
     return true;
   }
   function keys(){var o=[],i,k;for(i=0;i<LS.length;i++){k=LS.key(i);if(mirrored(k))o.push(k)}return o}
@@ -77,7 +77,7 @@
   }
   function wipe(){keys().forEach(d);d(MK)}
   function reloadOnce(){
-    try{var t=Number(sessionStorage.getItem('recm_rl')||0);if(Date.now()-t>20000){sessionStorage.setItem('recm_rl',String(Date.now()));location.reload()}}catch(e){}
+    try{var t=Number(sessionStorage.getItem('recm_rl'+SFX)||0);if(Date.now()-t>20000){sessionStorage.setItem('recm_rl'+SFX,String(Date.now()));location.reload()}}catch(e){}
   }
   var timer=null;
   function sched(){
@@ -114,7 +114,7 @@
   }
   /* 이름 입력 카드 (첫 화면에서만) */
   function mountCard(){
-    if(!/\/yonga-mid2\/(index\.html)?$/.test(P))return;
+    if(!new RegExp('/'+SCH+'/(index\\.html)?$').test(P))return;
     var host=D.querySelector('.wrap')||D.body;if(!host)return;
     var name=g(NK),box=D.createElement('div');
     if(!name)box.style.cssText='margin:12px 0;padding:14px;border:2px solid #e0a800;border-radius:12px;background:#fff4c2;color:#3a2e00;font-size:15px;display:flex;gap:8px;align-items:center;flex-wrap:wrap';
