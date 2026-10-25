@@ -390,3 +390,5 @@ body[data-page=index]{--off:#e9eef8;--offInk:#6b7a93}
 .bqe{display:block;font-style:normal;font-size:12px;margin-top:4px;color:var(--sub);font-weight:700}
 
 .acc .row .go{color:inherit;font-weight:700}
+
+.bq,.bqt{text-align:left}

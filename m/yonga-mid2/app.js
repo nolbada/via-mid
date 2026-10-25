@@ -145,7 +145,7 @@ function pageIndex(app){
  var n0=app.children.length;
  /* 1. badge card */
  var bc=el('details','bc');
- var sm=el('summary',null,'<div class="bdg"><b>'+CFG.school+'</b><span>기말 '+fmtMD(exS,1)+'</span><strong>'+dtxt+'</strong></div><div class="bq"><div class="bqt">'+CFG.quote+'<em class="bqe">비타민영어클리닉 학원</em></div></div><span class="cv">'+svgChev()+'</span>');
+ var sm=el('summary',null,'<div class="bdg"><b>'+CFG.school+'</b><span>기말 '+fmtMD(exS,1)+'</span><strong>'+dtxt+'</strong></div><div class="bq"><div class="bqt">'+CFG.quote.replace('반복된 작은','반복된<br>작은')+'<em class="bqe">비타민영어클리닉 학원</em></div></div><span class="cv">'+svgChev()+'</span>');
  bc.appendChild(sm);
  var sl=el('div','sl');
  var slides=[['기말고사',fmtMD(exS,1)+' ~ '+fmtMD(exE,1)],['유형 풀코스',N+'회 · '+CFG.types.length+'개 유형'],['주간 목표',CFG.goal+'회']];
