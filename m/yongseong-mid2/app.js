@@ -244,7 +244,7 @@ function pageIndex(app){
    card.appendChild(el('div','qsel','<button type="button" data-qall="1">전체 선택</button><button type="button" data-qall="0">전체 해제</button>'));
    card.appendChild(el('button','qgo','체크한 유형 이어서 풀기 (<span id="qn">0</span>)')).setAttribute('type','button');
   }
-  if(built&&qSum&&stt!=='lock')card.appendChild(el('div','qtot','<span>이 회 합계</span><b>약 '+qSum+'문제</b>'));
+  if(built&&qSum&&stt!=='lock')card.appendChild(el('div','qtot','<span>합계</span><b>약 '+qSum+'문제</b>'));
   function qCount(){var n=0;[].forEach.call(card.querySelectorAll('input[data-q]'),function(c){if(c.checked)n++});var s=card.querySelector('#qn');if(s)s.textContent=n;var b=card.querySelector('.qgo');if(b)b.disabled=!n}
   [].forEach.call(card.querySelectorAll('input[data-q]'),function(c){c.onchange=function(){QS[c.getAttribute('data-q')]=c.checked;qCount()}});
   [].forEach.call(card.querySelectorAll('[data-qall]'),function(b){b.onclick=function(){var on=b.getAttribute('data-qall')==='1';[].forEach.call(card.querySelectorAll('input[data-q]'),function(c){c.checked=on;QS[c.getAttribute('data-q')]=on});qCount()}});
