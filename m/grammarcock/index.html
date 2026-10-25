@@ -1,0 +1,752 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>그래머콕</title>
+<style>[hidden]{display:none!important}img{max-width:100%}</style>
+</head><body>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Jua&family=Noto+Serif+KR:wght@500;700&family=Noto+Sans+KR:wght@400;500;700;900&family=DM+Mono:wght@500&display=swap');
+
+  :root{
+    --bg:#FAF7F0; --surface:#FFFFFF; --surface-2:#F1EBDD;
+    --ink:#1F2A2E; --ink-soft:#5C6B70;
+    --accent:#1F6F5E; --accent-soft:#E1EFE9;
+    --blank:#2B5FA5; --blank-soft:#E7EEF8;
+    --good:#2F8F5B; --good-bg:#E7F5ED;
+    --bad:#C0392B; --bad-bg:#FBEAE8;
+    --hint:#8A6210; --hint-bg:#FBF1DC;
+    --line:#E4DFCF; --hl:#FFE27A;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#14191B; --surface:#1C2326; --surface-2:#222B2C;
+      --ink:#EDEEE7; --ink-soft:#A8B3B0;
+      --accent:#5FC1A2; --accent-soft:#1E3730;
+      --blank:#7FADEB; --blank-soft:#1D2C3E;
+      --good:#63CD93; --good-bg:#163523;
+      --bad:#E4796C; --bad-bg:#3A211D;
+      --hint:#E0B75B; --hint-bg:#33290F;
+      --line:#2E3739; --hl:#7A6320;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#14191B; --surface:#1C2326; --surface-2:#222B2C;
+    --ink:#EDEEE7; --ink-soft:#A8B3B0;
+    --accent:#5FC1A2; --accent-soft:#1E3730;
+    --blank:#7FADEB; --blank-soft:#1D2C3E;
+    --good:#63CD93; --good-bg:#163523;
+    --bad:#E4796C; --bad-bg:#3A211D;
+    --hint:#E0B75B; --hint-bg:#33290F;
+    --line:#2E3739; --hl:#7A6320;
+    color-scheme: dark;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:'Noto Sans KR', system-ui, sans-serif;
+    padding-inline:16px; padding-block:20px;
+    display:flex; justify-content:center;
+  }
+  .app{ width:100%; max-width:900px; }
+
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:12px; margin-bottom:18px; flex-wrap:wrap;
+  }
+  .brand{ display:flex; align-items:baseline; gap:8px; }
+  .brand .name{ font-family:'Jua','Noto Serif KR',serif; font-weight:400; font-size:22px; letter-spacing:.01em; }
+  .brand .tag{ font-size:12px; color:var(--ink-soft); }
+  .hud{ display:flex; align-items:center; gap:10px; }
+  .mascot{ width:40px; height:40px; flex:none; }
+  .mascot svg{ width:100%; height:100%; display:block; }
+  .mascot.bounce{ animation:mascotBounce .5s ease; }
+  .mascot.wobble{ animation:mascotWobble .5s ease; }
+  @keyframes mascotBounce{ 0%{transform:scale(1) rotate(0);} 30%{transform:scale(1.25) rotate(-8deg);} 60%{transform:scale(.94) rotate(5deg);} 100%{transform:scale(1) rotate(0);} }
+  @keyframes mascotWobble{ 0%{transform:translateX(0);} 20%{transform:translateX(-6px) rotate(-5deg);} 40%{transform:translateX(6px) rotate(5deg);} 60%{transform:translateX(-4px);} 80%{transform:translateX(3px);} 100%{transform:translateX(0);} }
+  .score{
+    font-family:'Jua',sans-serif; font-size:14px; color:var(--hint); background:var(--hint-bg);
+    padding:6px 14px; border-radius:999px; border:1.5px solid var(--hint); white-space:nowrap;
+  }
+  .progress{
+    font-family:'DM Mono',monospace; font-variant-numeric:tabular-nums;
+    font-size:13px; color:var(--accent); background:var(--accent-soft);
+    padding:5px 12px; border-radius:999px; white-space:nowrap;
+  }
+
+  .nav{ display:flex; gap:8px; margin-bottom:22px; flex-wrap:wrap; }
+  .nav button{
+    font-family:'Jua',sans-serif; font-size:13px; font-weight:400;
+    padding:8px 14px; border-radius:999px; border:1.5px solid var(--line);
+    background:var(--surface); color:var(--ink-soft); cursor:pointer;
+    display:flex; align-items:center; gap:6px;
+    box-shadow:0 2.5px 0 rgba(0,0,0,.08);
+    transition:transform .08s, box-shadow .08s, background .15s, border-color .15s, color .15s;
+  }
+  .nav button:active{ transform:translateY(2px); box-shadow:0 .5px 0 rgba(0,0,0,.08); }
+  .nav button.active{ border-color:var(--accent); color:var(--accent); background:var(--accent-soft); }
+  .nav button .dot{ width:7px; height:7px; border-radius:50%; background:var(--line); flex:none; }
+  .nav button.done .dot{ background:var(--good); }
+
+  .finder{ margin-bottom:18px; }
+  .finder-btn{
+    width:100%; display:flex; align-items:center; justify-content:space-between; gap:10px; text-align:left;
+    font-family:'Jua',sans-serif; font-size:15px; padding:11px 16px; border-radius:14px;
+    border:1.5px solid var(--accent); background:var(--accent-soft); color:var(--accent); cursor:pointer;
+    box-shadow:0 3px 0 rgba(0,0,0,.08);
+  }
+  .finder-btn:active{ transform:translateY(2px); box-shadow:0 1px 0 rgba(0,0,0,.08); }
+  .finder-btn .cur{ color:var(--ink); font-size:14px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .finder-panel{ margin-top:8px; border:1.5px solid var(--line); border-radius:14px; background:var(--surface); padding:12px; box-shadow:0 6px 22px rgba(0,0,0,.08); }
+  .finder-input{
+    width:100%; font:inherit; font-size:15px; padding:10px 14px; border-radius:10px;
+    border:1.5px solid var(--line); background:var(--bg); color:var(--ink); margin-bottom:8px;
+  }
+  .finder-list{ max-height:55vh; overflow-y:auto; }
+  .f-chap{ font-size:12px; font-weight:700; color:var(--ink-soft); margin:12px 0 4px; padding-top:8px; border-top:1px dashed var(--line); }
+  .f-chap:first-child{ margin-top:0; border-top:none; padding-top:0; }
+  .f-row{
+    display:flex; align-items:center; gap:10px; width:100%; text-align:left; font:inherit; font-size:14px;
+    padding:8px 10px; border:none; border-radius:8px; background:none; color:var(--ink); cursor:pointer;
+  }
+  .f-row:hover{ background:var(--accent-soft); }
+  .f-row.cur{ background:var(--accent-soft); font-weight:700; }
+  .f-row .n{ font-family:'DM Mono',monospace; font-size:12px; color:var(--accent); min-width:3.4em; }
+  .f-row .t{ flex:1; }
+  .f-row .tagdone{ color:var(--good); font-size:12px; font-weight:700; }
+  .f-row.soon{ color:var(--ink-soft); cursor:default; opacity:.6; }
+  .f-row.soon:hover{ background:none; }
+  .f-row .tagsoon{ font-size:11px; border:1px solid var(--line); border-radius:999px; padding:1px 8px; }
+  .f-empty{ font-size:13px; color:var(--ink-soft); padding:10px 4px; }
+  .cname{ font-family:'Jua','Noto Serif KR',serif; font-size:clamp(18px,3.6vw,24px); color:var(--accent); margin:0 0 6px; }
+  .card{
+    background:var(--surface); border:1.5px solid var(--line); border-radius:22px;
+    padding:24px; margin-bottom:20px; box-shadow:0 6px 22px rgba(0,0,0,.05);
+  }
+  .eyebrow{
+    font-family:'DM Mono',monospace; font-size:12px; letter-spacing:.06em;
+    color:var(--accent); text-transform:uppercase; margin-bottom:8px;
+  }
+  h1{
+    font-family:'Jua','Noto Serif KR',serif; font-weight:400;
+    font-size:clamp(20px,4vw,28px); line-height:1.4; margin:0 0 20px;
+    text-wrap:balance;
+  }
+  h2{
+    font-size:14px; font-weight:900; color:var(--accent);
+    margin:0 0 10px; display:flex; align-items:center; gap:6px;
+  }
+  .section{ margin-bottom:20px; }
+  .explain p{ font-size:16px; line-height:2.1; margin:0 0 10px; color:var(--ink); }
+  .hl{ font-weight:700; background:linear-gradient(transparent 55%, var(--hl) 55%); border-radius:2px; }
+  .verb{ text-decoration:underline; text-decoration-color:var(--ink-soft); text-underline-offset:3px; }
+
+  /* reveal-type blank */
+  .blank{
+    display:inline-flex; align-items:center; justify-content:center;
+    min-width:2.6em; padding:0 8px; margin:1px 2px;
+    border-radius:6px; border:1.5px dashed var(--blank);
+    background:var(--blank-soft); color:var(--blank);
+    font-weight:700; cursor:pointer; font-size:0.95em;
+    transition:background .15s, border-style .15s;
+  }
+  .blank:hover{ background:var(--blank); color:var(--surface); }
+  .blank.revealed{
+    border-style:solid; background:var(--good-bg); border-color:var(--good);
+    color:var(--good); cursor:default;
+  }
+  .blank.revealed:hover{ background:var(--good-bg); color:var(--good); }
+
+  /* choice-type inline blank group */
+  .cgroup{
+    display:inline-flex; gap:4px; margin:2px 3px; vertical-align:middle;
+  }
+  .cbtn{
+    font-family:'Jua',sans-serif; font-size:0.9em; font-weight:400;
+    padding:3px 12px; border-radius:999px; border:1.5px solid var(--blank);
+    background:var(--blank-soft); color:var(--blank); cursor:pointer;
+    box-shadow:0 2.5px 0 rgba(0,0,0,.08);
+    transition:transform .08s, box-shadow .08s, background .15s, border-color .15s, color .15s;
+  }
+  .cbtn:active{ transform:translateY(2px); box-shadow:0 .5px 0 rgba(0,0,0,.08); }
+  .cbtn.correct{ border-color:var(--good); background:var(--good-bg); color:var(--good); }
+  .cbtn.wrong{ border-color:var(--bad); background:var(--bad-bg); color:var(--bad); opacity:.6; }
+  .cbtn[disabled]{ cursor:default; }
+
+  .example{ border-top:1px dashed var(--line); padding:13px 0; }
+  .example:first-child{ border-top:none; padding-top:4px; }
+  .example .enrow{ display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+  .example .en{ font-size:16px; flex:1; }
+  .example .kr{ font-size:13px; color:var(--ink-soft); }
+  .example .kr .slash{ color:var(--line); margin:0 3px; }
+
+  .speak{
+    flex:none; width:26px; height:26px; border-radius:50%;
+    border:1.5px solid var(--line); background:var(--surface); color:var(--ink-soft);
+    cursor:pointer; display:flex; align-items:center; justify-content:center;
+    padding:0;
+  }
+  .speak:hover{ border-color:var(--accent); color:var(--accent); }
+  .speak svg{ width:13px; height:13px; }
+
+  .tip{
+    background:var(--hint-bg); border:1px solid var(--hint);
+    border-radius:10px; padding:14px 16px; font-size:14px; color:var(--ink);
+  }
+  .tip .tip-label{ color:var(--hint); display:block; font-size:12px; font-weight:700; margin-bottom:5px; }
+  .tip b{ font-weight:700; }
+  .tip .bad-mark{ color:var(--bad); font-weight:700; }
+
+  .quiz{ background:var(--accent-soft); border-radius:14px; padding:18px; }
+  .q{ margin-bottom:16px; }
+  .q:last-child{ margin-bottom:0; }
+  .q .prompt{ font-size:15px; font-weight:500; margin-bottom:10px; }
+  .q .prompt u{ text-decoration-thickness:2px; text-underline-offset:3px; }
+  .q .prompt .tag{
+    font-family:'DM Mono',monospace; font-size:10px; font-weight:700;
+    color:var(--accent); border:1px solid var(--accent); border-radius:5px;
+    padding:1px 6px; margin-right:6px; vertical-align:middle;
+  }
+  .choices{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px; }
+  .choice{
+    font-family:'Jua',sans-serif; font-size:15px; font-weight:400;
+    padding:9px 18px; border-radius:14px; border:1.5px solid var(--line);
+    background:var(--surface); color:var(--ink); cursor:pointer;
+    box-shadow:0 3px 0 rgba(0,0,0,.08);
+    transition:transform .08s, box-shadow .08s, background .15s, border-color .15s, color .15s;
+  }
+  .choice:active{ transform:translateY(2px); box-shadow:0 1px 0 rgba(0,0,0,.08); }
+  .choice.correct{ border-color:var(--good); background:var(--good-bg); color:var(--good); }
+  .choice.wrong{ border-color:var(--bad); background:var(--bad-bg); color:var(--bad); opacity:.55; }
+  .choice[disabled]{ cursor:default; }
+  .feedback{ font-size:13px; color:var(--ink-soft); min-height:1.4em; }
+  .feedback .hint-label{ color:var(--hint); font-weight:700; }
+  .feedback .retry-label{ color:var(--bad); font-weight:700; }
+  .feedback .answer-label{ color:var(--good); font-weight:700; }
+
+  .summary{
+    border:1.5px solid var(--good); background:var(--good-bg); border-radius:14px; padding:18px;
+  }
+  .summary h2{ color:var(--good); }
+  .summary .explain p{ color:var(--ink); }
+  .summary .kw{ font-weight:700; color:var(--good); }
+  .summary .example{ border-top-color:rgba(0,0,0,.08); }
+  .locked{
+    display:flex; align-items:center; gap:10px; padding:14px 16px;
+    border:1.5px dashed var(--line); border-radius:14px; color:var(--ink-soft); font-size:13px;
+  }
+  .locked svg{ width:16px; height:16px; flex:none; }
+
+  .cardfoot{ display:flex; justify-content:space-between; align-items:center; margin-top:4px; gap:10px; flex-wrap:wrap; }
+  .reset{ font-size:12px; color:var(--ink-soft); background:none; border:1px solid var(--line); border-radius:8px; padding:6px 12px; cursor:pointer; }
+  .pager{ display:flex; gap:8px; }
+  .pager button{
+    font-family:'Jua',sans-serif; font-size:14px; font-weight:400; padding:9px 18px;
+    border-radius:14px; border:1.5px solid var(--accent); background:var(--accent); color:var(--surface); cursor:pointer;
+    box-shadow:0 3px 0 rgba(0,0,0,.14);
+    transition:transform .08s, box-shadow .08s;
+  }
+  .pager button:active{ transform:translateY(2px); box-shadow:0 1px 0 rgba(0,0,0,.14); }
+  .pager button.ghost{ background:none; color:var(--accent); box-shadow:none; }
+  .pager button.ghost:active{ box-shadow:none; }
+  .pager button:disabled{ opacity:.35; cursor:default; }
+
+  footer{ text-align:center; font-size:12px; color:var(--ink-soft); padding:10px 0 4px; }
+
+  /* score balloon-pop feedback */
+  .pop-wrap{ position:fixed; z-index:9999; pointer-events:none; left:0; top:0; }
+  .pop-balloon{ position:absolute; width:32px; height:40px; margin-left:-16px; margin-top:-20px; animation:balloonRise .9s ease-out forwards; }
+  .pop-balloon svg{ width:100%; height:100%; display:block; }
+  .pop-score{
+    position:absolute; font-family:'Jua',sans-serif; font-size:18px; margin-left:-30px; margin-top:-14px;
+    width:60px; text-align:center; animation:scoreFloat 1s ease-out forwards; white-space:nowrap;
+  }
+  .pop-score.good{ color:var(--good); }
+  .pop-score.bad{ color:var(--bad); }
+  @keyframes balloonRise{
+    0%{ transform:scale(.4); opacity:0; }
+    15%{ transform:scale(1); opacity:1; }
+    60%{ transform:translateY(-46px) scale(1.05); opacity:1; }
+    72%{ transform:translateY(-56px) scale(1.4); opacity:1; }
+    80%{ transform:translateY(-58px) scale(.1); opacity:0; }
+    100%{ transform:translateY(-58px) scale(.1); opacity:0; }
+  }
+  @keyframes scoreFloat{
+    0%{ transform:translateY(0); opacity:0; }
+    20%{ opacity:1; }
+    100%{ transform:translateY(-70px); opacity:0; }
+  }
+
+  .c1line{ margin-top:8px; font-size:13px; color:var(--hint); background:var(--hint-bg); border-radius:8px; padding:7px 10px; }
+  .c1line b{ font-weight:700; }
+  .summary .c1sum{ font-size:15px; font-weight:700; color:var(--good); margin:0 0 12px; line-height:1.7; }
+  details.more{ margin-top:14px; border:1.5px dashed var(--line); border-radius:12px; background:var(--surface); }
+  details.more > summary{ cursor:pointer; padding:10px 14px; font-family:'Jua',sans-serif; font-size:14px; color:var(--accent); list-style:none; }
+  details.more > summary::-webkit-details-marker{ display:none; }
+  details.more > summary::before{ content:'＋ '; }
+  details.more[open] > summary::before{ content:'－ '; }
+  .more-block{ padding:4px 14px 14px; border-top:1px dashed var(--line); }
+  .more-title{ font-weight:700; font-size:14px; margin:10px 0 4px; color:var(--ink); }
+  .more-body{ font-size:14px; line-height:1.8; color:var(--ink); margin-bottom:6px; }
+  .more-ex{ padding:3px 0; }
+  .more-ex .en{ font-size:15px; font-weight:500; }
+  .more-ex .kr{ font-size:12.5px; color:var(--ink-soft); }
+  .more-ex .bad-mark{ color:var(--bad); font-weight:700; }
+</style>
+
+<div class="app">
+  <div class="topbar">
+    <div class="brand">
+      <span class="name">그래머콕</span>
+      <span class="tag">중학영문법 개념 Q&amp;A</span>
+    </div>
+    <div class="hud">
+      <div class="mascot" id="mascot"></div>
+      <div class="score" id="scoreBadge">⭐ 0</div>
+      <div class="progress" id="progress">0 / 0 완료</div>
+    </div>
+  </div>
+
+  <div class="finder">
+    <button class="finder-btn" id="finderBtn" type="button"></button>
+    <div class="finder-panel" id="finderPanel" hidden>
+      <input id="finderInput" class="finder-input" type="search" placeholder="개념 이름으로 찾기 (예: 관계대명사, be동사)" autocomplete="off">
+      <div id="finderList" class="finder-list"></div>
+    </div>
+  </div>
+  <div id="cardHost"></div>
+  <footer>빈칸과 문제는 정답을 맞힐 때까지 다시 시도할 수 있다. 문제를 다 맞히면 개념 정리가 열린다.</footer>
+</div>
+
+<script>
+const DATA = [{"num": "001", "chapter": "Chapter 1", "question": "영어 문장은 왜 '주어+동사'부터 시작할까?", "explain": [[{"t": "text", "v": "영어 문장은 우리말과 어순이 다르다. 우리말은 '누가+무엇을+어떻게 했다'처럼 "}, {"t": "hl", "v": "동사가 맨 뒤에 오지만"}, {"t": "text", "v": ", 영어는 '누가("}, {"t": "blank", "v": "주어", "choices": ["주어", "목적어"]}, {"t": "text", "v": ")'와 '어떻게 했다("}, {"t": "blank", "v": "동사", "choices": ["명사", "동사"]}, {"t": "text", "v": ")'를 "}, {"t": "hl", "v": "먼저 말하고"}, {"t": "text", "v": " 나머지(목적어, 보어 등)를 뒤에 붙인다."}], [{"t": "text", "v": "그래서 영어 문장을 만들 때는 항상 '"}, {"t": "blank", "v": "주어", "choices": ["주어", "목적어"]}, {"t": "text", "v": "부터, 그다음 "}, {"t": "blank", "v": "동사", "choices": ["동사", "명사"]}, {"t": "text", "v": "'를 가장 먼저 떠올리면 된다."}]], "examples": [{"en": [{"t": "blank", "v": "I", "choices": ["I", "We"]}, {"t": "text", "v": " "}, {"t": "verb", "v": "am"}, {"t": "text", "v": " a student."}], "kr": "나는 학생이다.", "krChunked": "나는 / 학생이다."}, {"en": [{"t": "blank", "v": "She", "choices": ["She", "He"]}, {"t": "text", "v": " "}, {"t": "verb", "v": "lives"}, {"t": "text", "v": " in Seoul."}], "kr": "그녀는 서울에 산다.", "krChunked": "그녀는 / 서울에 / 산다."}, {"en": [{"t": "blank", "v": "We", "choices": ["We", "You"]}, {"t": "text", "v": " "}, {"t": "verb", "v": "can swim"}, {"t": "text", "v": "."}], "kr": "우리는 수영할 수 있다.", "krChunked": "우리는 / 수영할 수 / 있다."}], "tip": "문장을 만들 때 '누가?'(주어)와 '어떻게 했지?'(동사)를 {{H:가장 먼저 정하고}}, 그다음에 나머지를 채운다고 생각하면 쉽다.", "check": [{"type": "2지선다", "prompt": "She lives in Seoul. 이 문장에서 동사를 고르세요.", "choices": ["lives", "Seoul"], "answer": "lives", "hint": "'~다'로 해석되는, 움직임이나 상태를 나타내는 말이 동사다."}, {"type": "3지선다", "prompt": "영어 문장에서 가장 먼저 오는 어순으로 올바른 것을 고르세요.", "choices": ["주어 + 동사", "동사 + 주어", "목적어 + 주어"], "answer": "주어 + 동사", "hint": "영어는 항상 '누가'가 먼저, '어떻게 했다'가 그다음이다."}], "c1": "영어 문장은 '주어+동사'를 먼저 말하고 나머지를 뒤에 붙인다.", "c3": [{"t": "명령문은 주어가 생략된다", "b": "명령문은 듣는 사람(you)에게 말하므로 주어 you를 쓰지 않고 동사로 시작한다.", "ex": [["Open the window.", "창문을 열어라."]]}, {"t": "의문문은 동사가 주어 앞으로 나온다", "b": "be동사·조동사가 있는 의문문은 그 동사가 주어 앞으로 나온다.", "ex": [["Can you swim?", "너는 수영할 수 있니?"]]}], "name": "영어 문장은 주어+동사로 시작", "kw": "어순 문장 주어 동사"}, {"num": "002", "chapter": "Chapter 1", "question": "단어는 문장 속에서 어떤 역할을 할까? (8품사)", "explain": [[{"t": "text", "v": "영어 단어는 문장 속에서 하는 역할에 따라 8가지 종류("}, {"t": "blank", "v": "품사"}, {"t": "text", "v": ")로 나뉜다: "}, {"t": "blank", "v": "명사"}, {"t": "text", "v": ", "}, {"t": "blank", "v": "대명사"}, {"t": "text", "v": ", "}, {"t": "blank", "v": "동사"}, {"t": "text", "v": ", "}, {"t": "blank", "v": "형용사"}, {"t": "text", "v": ", "}, {"t": "blank", "v": "부사"}, {"t": "text", "v": ", "}, {"t": "blank", "v": "전치사"}, {"t": "text", "v": ", "}, {"t": "blank", "v": "접속사"}, {"t": "text", "v": ", "}, {"t": "blank", "v": "감탄사"}, {"t": "text", "v": "."}], [{"t": "text", "v": "같은 단어라도 "}, {"t": "hl", "v": "문장 속 위치에 따라 다른 품사로 쓰이기도 하니"}, {"t": "text", "v": ", 단어를 외울 때 품사도 함께 기억해두는 게 좋다."}]], "examples": [{"en": [{"t": "blank", "v": "Sandy"}, {"t": "text", "v": " "}, {"t": "verb", "v": "likes"}, {"t": "text", "v": " "}, {"t": "blank", "v": "English"}, {"t": "text", "v": "."}], "kr": "Sandy는 영어를 좋아한다.", "krChunked": "Sandy는 / 영어를 / 좋아한다."}, {"en": [{"t": "text", "v": "She "}, {"t": "verb", "v": "is"}, {"t": "text", "v": " very "}, {"t": "blank", "v": "kind", "choices": ["kind", "kindly"]}, {"t": "text", "v": "."}], "kr": "그녀는 매우 친절하다.", "krChunked": "그녀는 / 매우 / 친절하다."}, {"en": [{"t": "text", "v": "He "}, {"t": "verb", "v": "runs"}, {"t": "text", "v": " "}, {"t": "blank", "v": "fast", "choices": ["fast", "fastly"]}, {"t": "text", "v": "."}], "kr": "그는 빨리 달린다.", "krChunked": "그는 / 빨리 / 달린다."}], "tip": "단어 하나가 문장에서 {{H:어떤 역할(품사)을 하는지 알면}}, 그 단어가 문장 어디에 들어가야 하는지도 자연스럽게 알 수 있다.", "check": [{"type": "3지선다", "prompt": "She is very kind. 에서 kind는 어떤 품사일까요?", "choices": ["명사", "형용사", "동사"], "answer": "형용사", "hint": "사람이나 사물의 성질·상태를 설명해주는 말이다."}, {"type": "2지선다", "prompt": "He runs fast. 에서 fast가 하는 역할로 알맞은 것을 고르세요.", "choices": ["명사", "부사"], "answer": "부사", "hint": "동사 runs를 꾸며주는 말이다."}], "c1": "단어는 문장 속 역할에 따라 8품사로 나뉘고, 같은 단어도 위치에 따라 품사가 달라질 수 있다.", "c3": [{"t": "같은 모양인데 품사가 다른 단어", "b": "fast처럼 형용사와 부사의 모양이 같은 단어가 있다. 문장 속 역할로 구별한다.", "ex": [["He is fast.", "그는 빠르다. (형용사)"], ["He runs fast.", "그는 빨리 달린다. (부사)"]]}, {"t": "-ly가 붙어도 부사가 아닐 수 있다", "b": "friendly(친절한), lovely(사랑스러운)는 -ly로 끝나지만 형용사다.", "ex": [["She is a friendly girl.", "그녀는 친절한 소녀다."]]}], "name": "8품사", "kw": "품사 명사 대명사 동사 형용사 부사 전치사 접속사 감탄사"}, {"num": "003", "chapter": "Chapter 1", "question": "문장을 이루는 4가지 필수 재료는 무엇일까?", "explain": [[{"t": "text", "v": "문장을 이루는 4가지 필수 재료이다. "}, {"t": "blank", "v": "주어", "choices": ["보어", "주어"]}, {"t": "text", "v": "는 '누가/무엇이', "}, {"t": "blank", "v": "동사", "choices": ["동사", "형용사"]}, {"t": "text", "v": "는 '~다'로 끝나는 행동·상태, "}, {"t": "blank", "v": "목적어", "choices": ["목적어", "보어"]}, {"t": "text", "v": "는 '~을/를'에 해당하는 대상, "}, {"t": "blank", "v": "보어", "choices": ["목적어", "보어"]}, {"t": "text", "v": "는 "}, {"t": "hl", "v": "주어나 목적어를 설명해주는 말"}, {"t": "text", "v": "이다."}]], "examples": [{"en": [{"t": "text", "v": "Mom "}, {"t": "verb", "v": "knows"}, {"t": "text", "v": " "}, {"t": "blank", "v": "everything"}, {"t": "text", "v": "."}], "kr": "엄마는 모든 것을 아신다.", "krChunked": "엄마는 / 모든 것을 / 아신다."}, {"en": [{"t": "text", "v": "I "}, {"t": "verb", "v": "am"}, {"t": "text", "v": " "}, {"t": "blank", "v": "happy", "choices": ["happy", "happily"]}, {"t": "text", "v": "."}], "kr": "나는 행복하다.", "krChunked": "나는 / 행복하다."}, {"en": [{"t": "text", "v": "We "}, {"t": "verb", "v": "call"}, {"t": "text", "v": " "}, {"t": "blank", "v": "him Tom"}, {"t": "text", "v": "."}], "kr": "우리는 그를 Tom이라고 부른다.", "krChunked": "우리는 / 그를 / Tom이라고 / 부른다."}], "tip": "동사 뒤에 나온 말이 {{H:'주어(또는 목적어)와 같은 대상'이면 보어, '다른 대상'이면 목적어}}이다. He is a doctor.(그=doctor→보어) / He meets a doctor.(그≠doctor→목적어)", "check": [{"type": "2지선다", "prompt": "We call him Tom. 에서 Tom은 목적어일까요, 보어일까요?", "choices": ["목적어", "보어"], "answer": "보어", "hint": "him과 Tom이 같은 대상을 가리키면 보어다."}, {"type": "2지선다", "prompt": "I am happy. 에서 happy는 목적어일까요, 보어일까요?", "choices": ["목적어", "보어"], "answer": "보어", "hint": "주어 I의 상태를 설명해주는 말이다."}], "c1": "문장의 필수 재료는 주어·동사·목적어·보어이고, 동사 뒤의 말이 주어(목적어)와 같은 대상이면 보어다.", "c3": [{"t": "목적어가 두 개인 문장도 있다", "b": "give, show, send 같은 동사는 '~에게'와 '~을'에 해당하는 목적어를 두 개 쓴다.", "ex": [["He gave me a book.", "그는 나에게 책을 주었다."]]}, {"t": "보어는 목적어를 설명하기도 한다", "b": "We call him Tom.에서 Tom은 목적어 him이 누구인지 설명하는 보어다.", "ex": [["They made her captain.", "그들은 그녀를 주장으로 삼았다."]]}], "name": "문장의 4요소 (주어·동사·목적어·보어)", "kw": "주어 동사 목적어 보어"}, {"num": "004", "chapter": "Chapter 1", "question": "대명사는 문장 속 자리에 따라 왜 모양이 바뀔까?", "explain": [[{"t": "text", "v": "대명사는 문장 속에서 맡은 역할(주어인지, '~의'인지, 목적어인지)에 따라 "}, {"t": "blank", "v": "모양", "choices": ["뜻", "모양"]}, {"t": "text", "v": "이 바뀐다. 이것을 '격'이 바뀐다고 한다."}], [{"t": "text", "v": "주어 자리에는 "}, {"t": "blank", "v": "I", "choices": ["I", "me"]}, {"t": "text", "v": "(나는), '~의' 자리에는 "}, {"t": "blank", "v": "my", "choices": ["me", "my"]}, {"t": "text", "v": "(나의), 목적어 자리에는 "}, {"t": "blank", "v": "me", "choices": ["my", "me"]}, {"t": "text", "v": "(나를)를 쓰고, '~의 것'은 "}, {"t": "blank", "v": "mine", "choices": ["mine", "my"]}, {"t": "text", "v": "이라고 한다."}], [{"t": "text", "v": "우리말도 '나는·나의·나를'처럼 "}, {"t": "hl", "v": "조사가 바뀌는 것과 같은 원리"}, {"t": "text", "v": "다."}]], "examples": [{"en": [{"t": "blank", "v": "She", "choices": ["She", "Her"]}, {"t": "text", "v": " "}, {"t": "verb", "v": "has"}, {"t": "text", "v": " a red umbrella."}], "kr": "그녀는 빨간 우산을 가지고 있다.", "krChunked": "그녀는 / 빨간 우산을 / 가지고 있다."}, {"en": [{"t": "text", "v": "Tom "}, {"t": "verb", "v": "called"}, {"t": "text", "v": " "}, {"t": "blank", "v": "me", "choices": ["my", "me"]}, {"t": "text", "v": " last night."}], "kr": "Tom은 어젯밤 나에게 전화했다.", "krChunked": "Tom은 / 어젯밤 / 나에게 / 전화했다."}, {"en": [{"t": "text", "v": "That "}, {"t": "verb", "v": "is"}, {"t": "text", "v": " "}, {"t": "blank", "v": "yours", "choices": ["your", "yours"]}, {"t": "text", "v": ", not mine."}], "kr": "저것은 네 것이고, 내 것이 아니다.", "krChunked": "저것은 / 네 것이고, / 내 것이 아니다."}], "tip": "소유격 뒤에는 {{H:명사가 꼭 따라온다}}(my book). 소유대명사('~의 것')에는 {{H:명사가 따라오지 않는다}}(mine). This is my book. This book is mine. This is mine book. (×)", "check": [{"type": "2지선다", "prompt": "Please help ______ with this box.", "choices": ["me", "my"], "answer": "me", "hint": "help의 목적어 자리다. '나를'에 해당하는 목적격을 쓴다."}, {"type": "3지선다", "prompt": "'이 책은 내 것이다'를 영어로 쓸 때, This book is ______. 빈칸에 알맞은 것을 고르세요.", "choices": ["mine", "my", "me"], "answer": "mine", "hint": "'~의 것'이라는 뜻이고 뒤에 명사가 없으므로 소유대명사 mine을 쓴다."}], "c1": "대명사는 자리에 따라 주격(I)·소유격(my)·목적격(me)·소유대명사(mine)로 모양이 바뀐다.", "c3": [{"t": "her은 두 가지 뜻이다", "b": "her은 '그녀의'(소유격)와 '그녀를'(목적격) 두 가지로 쓰인다. 뒤에 명사가 있으면 소유격, 없으면 목적격이다.", "ex": [["I saw her dog.", "나는 그녀의 개를 보았다."], ["I saw her.", "나는 그녀를 보았다."]]}, {"t": "its와 it's는 다르다", "b": "its는 '그것의'(소유격)이고, it's는 it is의 줄임말이다.", "ex": [["The dog wagged its tail.", "그 개는 꼬리를 흔들었다."]], "bad": "The dog wagged it's tail."}], "name": "인칭대명사의 격변화", "kw": "대명사 I my me mine 주격 소유격 목적격 소유대명사"}, {"num": "005", "chapter": "Chapter 1", "question": "명사는 어떤 때 a/an이나 -s를 붙일까?", "explain": [[{"t": "text", "v": "명사는 하나둘 셀 수 있는 "}, {"t": "blank", "v": "셀 수 있는", "choices": ["셀 수 있는", "셀 수 없는"]}, {"t": "text", "v": " 명사(apple, book)와 셀 수 없는 명사(water, love)로 나뉜다."}], [{"t": "text", "v": "셀 수 있는 명사는 하나면 "}, {"t": "blank", "v": "a/an", "choices": ["-s", "a/an"]}, {"t": "text", "v": "을, 여럿이면 "}, {"t": "blank", "v": "-s", "choices": ["a/an", "-s"]}, {"t": "text", "v": "를 붙인다."}], [{"t": "text", "v": "셀 수 없는 명사는 "}, {"t": "hl", "v": "항상 단수로 취급하고 a/an이나 -s를 붙이지 않는다"}, {"t": "text", "v": "."}]], "examples": [{"en": [{"t": "text", "v": "I "}, {"t": "verb", "v": "need"}, {"t": "text", "v": " "}, {"t": "blank", "v": "an", "choices": ["a", "an"]}, {"t": "text", "v": " umbrella."}], "kr": "나는 우산이 필요하다.", "krChunked": "나는 / 우산이 / 필요하다."}, {"en": [{"t": "text", "v": "She "}, {"t": "verb", "v": "has"}, {"t": "text", "v": " three "}, {"t": "blank", "v": "cats", "choices": ["cats", "cat"]}, {"t": "text", "v": "."}], "kr": "그녀는 고양이 세 마리가 있다.", "krChunked": "그녀는 / 고양이 / 세 마리가 있다."}, {"en": [{"t": "text", "v": "We "}, {"t": "verb", "v": "drink"}, {"t": "text", "v": " "}, {"t": "blank", "v": "milk", "choices": ["milk", "milks"]}, {"t": "text", "v": " every morning."}], "kr": "우리는 매일 아침 우유를 마신다.", "krChunked": "우리는 / 매일 아침 / 우유를 / 마신다."}], "tip": "money, information, advice, homework처럼 {{H:눈에 안 보이거나 모양이 일정하지 않은 것}}은 대부분 셀 수 없는 명사다. I need an information. (×)", "check": [{"type": "3지선다", "prompt": "다음 중 a/an을 붙일 수 없는 명사를 고르세요.", "choices": ["apple", "money", "bag"], "answer": "money", "hint": "money는 셀 수 없는 명사라 a/an이나 -s를 붙이지 않는다."}, {"type": "2지선다", "prompt": "She gave me ______ advice.", "choices": ["some", "an"], "answer": "some", "hint": "advice는 셀 수 없는 명사라 an을 쓸 수 없다. some은 셀 수 없는 명사 앞에도 쓸 수 있다."}], "c1": "셀 수 있는 명사는 a/an(하나)·-s(여럿)을 붙이고, 셀 수 없는 명사는 항상 단수 취급하며 a/an이나 -s를 붙이지 않는다.", "c3": [{"t": "셀 수 없는 명사는 단위로 센다", "b": "물·종이처럼 셀 수 없는 것은 a cup of, a piece of 같은 단위를 앞에 붙여 센다.", "ex": [["I drank two glasses of water.", "나는 물 두 잔을 마셨다."]]}, {"t": "a/an은 철자가 아니라 소리로 정한다", "b": "첫 소리가 모음 소리일 때 an을 쓴다. hour는 h가 소리 나지 않아서 an, university는 첫 소리가 '유'라서 a를 쓴다.", "ex": [["an hour", "한 시간"], ["a university", "한 대학교"]], "bad": "a hour"}], "name": "셀 수 있는 명사 · 셀 수 없는 명사", "kw": "a an 단수 복수 water money advice"}, {"num": "006", "chapter": "Chapter 1", "question": "be동사는 주어에 따라 am·are·is 중 무엇을 쓸까?", "explain": [[{"t": "text", "v": "be동사는 '~이다, ~하다, ~에 있다'라는 뜻이다. 주어가 I이면 "}, {"t": "blank", "v": "am", "choices": ["am", "is"]}, {"t": "text", "v": ", you나 복수이면 "}, {"t": "blank", "v": "are", "choices": ["is", "are"]}, {"t": "text", "v": ", 나머지 3인칭 단수이면 "}, {"t": "blank", "v": "is", "choices": ["is", "are"]}, {"t": "text", "v": "를 쓴다."}], [{"t": "text", "v": "부정문은 be동사 "}, {"t": "blank", "v": "뒤에 not", "choices": ["앞에 not", "뒤에 not"]}, {"t": "text", "v": "을 붙이고, 의문문은 be동사를 "}, {"t": "hl", "v": "문장 맨 앞"}, {"t": "text", "v": "으로 보낸다."}]], "examples": [{"en": [{"t": "text", "v": "The children "}, {"t": "blank", "v": "are", "choices": ["are", "is"]}, {"t": "text", "v": " in the garden."}], "kr": "아이들은 정원에 있다.", "krChunked": "아이들은 / 정원에 / 있다."}, {"en": [{"t": "text", "v": "I "}, {"t": "blank", "v": "am", "choices": ["is", "am"]}, {"t": "text", "v": " not hungry."}], "kr": "나는 배고프지 않다.", "krChunked": "나는 / 배고프지 / 않다."}, {"en": [{"t": "blank", "v": "Is", "choices": ["Is", "Are"]}, {"t": "text", "v": " your uncle a pilot?"}], "kr": "네 삼촌은 조종사이니?", "krChunked": "네 삼촌은 / 조종사이니?"}], "tip": "be동사 뒤에 {{H:명사가 오면 '~이다', 형용사가 오면 '~하다', 장소가 오면 '~에 있다'}}로 해석한다. 부정문·의문문에는 do를 쓰지 않는다. She doesn't is tired. (×)", "check": [{"type": "2지선다", "prompt": "My parents ______ at home now.", "choices": ["are", "is"], "answer": "are", "hint": "parents는 복수라서 are를 쓴다."}, {"type": "3지선다", "prompt": "Are you a teacher? 에 대한 대답으로 알맞은 것을 고르세요.", "choices": ["Yes, I are.", "Yes, I do.", "Yes, I am."], "answer": "Yes, I am.", "hint": "Are you로 물으면 I로 답하고, I의 be동사는 am이다."}], "c1": "be동사는 I→am, you·복수→are, 3인칭 단수→is이며, 부정문은 뒤에 not을 붙이고 의문문은 맨 앞으로 보낸다.", "c3": [{"t": "줄여 쓰는 방법", "b": "I am→I'm, you are→you're, is not→isn't처럼 줄여 쓴다. 단, am not은 amn't로 줄이지 않는다.", "ex": [["I'm not late.", "나는 늦지 않았다."], ["She isn't here.", "그녀는 여기에 없다."]], "bad": "I amn't late."}, {"t": "대답은 질문의 주어를 바꿔서 한다", "b": "질문의 you는 대답에서 I(또는 we)로 바꾼다. Are you ~?에는 Yes, I am. / No, I'm not.으로 답한다.", "ex": [["Are you ready? — Yes, I am.", "준비됐니? — 응, 됐어."]]}], "name": "be동사 현재형 · 부정문 · 의문문", "kw": "am are is"}, {"num": "007", "chapter": "Chapter 1", "question": "be동사의 과거는 was와 were 중 무엇을 쓸까?", "explain": [[{"t": "text", "v": "be동사의 과거형은 "}, {"t": "blank", "v": "was", "choices": ["were", "was"]}, {"t": "text", "v": "와 "}, {"t": "blank", "v": "were", "choices": ["were", "was"]}, {"t": "text", "v": " 두 가지뿐이다."}], [{"t": "text", "v": "I와 3인칭 단수는 "}, {"t": "blank", "v": "was", "choices": ["were", "was"]}, {"t": "text", "v": ", you와 복수는 "}, {"t": "blank", "v": "were", "choices": ["was", "were"]}, {"t": "text", "v": "를 쓴다. am·is의 과거는 "}, {"t": "hl", "v": "was"}, {"t": "text", "v": ", are의 과거는 "}, {"t": "hl", "v": "were"}, {"t": "text", "v": "로 짝지어 외운다."}], [{"t": "text", "v": "부정문은 was/were 뒤에 not을 붙이고, 의문문은 was/were를 "}, {"t": "hl", "v": "문장 맨 앞"}, {"t": "text", "v": "으로 보낸다."}]], "examples": [{"en": [{"t": "text", "v": "My grandmother "}, {"t": "blank", "v": "was", "choices": ["were", "was"]}, {"t": "text", "v": " a nurse."}], "kr": "우리 할머니는 간호사였다.", "krChunked": "우리 할머니는 / 간호사였다."}, {"en": [{"t": "text", "v": "We "}, {"t": "blank", "v": "were", "choices": ["was", "were"]}, {"t": "text", "v": " not late for school."}], "kr": "우리는 학교에 늦지 않았다.", "krChunked": "우리는 / 학교에 / 늦지 않았다."}, {"en": [{"t": "blank", "v": "Were", "choices": ["Was", "Were"]}, {"t": "text", "v": " the tickets expensive?"}], "kr": "그 표들은 비쌌니?", "krChunked": "그 표들은 / 비쌌니?"}], "tip": "{{H:yesterday, last night, ago}}처럼 과거를 나타내는 말이 있으면 be동사도 과거형으로 쓴다. I am at home yesterday. (×)", "check": [{"type": "2지선다", "prompt": "The boys ______ in the gym last night.", "choices": ["was", "were"], "answer": "were", "hint": "The boys는 복수이므로 were를 쓴다."}, {"type": "2지선다", "prompt": "'너는 어제 피곤했니?'를 영어로 바르게 쓴 것을 고르세요.", "choices": ["Were you tired yesterday?", "Was you tired yesterday?"], "answer": "Were you tired yesterday?", "hint": "you는 단수일 때도 was가 아니라 were를 쓴다."}], "c1": "be동사의 과거형은 am·is → was, are → were이다.", "c3": [{"t": "there was / there were도 같은 규칙이다", "b": "There be 구문은 뒤에 오는 명사의 수에 맞춰 was와 were를 고른다.", "ex": [["There were two cats on the roof.", "지붕 위에 고양이 두 마리가 있었다."]], "bad": "There was two cats on the roof."}, {"t": "부정문 줄임말", "b": "was not은 wasn't, were not은 weren't로 줄여 쓴다.", "ex": [["He wasn't at home.", "그는 집에 없었다."], ["They weren't there.", "그들은 거기에 없었다."]]}], "name": "be동사 과거형 · 부정문 · 의문문", "kw": "was were"}, {"num": "008", "chapter": "Chapter 1", "question": "he·she·it이 주어일 때 동사에는 어떤 변화가 생길까?", "explain": [[{"t": "text", "v": "주어가 he, she, it처럼 "}, {"t": "blank", "v": "3인칭 단수", "choices": ["3인칭 단수", "복수"]}, {"t": "text", "v": "이고 현재의 일을 말할 때는 일반동사 뒤에 "}, {"t": "blank", "v": "-(e)s", "choices": ["-(e)s", "-ed"]}, {"t": "text", "v": "를 붙인다."}], [{"t": "text", "v": "대부분은 -s만 붙이지만, "}, {"t": "hl", "v": "-s, -sh, -ch, -x, -o로 끝나는 동사는 -es"}, {"t": "text", "v": "를 붙이고, "}, {"t": "hl", "v": "'자음+y'로 끝나면 y를 i로 바꾸고 -es"}, {"t": "text", "v": "를 붙인다. have는 "}, {"t": "blank", "v": "has", "choices": ["haves", "has"]}, {"t": "text", "v": "로 바뀐다."}]], "examples": [{"en": [{"t": "text", "v": "My father "}, {"t": "blank", "v": "fixes", "choices": ["fixs", "fixes"]}, {"t": "text", "v": " bikes."}], "kr": "우리 아빠는 자전거를 고치신다.", "krChunked": "우리 아빠는 / 자전거를 / 고치신다."}, {"en": [{"t": "text", "v": "She "}, {"t": "blank", "v": "cries", "choices": ["crys", "cries"]}, {"t": "text", "v": " at sad movies."}], "kr": "그녀는 슬픈 영화를 보면 운다.", "krChunked": "그녀는 / 슬픈 영화를 보면 / 운다."}, {"en": [{"t": "text", "v": "He "}, {"t": "blank", "v": "has", "choices": ["has", "haves"]}, {"t": "text", "v": " two dogs."}], "kr": "그는 개 두 마리를 가지고 있다.", "krChunked": "그는 / 개 두 마리를 / 가지고 있다."}], "tip": "주어가 I, you, we, they(복수)일 때는 {{H:동사원형 그대로}} 쓰고, he/she/it 같은 3인칭 단수일 때만 -(e)s를 붙인다. She like music. (×)", "check": [{"type": "3지선다", "prompt": "He ______ English every day. (study)", "choices": ["study", "studys", "studies"], "answer": "studies", "hint": "study는 '자음+y'로 끝나니 y를 i로 바꾸고 -es를 붙인다."}, {"type": "3지선다", "prompt": "다음 중 옳지 않은 문장을 고르세요.", "choices": ["He watchs TV.", "She goes to school.", "It rains a lot."], "answer": "He watchs TV.", "hint": "watch는 -ch로 끝나서 -es를 붙여 watches가 된다."}], "c1": "주어가 3인칭 단수(he·she·it)이고 현재일 때만 일반동사에 -(e)s를 붙인다.", "c3": [{"t": "사람 이름이나 하나인 명사도 3인칭 단수다", "b": "Tom, my mother, the dog처럼 하나인 사람·동물·사물도 he/she/it으로 바꿀 수 있으면 동사에 -(e)s를 붙인다.", "ex": [["The baby sleeps all day.", "그 아기는 하루 종일 잔다."]]}, {"t": "'모음+y'는 그냥 -s만 붙인다", "b": "y를 i로 바꾸는 것은 '자음+y'일 때뿐이다. play처럼 '모음+y'로 끝나면 -s만 붙인다.", "ex": [["He plays the piano.", "그는 피아노를 친다."]], "bad": "He plaies the piano."}], "name": "일반동사 3인칭 단수 현재형", "kw": "he she it s es 3단현"}, {"num": "009", "chapter": "Chapter 1", "question": "과거의 일을 말할 때 일반동사는 어떻게 바뀔까?", "explain": [[{"t": "text", "v": "과거의 일을 말할 때는 일반동사를 과거형으로 바꾼다. 대부분은 동사원형에 "}, {"t": "blank", "v": "-ed", "choices": ["-s", "-ed"]}, {"t": "text", "v": "를 붙이는 "}, {"t": "blank", "v": "규칙", "choices": ["불규칙", "규칙"]}, {"t": "text", "v": "변화이다."}], [{"t": "text", "v": "그러나 go→went, make→made처럼 완전히 다른 모양으로 바뀌는 "}, {"t": "blank", "v": "불규칙", "choices": ["규칙", "불규칙"]}, {"t": "text", "v": "변화 동사도 많다. 불규칙 동사는 "}, {"t": "hl", "v": "따로 외워야 한다"}, {"t": "text", "v": "."}], [{"t": "text", "v": "-e로 끝나는 동사는 "}, {"t": "hl", "v": "-d만"}, {"t": "text", "v": " 붙이고, '자음+y'로 끝나는 동사는 y를 i로 바꾸고 -ed를 붙인다."}]], "examples": [{"en": [{"t": "text", "v": "We "}, {"t": "blank", "v": "cleaned", "choices": ["clean", "cleaned"]}, {"t": "text", "v": " the classroom after lunch."}], "kr": "우리는 점심 후에 교실을 청소했다.", "krChunked": "우리는 / 점심 후에 / 교실을 / 청소했다."}, {"en": [{"t": "text", "v": "He "}, {"t": "blank", "v": "tried", "choices": ["tryed", "tried"]}, {"t": "text", "v": " the new game."}], "kr": "그는 새 게임을 해 보았다.", "krChunked": "그는 / 새 게임을 / 해 보았다."}, {"en": [{"t": "text", "v": "I "}, {"t": "blank", "v": "ate", "choices": ["eated", "ate"]}, {"t": "text", "v": " noodles for dinner."}], "kr": "나는 저녁으로 국수를 먹었다.", "krChunked": "나는 / 저녁으로 / 국수를 / 먹었다."}], "tip": "{{H:last, yesterday, ago}}가 있으면 과거형을 쓴다. 불규칙 동사의 과거형에 -ed를 또 붙이지 않도록 주의하자. She goed to the market. (×)", "check": [{"type": "3지선다", "prompt": "다음 중 동사의 과거형이 옳지 않은 것을 고르세요.", "choices": ["take - taked", "go - went", "make - made"], "answer": "take - taked", "hint": "take는 불규칙 동사이고 과거형은 took이다."}, {"type": "2지선다", "prompt": "I ______ a letter last week. (write)", "choices": ["wrote", "writed"], "answer": "wrote", "hint": "write는 불규칙 동사이고 과거형은 wrote이다."}], "c1": "규칙동사는 -ed를 붙이고, 불규칙동사는 went·made처럼 모양이 바뀌므로 따로 외운다.", "c3": [{"t": "현재와 과거가 같은 모양인 동사도 있다", "b": "cut, put, read처럼 현재형과 과거형이 같은 동사가 있다. 이때는 yesterday 같은 시간 표현으로 과거인지 판단한다.", "ex": [["I put my keys on the desk yesterday.", "나는 어제 열쇠를 책상 위에 두었다."]]}, {"t": "-ed는 소리가 세 가지다", "b": "-ed는 [t], [d], [id] 세 가지로 소리 난다. walked는 [t], played는 [d], wanted는 [id]로 읽는다.", "ex": [["He wanted a new bike.", "그는 새 자전거를 원했다."]]}], "name": "일반동사의 과거형", "kw": "ed 규칙 불규칙 과거"}, {"num": "010", "chapter": "Chapter 1", "question": "일반동사 문장은 왜 don't·doesn't·didn't의 도움이 필요할까?", "explain": [[{"t": "text", "v": "일반동사 문장의 부정문과 의문문은 "}, {"t": "blank", "v": "do/does/did", "choices": ["do/does/did", "am/is/are"]}, {"t": "text", "v": "의 도움을 받아 만든다."}], [{"t": "text", "v": "부정문은 주어 뒤에 "}, {"t": "blank", "v": "don't/doesn't/didn't", "choices": ["aren't", "don't/doesn't/didn't"]}, {"t": "text", "v": "를 넣고, 의문문은 "}, {"t": "blank", "v": "Do/Does/Did", "choices": ["Do/Does/Did", "Is"]}, {"t": "text", "v": "를 문장 맨 앞에 놓는다."}], [{"t": "text", "v": "do/does/did가 시제와 인칭을 대신 나타내므로 뒤에 오는 동사는 "}, {"t": "hl", "v": "항상 동사원형"}, {"t": "text", "v": "으로 쓴다."}]], "examples": [{"en": [{"t": "text", "v": "My dad "}, {"t": "blank", "v": "doesn't", "choices": ["don't", "doesn't"]}, {"t": "text", "v": " "}, {"t": "verb", "v": "drink"}, {"t": "text", "v": " coffee."}], "kr": "우리 아빠는 커피를 마시지 않는다.", "krChunked": "우리 아빠는 / 커피를 / 마시지 않는다."}, {"en": [{"t": "blank", "v": "Did", "choices": ["Did", "Do"]}, {"t": "text", "v": " you "}, {"t": "verb", "v": "finish"}, {"t": "text", "v": " your homework?"}], "kr": "너는 숙제를 끝냈니?", "krChunked": "너는 / 숙제를 / 끝냈니?"}, {"en": [{"t": "text", "v": "They "}, {"t": "blank", "v": "didn't", "choices": ["didn't", "don't"]}, {"t": "text", "v": " "}, {"t": "verb", "v": "visit"}, {"t": "text", "v": " us last week."}], "kr": "그들은 지난주에 우리를 방문하지 않았다.", "krChunked": "그들은 / 지난주에 / 우리를 / 방문하지 않았다."}], "tip": "do/does/did 뒤에는 {{H:동사원형}}만 온다. 3인칭 단수 -s나 과거형 -ed를 또 붙이지 않도록 주의하자. She doesn't likes music. (×)", "check": [{"type": "3지선다", "prompt": "He doesn't ______ meat.", "choices": ["eat", "ate", "eats"], "answer": "eat", "hint": "doesn't 뒤에는 동사원형을 쓴다."}, {"type": "2지선다", "prompt": "Did she went to the party? 를 바르게 고친 것을 고르세요.", "choices": ["Did she go to the party?", "Does she went to the party?"], "answer": "Did she go to the party?", "hint": "Did 뒤에는 동사원형 go를 쓴다."}], "c1": "일반동사의 부정문·의문문은 do/does/did를 쓰고, 뒤에 오는 동사는 항상 동사원형이다.", "c3": [{"t": "대답도 do/does/did로 한다", "b": "일반동사 의문문에는 같은 do/does/did로 대답한다.", "ex": [["Do you like pizza? — Yes, I do. / No, I don't.", "피자 좋아하니? — 응, 좋아해. / 아니, 안 좋아해."]]}, {"t": "be동사 문장에는 do를 쓰지 않는다", "b": "be동사는 스스로 부정문·의문문을 만든다. She is kind.의 부정은 isn't, 의문은 Is she kind?이다.", "ex": [["Is he tired? — No, he isn't.", "그는 피곤하니? — 아니, 안 피곤해."]], "bad": "Does he is tired?"}], "name": "일반동사의 부정문 · 의문문", "kw": "do does did don't doesn't didn't"}, {"num": "011", "chapter": "Chapter 2", "question": "조동사 뒤에는 왜 동사원형만 올까?", "explain": [[{"t": "text", "v": "조동사는 동사를 도와 "}, {"t": "blank", "v": "뜻", "choices": ["뜻", "시제"]}, {"t": "text", "v": "을 더해 주는 말이다(can, will, must 등)."}], [{"t": "text", "v": "조동사 뒤에는 항상 "}, {"t": "blank", "v": "동사원형", "choices": ["동사원형", "to부정사"]}, {"t": "text", "v": "이 오고, 주어가 3인칭 단수여도 조동사나 동사에 "}, {"t": "hl", "v": "-s를 붙이지 않는다"}, {"t": "text", "v": "."}], [{"t": "text", "v": "부정문은 조동사 "}, {"t": "blank", "v": "뒤에 not", "choices": ["뒤에 not", "앞에 not"]}, {"t": "text", "v": "을 붙이고, 의문문은 조동사를 "}, {"t": "hl", "v": "주어 앞"}, {"t": "text", "v": "으로 보낸다."}]], "examples": [{"en": [{"t": "text", "v": "My sister "}, {"t": "blank", "v": "can", "choices": ["cans", "can"]}, {"t": "text", "v": " "}, {"t": "verb", "v": "play"}, {"t": "text", "v": " the cello."}], "kr": "우리 누나는 첼로를 연주할 수 있다.", "krChunked": "우리 누나는 / 첼로를 / 연주할 수 있다."}, {"en": [{"t": "text", "v": "You should not "}, {"t": "blank", "v": "waste", "choices": ["waste", "wasting"]}, {"t": "text", "v": " water."}], "kr": "너는 물을 낭비하면 안 된다.", "krChunked": "너는 / 물을 / 낭비하면 안 된다."}, {"en": [{"t": "blank", "v": "Can", "choices": ["Is", "Can"]}, {"t": "text", "v": " he "}, {"t": "verb", "v": "ride"}, {"t": "text", "v": " a bike?"}], "kr": "그는 자전거를 탈 수 있니?", "krChunked": "그는 / 자전거를 / 탈 수 있니?"}], "tip": "조동사 뒤에는 {{H:동사원형}}만 온다. 3인칭 단수 -s나 to부정사를 붙이지 않도록 주의하자. He cans swim fast. (×) She will to go home. (×)", "check": [{"type": "3지선다", "prompt": "She ______ speak three languages.", "choices": ["cans", "can", "can to"], "answer": "can", "hint": "조동사는 주어가 3인칭 단수여도 -s를 붙이지 않는다."}, {"type": "3지선다", "prompt": "다음 중 옳지 않은 문장을 고르세요.", "choices": ["She can dances well.", "They must go now.", "He will come soon."], "answer": "She can dances well.", "hint": "can 뒤에는 동사원형 dance를 쓴다."}], "c1": "조동사 뒤에는 항상 동사원형이 오고, 주어가 3인칭 단수여도 -s를 붙이지 않는다.", "c3": [{"t": "조동사는 두 개를 겹쳐 쓰지 않는다", "b": "can과 will처럼 조동사끼리 이어 쓰지 않는다. 미래의 능력은 will be able to로 나타낸다.", "ex": [["She will be able to drive next year.", "그녀는 내년에 운전할 수 있게 될 것이다."]], "bad": "She will can drive next year."}, {"t": "부정 줄임말", "b": "cannot은 한 단어로 쓰고, will not은 won't로 줄인다.", "ex": [["I can't open it.", "나는 그것을 열 수 없다."], ["We won't forget you.", "우리는 너를 잊지 않을 것이다."]]}], "name": "조동사의 개념과 특징", "kw": "can will must 동사원형"}, {"num": "012", "chapter": "Chapter 2", "question": "미래·능력·허락은 조동사로 어떻게 말할까?", "explain": [[{"t": "text", "v": "will과 be going to는 '"}, {"t": "blank", "v": "~할 것이다", "choices": ["~했다", "~할 것이다"]}, {"t": "text", "v": "'라는 미래를 나타낸다. will은 그 자리에서 정한 일이나 예측에, be going to는 "}, {"t": "hl", "v": "미리 계획해 둔 일"}, {"t": "text", "v": "에 주로 쓴다."}], [{"t": "text", "v": "can은 '~할 수 있다'(능력)와 '~해도 된다'(허락), may는 '~해도 된다'(허락)와 '~일지도 모른다'(추측)를 나타낸다. 추측의 뜻이 있는 것은 "}, {"t": "blank", "v": "may", "choices": ["can", "may"]}, {"t": "text", "v": "이다."}], [{"t": "text", "v": "be going to의 be동사는 주어에 따라 "}, {"t": "blank", "v": "am/are/is", "choices": ["do/does", "am/are/is"]}, {"t": "text", "v": "로 바꾸고, 뒤에는 "}, {"t": "hl", "v": "동사원형"}, {"t": "text", "v": "이 온다."}]], "examples": [{"en": [{"t": "text", "v": "It "}, {"t": "verb", "v": "is"}, {"t": "text", "v": " cloudy. It "}, {"t": "blank", "v": "may", "choices": ["can", "may"]}, {"t": "text", "v": " rain this afternoon."}], "kr": "날이 흐리다. 오늘 오후에 비가 올지도 모른다.", "krChunked": "날이 흐리다. / 오늘 오후에 / 비가 올지도 / 모른다."}, {"en": [{"t": "text", "v": "We "}, {"t": "blank", "v": "are", "choices": ["will", "are"]}, {"t": "text", "v": " going to "}, {"t": "verb", "v": "visit"}, {"t": "text", "v": " my grandparents on Sunday."}], "kr": "우리는 일요일에 조부모님을 찾아뵐 예정이다.", "krChunked": "우리는 / 일요일에 / 조부모님을 / 찾아뵐 예정이다."}, {"en": [{"t": "blank", "v": "May", "choices": ["Will", "May"]}, {"t": "text", "v": " I "}, {"t": "verb", "v": "borrow"}, {"t": "text", "v": " your pen?"}], "kr": "제가 네 펜을 빌려도 될까?", "krChunked": "제가 / 네 펜을 / 빌려도 될까?"}], "tip": "will과 be going to 뒤에는 둘 다 {{H:동사원형}}이 온다. 또 be going to에서 be동사를 빠뜨리지 않도록 주의하자. I going to visit Jeju. (×) I am going to visit Jeju.", "check": [{"type": "3지선다", "prompt": "I ______ to join the chess club next month. (미리 정해 둔 일)", "choices": ["going", "will going", "am going"], "answer": "am going", "hint": "be going to는 미리 계획해 둔 일에 쓰고, be동사가 꼭 필요하다."}, {"type": "2지선다", "prompt": "It may snow tonight. 에서 may의 뜻으로 알맞은 것을 고르세요.", "choices": ["허락(~해도 된다)", "추측(~일지도 모른다)"], "answer": "추측(~일지도 모른다)", "hint": "날씨를 말할 때 may는 '~일지도 모른다'는 추측이다."}], "c1": "will·be going to는 미래, can은 능력·허락, may는 허락·추측을 나타내고 모두 뒤에 동사원형이 온다.", "c3": [{"t": "허락을 구할 때 can과 may의 차이", "b": "may는 can보다 정중하다. 친구끼리는 can, 어른께는 may를 쓴다.", "ex": [["May I come in?", "들어가도 될까요?"]]}, {"t": "can의 과거형은 could이다", "b": "과거의 능력은 could로 말하고, 미래의 능력은 will be able to로 말한다.", "ex": [["He could run fast when he was young.", "그는 어렸을 때 빨리 달릴 수 있었다."]]}], "name": "will · be going to · can · may", "kw": "미래 능력 허락 추측 조동사"}, {"num": "013", "chapter": "Chapter 2", "question": "'해야 한다'와 '하면 안 된다'는 어떻게 다를까?", "explain": [[{"t": "blank", "v": "should", "choices": ["must", "should"]}, {"t": "text", "v": "는 '~하는 게 좋겠다'는 충고이고, must와 have to는 '~해야 한다'는 "}, {"t": "blank", "v": "의무", "choices": ["추측", "의무"]}, {"t": "text", "v": "이다."}], [{"t": "text", "v": "부정이 되면 뜻이 크게 갈린다. must not은 '"}, {"t": "blank", "v": "~하면 안 된다", "choices": ["~할 필요 없다", "~하면 안 된다"]}, {"t": "text", "v": "'(금지), don't have to는 '"}, {"t": "blank", "v": "~할 필요 없다", "choices": ["~할 필요 없다", "~하면 안 된다"]}, {"t": "text", "v": "'(불필요)이다."}], [{"t": "text", "v": "have to는 주어가 3인칭 단수일 때 "}, {"t": "blank", "v": "has to", "choices": ["have to", "has to"]}, {"t": "text", "v": "가 되고, must는 과거형이 없어서 과거는 "}, {"t": "hl", "v": "had to"}, {"t": "text", "v": "로 쓴다."}]], "examples": [{"en": [{"t": "text", "v": "Students "}, {"t": "blank", "v": "must not", "choices": ["don't have to", "must not"]}, {"t": "text", "v": " "}, {"t": "verb", "v": "use"}, {"t": "text", "v": " phones during the exam."}], "kr": "학생들은 시험 중에 휴대전화를 쓰면 안 된다.", "krChunked": "학생들은 / 시험 중에 / 휴대전화를 / 쓰면 안 된다."}, {"en": [{"t": "text", "v": "You "}, {"t": "blank", "v": "don't have to", "choices": ["must not", "don't have to"]}, {"t": "text", "v": " bring lunch. We provide it."}], "kr": "너는 점심을 가져올 필요 없다. 우리가 제공한다.", "krChunked": "너는 / 점심을 / 가져올 필요 없다. / 우리가 제공한다."}, {"en": [{"t": "text", "v": "He "}, {"t": "blank", "v": "has to", "choices": ["has to", "have to"]}, {"t": "text", "v": " "}, {"t": "verb", "v": "wake"}, {"t": "text", "v": " up at five every day."}], "kr": "그는 매일 다섯 시에 일어나야 한다.", "krChunked": "그는 / 매일 / 다섯 시에 / 일어나야 한다."}, {"en": [{"t": "text", "v": "You "}, {"t": "blank", "v": "should", "choices": ["should", "may"]}, {"t": "text", "v": " "}, {"t": "verb", "v": "see"}, {"t": "text", "v": " a doctor about that cough."}], "kr": "너는 그 기침 때문에 병원에 가 보는 게 좋겠다.", "krChunked": "너는 / 그 기침 때문에 / 병원에 가 보는 게 / 좋겠다."}], "tip": "{{H:must not은 금지, don't have to는 불필요}}로 뜻이 완전히 다르다. 또 must는 과거형이 없어서 {{H:과거는 had to}}로 쓴다. I must finish it yesterday. (×) I had to finish it yesterday.", "check": [{"type": "3지선다", "prompt": "'너는 오늘 청소할 필요가 없다'를 영어로 쓸 때, You ______ clean today. 빈칸에 알맞은 것을 고르세요.", "choices": ["should not", "don't have to", "must not"], "answer": "don't have to", "hint": "'~할 필요 없다'는 don't have to이다. must not은 '하면 안 된다'는 금지다."}, {"type": "3지선다", "prompt": "다음 중 옳지 않은 문장을 고르세요.", "choices": ["He has to leave now.", "I must finish it yesterday.", "She should rest more."], "answer": "I must finish it yesterday.", "hint": "must는 과거형이 없다. 과거는 had to로 쓴다."}], "c1": "must·have to는 의무, should는 충고이고, must not은 금지, don't have to는 '~할 필요 없다'이다.", "c3": [{"t": "must는 강한 추측도 된다", "b": "'~임에 틀림없다'로 쓰이면 확신하는 추측이다. 반대 뜻은 cannot(~일 리 없다)이다.", "ex": [["The light is on. He must be at home.", "불이 켜져 있다. 그는 집에 있는 게 틀림없다."], ["That cannot be true.", "그것이 사실일 리 없다."]]}, {"t": "should보다 강한 충고는 had better이다", "b": "should는 부드러운 충고이고, had better는 안 따르면 나쁜 일이 생길 것 같은 강한 충고다.", "ex": [["You had better take an umbrella.", "우산을 가져가는 게 좋겠다."]]}], "name": "must · should · have to", "kw": "의무 충고 금지 don't have to had to"}, {"num": "014", "chapter": "Chapter 2", "question": "일이 일어난 때에 따라 동사는 어떻게 바뀔까?", "explain": [[{"t": "blank", "v": "현재", "choices": ["현재", "과거"]}, {"t": "text", "v": "시제는 지금의 사실·습관·변하지 않는 진리를, "}, {"t": "blank", "v": "과거", "choices": ["현재", "과거"]}, {"t": "text", "v": "시제는 이미 끝난 일을, "}, {"t": "blank", "v": "미래", "choices": ["미래", "현재"]}, {"t": "text", "v": "시제는 앞으로 일어날 일을 나타낸다."}], [{"t": "hl", "v": "yesterday, last week, ago"}, {"t": "text", "v": "처럼 과거를 나타내는 말과는 과거시제를 쓰고, 미래는 will이나 be going to로 나타낸다."}], [{"t": "text", "v": "단, 시간·조건을 나타내는 부사절(when, until, if 등)에서는 미래의 일이어도 "}, {"t": "blank", "v": "현재시제", "choices": ["will", "현재시제"]}, {"t": "text", "v": "를 쓴다."}]], "examples": [{"en": [{"t": "text", "v": "The sun "}, {"t": "blank", "v": "rises", "choices": ["rose", "rises"]}, {"t": "text", "v": " in the east."}], "kr": "해는 동쪽에서 뜬다.", "krChunked": "해는 / 동쪽에서 / 뜬다."}, {"en": [{"t": "text", "v": "We "}, {"t": "blank", "v": "visited", "choices": ["visited", "visit"]}, {"t": "text", "v": " the museum last Friday."}], "kr": "우리는 지난 금요일에 박물관을 방문했다.", "krChunked": "우리는 / 지난 금요일에 / 박물관을 / 방문했다."}, {"en": [{"t": "text", "v": "We "}, {"t": "verb", "v": "will wait"}, {"t": "text", "v": " here until the bus "}, {"t": "blank", "v": "arrives", "choices": ["arrives", "will arrive"]}, {"t": "text", "v": "."}], "kr": "우리는 버스가 도착할 때까지 여기서 기다릴 것이다.", "krChunked": "우리는 / 버스가 도착할 때까지 / 여기서 / 기다릴 것이다."}], "tip": "시간·조건 부사절에서는 {{H:미래의 일도 현재시제}}로 쓴다. I will call you when I will arrive. (×) I will call you when I arrive.", "check": [{"type": "2지선다", "prompt": "I will tell you everything when I ______ home.", "choices": ["get", "will get"], "answer": "get", "hint": "when이 이끄는 시간 부사절에서는 미래의 일도 현재시제로 쓴다."}, {"type": "3지선다", "prompt": "다음 중 과거시제 문장에 쓸 수 없는 표현을 고르세요.", "choices": ["yesterday", "two days ago", "tomorrow"], "answer": "tomorrow", "hint": "tomorrow는 미래를 나타내는 말이라 과거시제와 함께 쓰지 않는다."}], "c1": "현재는 사실·습관·진리, 과거는 끝난 일, 미래는 will이나 be going to로 나타내며, 시간·조건 부사절에서는 미래도 현재시제를 쓴다.", "c3": [{"t": "변하지 않는 사실은 늘 현재시제이다", "b": "과거의 일을 이야기하는 중이어도 변하지 않는 사실은 현재시제로 쓴다.", "ex": [["My teacher said that water boils at 100°C.", "선생님께서 물은 섭씨 100도에서 끓는다고 말씀하셨다."]]}, {"t": "when 뒤에 will이 오는 경우", "b": "when이 '언제 ~할지'라는 뜻으로 목적어 자리에 오면 명사절이라서 미래는 will로 쓴다.", "ex": [["I don't know when he will arrive.", "나는 그가 언제 도착할지 모른다."]]}], "name": "기본시제 (현재·과거·미래)", "kw": "현재 과거 미래 시제 when if until"}, {"num": "015", "chapter": "Chapter 2", "question": "'지금 ~하고 있다'는 어떤 모양으로 말할까?", "explain": [[{"t": "text", "v": "진행시제는 'be동사 + 동사원형-ing'로 만들며, 어떤 순간에 동작이 "}, {"t": "blank", "v": "진행 중", "choices": ["끝난", "진행 중"]}, {"t": "text", "v": "임을 나타낸다."}], [{"t": "text", "v": "be동사가 am/are/is이면 현재진행('~하고 있다'), was/were이면 "}, {"t": "blank", "v": "과거진행", "choices": ["과거진행", "미래진행"]}, {"t": "text", "v": "('~하고 있었다'), will be이면 "}, {"t": "blank", "v": "미래진행", "choices": ["미래진행", "과거진행"]}, {"t": "text", "v": "('~하고 있을 것이다')이다."}], [{"t": "text", "v": "-ing를 만들 때 -e로 끝나는 동사는 "}, {"t": "hl", "v": "e를 빼고"}, {"t": "text", "v": " -ing를 붙이고, '단모음+단자음'으로 끝나는 동사는 "}, {"t": "hl", "v": "자음을 한 번 더"}, {"t": "text", "v": " 쓰고 -ing를 붙인다(make → making, run → running)."}]], "examples": [{"en": [{"t": "text", "v": "Dad "}, {"t": "blank", "v": "is", "choices": ["does", "is"]}, {"t": "text", "v": " "}, {"t": "verb", "v": "washing"}, {"t": "text", "v": " the car now."}], "kr": "아빠는 지금 세차를 하고 계신다.", "krChunked": "아빠는 / 지금 / 세차를 / 하고 계신다."}, {"en": [{"t": "text", "v": "I "}, {"t": "blank", "v": "was", "choices": ["am", "was"]}, {"t": "text", "v": " "}, {"t": "blank", "v": "running", "choices": ["running", "runing"]}, {"t": "text", "v": " when it started to rain."}], "kr": "나는 비가 오기 시작했을 때 달리고 있었다.", "krChunked": "나는 / 비가 오기 시작했을 때 / 달리고 / 있었다."}, {"en": [{"t": "text", "v": "At noon tomorrow, they "}, {"t": "blank", "v": "will be", "choices": ["are", "will be"]}, {"t": "text", "v": " "}, {"t": "verb", "v": "flying"}, {"t": "text", "v": " to Busan."}], "kr": "내일 정오에 그들은 부산으로 날아가고 있을 것이다.", "krChunked": "내일 정오에 / 그들은 / 부산으로 / 날아가고 있을 것이다."}], "tip": "know, like, want, have(가지다)처럼 {{H:상태를 나타내는 동사}}는 보통 진행형으로 쓰지 않는다. I am knowing the answer. (×) I know the answer.", "check": [{"type": "3지선다", "prompt": "My brother ______ to music now.", "choices": ["listens", "listened", "is listening"], "answer": "is listening", "hint": "now가 있으니 지금 진행 중인 동작이다. 현재진행은 be동사+-ing로 쓴다."}, {"type": "3지선다", "prompt": "진행형으로 쓸 수 없는 동사를 고르세요.", "choices": ["study", "want", "run"], "answer": "want", "hint": "want는 상태를 나타내는 동사라서 보통 진행형으로 쓰지 않는다."}], "c1": "진행시제는 be동사+-ing로 만들고, know·like 같은 상태 동사는 진행형으로 쓰지 않는다.", "c3": [{"t": "가까운 미래의 계획도 현재진행으로 말한다", "b": "tomorrow 같은 말과 함께 쓰이면 '~할 예정이다'라는 뜻이 된다.", "ex": [["I am meeting my cousin tomorrow.", "나는 내일 사촌을 만날 예정이다."]]}, {"t": "have는 뜻에 따라 다르다", "b": "have가 '가지다'이면 진행형으로 쓰지 않지만, '먹다'이면 진행형으로 쓸 수 있다.", "ex": [["She is having lunch now.", "그녀는 지금 점심을 먹고 있다."]], "bad": "She is having two brothers."}], "name": "진행시제 (현재·과거·미래진행)", "kw": "진행형 be ing 상태동사"}, {"num": "031", "chapter": "Chapter 5 · 동아(윤정미) 6과", "question": "눈·귀·코로 알아차리는 동사 뒤에서 '~하는 것을'이라고 할 때, 동사 모양은 어떻게 될까?", "explain": [[{"t": "text", "v": "watch, see, hear, feel, smell처럼 눈·귀·피부·코로 알아차리는 동작을 나타내는 동사를 "}, {"t": "blank", "v": "지각동사", "choices": ["사역동사", "지각동사"]}, {"t": "text", "v": "라고 한다. 지각동사 뒤에 '목적어+목적격보어'를 쓰면 보어 자리에 "}, {"t": "blank", "v": "동사원형", "choices": ["동사원형", "to부정사"]}, {"t": "text", "v": "이나 "}, {"t": "blank", "v": "현재분사", "choices": ["현재분사", "과거분사"]}, {"t": "text", "v": "(-ing)가 오고, "}, {"t": "hl", "v": "to부정사는 쓰지 않는다"}, {"t": "text", "v": "."}], [{"t": "text", "v": "목적어가 그 동작을 직접 하는 관계(능동)일 때, 동작이 한창 진행되는 모습을 말하면 "}, {"t": "blank", "v": "현재분사", "choices": ["현재분사", "동사원형"]}, {"t": "text", "v": ", 처음부터 끝까지 지켜본 것을 말하면 "}, {"t": "blank", "v": "동사원형", "choices": ["동사원형", "현재분사"]}, {"t": "text", "v": "을 쓴다. 목적어가 동작을 당하는 관계(수동)이면 "}, {"t": "hl", "v": "과거분사"}, {"t": "text", "v": "를 쓴다."}]], "examples": [{"en": [{"t": "text", "v": "She "}, {"t": "verb", "v": "watched"}, {"t": "text", "v": " the kids "}, {"t": "blank", "v": "playing", "choices": ["played", "playing"]}, {"t": "text", "v": " in the yard."}], "kr": "그녀는 아이들이 마당에서 놀고 있는 것을 지켜보았다.", "krChunked": "그녀는 / 아이들이 / 마당에서 놀고 있는 것을 / 지켜보았다."}, {"en": [{"t": "text", "v": "I "}, {"t": "verb", "v": "felt"}, {"t": "text", "v": " the house "}, {"t": "blank", "v": "shake", "choices": ["to shake", "shake"]}, {"t": "text", "v": " for a moment."}], "kr": "나는 집이 잠깐 흔들리는 것을 느꼈다.", "krChunked": "나는 / 집이 / 잠깐 흔들리는 것을 / 느꼈다."}, {"en": [{"t": "text", "v": "Mina "}, {"t": "verb", "v": "heard"}, {"t": "text", "v": " her name "}, {"t": "blank", "v": "announced", "choices": ["announced", "announce"]}, {"t": "text", "v": " on the radio."}], "kr": "미나는 라디오에서 자기 이름이 발표되는 것을 들었다.", "krChunked": "미나는 / 라디오에서 / 자기 이름이 발표되는 것을 / 들었다."}], "tip": "목적어와 보어가 능동인지 수동인지 {{H:먼저 확인하자}}. 능동이면 동사원형·현재분사, 수동이면 과거분사다. I saw Jina to enter the room. (×) I saw Jina enter the room.", "check": [{"type": "2지선다", "prompt": "Mina heard her name ______ on the radio.", "choices": ["announced", "announce"], "answer": "announced", "hint": "name과 announce는 '이름이 발표되는' 수동 관계이므로 과거분사를 쓴다."}, {"type": "3지선다", "prompt": "지각동사가 아닌 것을 고르세요.", "choices": ["let", "watch", "smell"], "answer": "let", "hint": "let은 사역동사다. 지각동사는 감각으로 알아차리는 동작을 나타낸다."}], "c1": "지각동사의 목적격보어는 능동이면 현재분사·동사원형, 수동이면 과거분사를 쓰고 to부정사는 쓰지 않는다.", "c3": [{"t": "feel, smell도 같은 규칙이다", "b": "see·hear뿐 아니라 feel, smell, watch, listen to도 같은 방식으로 쓴다.", "ex": [["I smelled something burning in the kitchen.", "나는 부엌에서 무언가 타는 냄새를 맡았다."], ["I felt a bug crawl up my arm.", "나는 벌레가 팔을 기어오르는 것을 느꼈다."]]}, {"t": "to부정사는 쓰지 않는다", "b": "지각동사 뒤 목적격보어 자리에 to부정사를 쓰면 틀린다.", "ex": [["We saw him cross the street.", "우리는 그가 길을 건너는 것을 보았다."]], "bad": "We saw him to cross the street."}], "name": "지각동사", "kw": "5형식 see watch hear listen feel smell 현재분사 과거분사 목적격보어"}, {"num": "058", "chapter": "Chapter 9 · 동아(윤정미) 5과", "question": "'예전에는 그랬는데 지금은 아니야'를 말하려면 어떤 표현을 쓸까?", "explain": [[{"t": "text", "v": "'"}, {"t": "blank", "v": "used to", "choices": ["use to", "used to"]}, {"t": "text", "v": " + 동사원형'은 과거에는 그랬지만 "}, {"t": "hl", "v": "지금은 아닌"}, {"t": "text", "v": " 습관이나 상태를 나타내며 '~하곤 했다, ~이었다'로 해석한다."}], [{"t": "text", "v": "과거의 습관은 used to와 "}, {"t": "blank", "v": "would", "choices": ["would", "will"]}, {"t": "text", "v": " 둘 다 나타낼 수 있다. 하지만 "}, {"t": "blank", "v": "would", "choices": ["would", "used to"]}, {"t": "text", "v": "는 "}, {"t": "hl", "v": "과거의 상태('~이 있었다, ~이었다')를 나타낼 수 없다"}, {"t": "text", "v": "."}], [{"t": "text", "v": "used to의 부정문·의문문은 일반동사처럼 "}, {"t": "blank", "v": "did", "choices": ["do", "did"]}, {"t": "text", "v": "를 쓰고, 이때 used to는 "}, {"t": "blank", "v": "use to", "choices": ["use to", "used to"]}, {"t": "text", "v": "로 바뀐다: He didn't use to wear glasses. / Did she use to live here?"}]], "examples": [{"en": [{"t": "text", "v": "My dad "}, {"t": "blank", "v": "used to", "choices": ["used to", "use to"]}, {"t": "text", "v": " "}, {"t": "verb", "v": "collect"}, {"t": "text", "v": " stamps."}], "kr": "우리 아빠는 우표를 모으곤 했다.", "krChunked": "우리 아빠는 / 우표를 / 모으곤 했다."}, {"en": [{"t": "text", "v": "There "}, {"t": "blank", "v": "used to", "choices": ["used to", "would"]}, {"t": "text", "v": " be a bakery on this corner."}], "kr": "이 모퉁이에는 빵집이 있었다.", "krChunked": "이 모퉁이에는 / 빵집이 / 있었다."}, {"en": [{"t": "blank", "v": "Did", "choices": ["Do", "Did"]}, {"t": "text", "v": " you use to walk to school?"}], "kr": "너는 학교에 걸어 다니곤 했니?", "krChunked": "너는 / 학교에 / 걸어 다니곤 / 했니?"}], "tip": "used to는 주어가 달라져도 {{H:모양이 항상 같다}}. 또 '{{H:be used to+(동)명사}}(~에 익숙하다)'와 '{{H:be used to+동사원형}}(~하는 데 쓰이다)'은 전혀 다른 표현이니 구별하자. He didn't used to wear glasses. (×)", "check": [{"type": "2지선다", "prompt": "My brother used to play the drums. 이 문장의 뜻으로 알맞은 것을 고르세요.", "choices": ["지금은 드럼을 연주하지 않는다", "지금도 드럼을 연주한다"], "answer": "지금은 드럼을 연주하지 않는다", "hint": "used to는 '예전에는 그랬지만 지금은 아니다'라는 뜻을 담고 있다."}, {"type": "2지선다", "prompt": "used to의 부정문으로 알맞은 것을 고르세요.", "choices": ["She didn't use to eat fish.", "She didn't used to eat fish."], "answer": "She didn't use to eat fish.", "hint": "didn't 뒤에는 동사원형이 오므로 used가 아니라 use를 쓴다."}], "c1": "used to+동사원형은 '지금은 아닌 과거의 습관·상태'이고, would는 과거의 상태를 나타낼 수 없다.", "c3": [{"t": "be used to ~ing는 완전히 다른 표현이다", "b": "'~에 익숙하다'라는 뜻이며 뒤에는 동명사(-ing)나 명사가 온다.", "ex": [["I am used to getting up early.", "나는 일찍 일어나는 데 익숙하다."]]}, {"t": "상태를 말할 때는 would를 쓸 수 없다", "b": "'있었다·~이었다' 같은 과거의 상태에는 used to만 쓴다.", "ex": [["He used to be shy.", "그는 수줍음이 많았었다."]], "bad": "He would be shy."}], "name": "used to와 would", "kw": "조동사 과거의 습관 be used to"}, {"num": "062–063", "chapter": "Chapter 10 · 동아(윤정미) 6과", "question": "'너무 ~해서 …하다', '…할 만큼 ~하다', '너무 ~해서 …할 수 없다'는 어떻게 말할까?", "explain": [[{"t": "text", "v": "'so + 형용사[부사] + that + 주어 + 동사'는 '"}, {"t": "hl", "v": "너무 ~해서 …하다"}, {"t": "text", "v": "'라는 뜻이다. so 뒤에는 "}, {"t": "blank", "v": "원인", "choices": ["결과", "원인"]}, {"t": "text", "v": "이, that절에는 "}, {"t": "blank", "v": "결과", "choices": ["결과", "원인"]}, {"t": "text", "v": "이 나온다."}], [{"t": "text", "v": "'형용사[부사] + enough + to부정사'는 '"}, {"t": "hl", "v": "…할 만큼 충분히 ~한"}, {"t": "text", "v": "'이라는 뜻이고 'so~that + 주어 + "}, {"t": "blank", "v": "can", "choices": ["can", "can't"]}, {"t": "text", "v": "'와 바꿔 쓸 수 있다. '"}, {"t": "blank", "v": "too", "choices": ["so", "too"]}, {"t": "text", "v": " + 형용사[부사] + to부정사'는 '"}, {"t": "hl", "v": "너무 ~해서 …할 수 없는"}, {"t": "text", "v": "'이라는 뜻이고 'so~that + 주어 + "}, {"t": "blank", "v": "can't", "choices": ["can", "can't"]}, {"t": "text", "v": "'와 바꿔 쓸 수 있다."}]], "examples": [{"en": [{"t": "text", "v": "Mina was "}, {"t": "blank", "v": "so", "choices": ["too", "so"]}, {"t": "text", "v": " tired "}, {"t": "blank", "v": "that", "choices": ["that", "what"]}, {"t": "text", "v": " she fell asleep at once."}], "kr": "미나는 너무 피곤해서 곧바로 잠들었다.", "krChunked": "미나는 / 너무 피곤해서 / 곧바로 / 잠들었다."}, {"en": [{"t": "text", "v": "The river is shallow "}, {"t": "blank", "v": "enough", "choices": ["very", "enough"]}, {"t": "text", "v": " to cross on foot."}], "kr": "그 강은 걸어서 건널 수 있을 만큼 얕다.", "krChunked": "그 강은 / 걸어서 건널 수 있을 만큼 / 얕다."}, {"en": [{"t": "text", "v": "The test was "}, {"t": "blank", "v": "too", "choices": ["too", "so"]}, {"t": "text", "v": " hard to finish in an hour."}], "kr": "그 시험은 한 시간 안에 끝내기에는 너무 어려웠다.", "krChunked": "그 시험은 / 한 시간 안에 끝내기에는 / 너무 어려웠다."}], "tip": "so~that을 too~to로 바꿀 때 that절의 주어가 주절의 주어와 다르면 {{H:to부정사 앞에 의미상 주어(for+목적격)}}를 쓴다. 또 that절의 목적어가 주절의 주어와 같으면 to부정사 뒤에서 {{H:목적어를 빼야 한다}}. The bag was too heavy for me to carry. The bag was too heavy for me to carry it. (×)", "check": [{"type": "2지선다", "prompt": "The river is so shallow that we can cross it on foot. 와 같은 뜻의 문장을 고르세요.", "choices": ["The river is too shallow to cross on foot.", "The river is shallow enough to cross on foot."], "answer": "The river is shallow enough to cross on foot.", "hint": "'so~that+주어+can'은 enough to로 바꿔 쓸 수 있다."}, {"type": "2지선다", "prompt": "The bag was so heavy that I couldn't carry it. 을 too~to로 바꾼 문장으로 알맞은 것을 고르세요.", "choices": ["The bag was too heavy for me to carry.", "The bag was too heavy for me to carry it."], "answer": "The bag was too heavy for me to carry.", "hint": "that절의 목적어 it은 주절의 주어 the bag과 같으므로 to부정사 뒤에서 뺀다."}], "c1": "so~that은 '너무 ~해서 …하다', too~to는 '너무 ~해서 …할 수 없다', enough to는 '…할 만큼 충분히 ~하다'이다.", "c3": [{"t": "enough는 형용사·부사 뒤에 온다", "b": "enough가 형용사나 부사를 꾸밀 때는 그 뒤에, 명사를 꾸밀 때는 명사 앞에 놓는다.", "ex": [["He is tall enough to reach the shelf.", "그는 선반에 닿을 만큼 키가 크다."], ["She has enough money to buy it.", "그녀는 그것을 살 만큼 돈이 충분하다."]], "bad": "He is enough tall to reach the shelf."}, {"t": "so that은 '~하도록'(목적)이다", "b": "so와 that이 붙어 있는 so that은 목적을 나타내며 can·will 같은 조동사와 함께 쓴다. (Concept 064)", "ex": [["I got up early so that I could catch the train.", "나는 기차를 탈 수 있도록 일찍 일어났다."]]}], "name": "so~that · too~to · enough to", "kw": "너무 충분히 so that 결과 too enough"}, {"num": "079", "chapter": "Chapter 13 · 동아(윤정미) 5과", "question": "앞의 명사를 꾸며 주면서, 뒤 절 안에서는 목적어 노릇도 하는 말은 무엇일까?", "explain": [[{"t": "text", "v": "관계대명사는 '접속사+대명사'의 일을 하며, 앞에 있는 명사("}, {"t": "blank", "v": "선행사", "choices": ["목적어", "선행사"]}, {"t": "text", "v": ")를 꾸미는 절을 이끈다. 이 절 안에서 관계대명사가 동사나 전치사의 "}, {"t": "blank", "v": "목적어", "choices": ["주어", "목적어"]}, {"t": "text", "v": " 노릇을 하면 "}, {"t": "blank", "v": "목적격", "choices": ["목적격", "주격"]}, {"t": "text", "v": " 관계대명사라고 부른다."}], [{"t": "text", "v": "선행사가 사람이면 "}, {"t": "blank", "v": "whom", "choices": ["whom", "which"]}, {"t": "text", "v": "(who), 사물·동물이면 "}, {"t": "blank", "v": "which", "choices": ["which", "whom"]}, {"t": "text", "v": "을 쓴다. that은 "}, {"t": "hl", "v": "사람이든 사물이든 모두 쓸 수 있다"}, {"t": "text", "v": ". 목적격 관계대명사는 생략할 수 있지만, "}, {"t": "hl", "v": "전치사가 관계대명사 바로 앞에 붙어 있으면 생략할 수 없다"}, {"t": "text", "v": "."}]], "examples": [{"en": [{"t": "text", "v": "The teacher "}, {"t": "blank", "v": "whom", "choices": ["which", "whom"]}, {"t": "text", "v": " we "}, {"t": "verb", "v": "respect"}, {"t": "text", "v": " "}, {"t": "verb", "v": "retired"}, {"t": "text", "v": " last year."}], "kr": "우리가 존경하는 선생님은 작년에 은퇴하셨다.", "krChunked": "우리가 존경하는 / 선생님은 / 작년에 / 은퇴하셨다."}, {"en": [{"t": "text", "v": "This "}, {"t": "verb", "v": "is"}, {"t": "text", "v": " the song "}, {"t": "blank", "v": "which", "choices": ["which", "whom"]}, {"t": "text", "v": " my sister "}, {"t": "verb", "v": "wrote"}, {"t": "text", "v": "."}], "kr": "이것은 우리 언니가 쓴 노래다.", "krChunked": "이것은 / 우리 언니가 쓴 / 노래다."}, {"en": [{"t": "text", "v": "Where "}, {"t": "verb", "v": "is"}, {"t": "text", "v": " the key "}, {"t": "blank", "v": "that", "choices": ["what", "that"]}, {"t": "text", "v": " I "}, {"t": "verb", "v": "left"}, {"t": "text", "v": " on the table?"}], "kr": "내가 탁자 위에 둔 열쇠는 어디 있니?", "krChunked": "내가 탁자 위에 둔 / 열쇠는 / 어디 있니?"}], "tip": "관계대명사 뒤에 '주어+동사'가 이어지고 동사 뒤에 {{H:목적어가 빠져 있으면}} 목적격 관계대명사이고, 곧바로 동사가 나오면 주격 관계대명사다. 또 관계대명사가 이미 목적어 역할을 하므로 {{H:같은 목적어를 한 번 더 쓰면 안 된다}}. This is the pen which I bought it. (×)", "check": [{"type": "2지선다", "prompt": "The teacher whom we respect retired last year. 에서 whom이 하는 역할로 알맞은 것을 고르세요.", "choices": ["주어", "목적어"], "answer": "목적어", "hint": "whom 뒤에 'we respect'가 오고 respect의 목적어가 없다. whom이 respect의 목적어다."}, {"type": "3지선다", "prompt": "선행사가 사물일 때 쓸 수 없는 목적격 관계대명사를 고르세요.", "choices": ["which", "whom", "that"], "answer": "whom", "hint": "whom은 선행사가 사람일 때만 쓴다."}], "c1": "목적격 관계대명사는 절 안에서 목적어 역할을 하며, 사람은 whom(who), 사물은 which, that은 둘 다 쓰고, 전치사 바로 뒤가 아니면 생략할 수 있다.", "c3": [{"t": "전치사 바로 뒤에는 whom·which만 쓴다", "b": "전치사가 관계대명사 바로 앞에 오면 that이나 who는 쓸 수 없고, whom이나 which만 쓴다.", "ex": [["This is the girl to whom I gave the pen.", "이 아이가 내가 펜을 준 소녀다."]], "bad": "This is the girl to that I gave the pen."}, {"t": "생략한 문장 읽는 법", "b": "'명사 + 주어 + 동사' 모양이 이어지면 그 사이에 목적격 관계대명사가 생략된 것이다.", "ex": [["The bag I bought is blue.", "내가 산 가방은 파란색이다."]]}], "name": "목적격 관계대명사", "kw": "관계대명사 whom which that 선행사 생략 전치사"}];
+const ALL = [{"num": "001", "ch": 1, "built": true}, {"num": "002", "ch": 1, "built": true}, {"num": "003", "ch": 1, "built": true}, {"num": "004", "ch": 1, "built": true}, {"num": "005", "ch": 1, "built": true}, {"num": "006", "ch": 1, "built": true}, {"num": "007", "ch": 1, "built": true}, {"num": "008", "ch": 1, "built": true}, {"num": "009", "ch": 1, "built": true}, {"num": "010", "ch": 1, "built": true}, {"num": "011", "ch": 2, "built": true}, {"num": "012", "ch": 2, "built": true}, {"num": "013", "ch": 2, "built": true}, {"num": "014", "ch": 2, "built": true}, {"num": "015", "ch": 2, "built": true}, {"num": "016", "ch": 3, "built": false, "name": "비인칭 주어 it, 지시대명사"}, {"num": "017", "ch": 3, "built": false, "name": "there is / are"}, {"num": "018", "ch": 3, "built": false, "name": "감탄문"}, {"num": "019", "ch": 3, "built": false, "name": "명령문"}, {"num": "020", "ch": 3, "built": false, "name": "의문사가 있는 의문문, 빈도부사"}, {"num": "021", "ch": 3, "built": false, "name": "부가의문문"}, {"num": "022", "ch": 4, "built": false, "name": "to부정사의 개념 및 명사적 용법"}, {"num": "023", "ch": 4, "built": false, "name": "의문사+to부정사, to부정사의 부정"}, {"num": "024", "ch": 4, "built": false, "name": "to부정사의 형용사적 용법"}, {"num": "025", "ch": 4, "built": false, "name": "to부정사의 부사적 용법"}, {"num": "026", "ch": 4, "built": false, "name": "동명사의 개념 및 용법"}, {"num": "027", "ch": 4, "built": false, "name": "동명사의 관용표현"}, {"num": "028", "ch": 5, "built": false, "name": "1형식, 2형식 문장(감각동사)"}, {"num": "029", "ch": 5, "built": false, "name": "3형식, 4형식 문장(수여동사)"}, {"num": "030", "ch": 5, "built": false, "name": "5형식 문장 1"}, {"num": "031", "ch": 5, "built": true}, {"num": "032", "ch": 6, "built": false, "name": "형용사와 부사의 비교급, 최상급 만들기"}, {"num": "033", "ch": 6, "built": false, "name": "원급 비교"}, {"num": "034", "ch": 6, "built": false, "name": "비교급 비교, 비교급 강조어"}, {"num": "035", "ch": 6, "built": false, "name": "the 비교급, the 비교급"}, {"num": "036", "ch": 6, "built": false, "name": "최상급 비교"}, {"num": "037", "ch": 7, "built": false, "name": "접속사의 종류 및 등위접속사"}, {"num": "038", "ch": 7, "built": false, "name": "상관접속사"}, {"num": "039", "ch": 7, "built": false, "name": "명사절을 만드는 접속사 that 1"}, {"num": "040", "ch": 7, "built": false, "name": "부사절을 만드는 접속사의 구조와 활용"}, {"num": "041", "ch": 7, "built": false, "name": "부사절을 만드는 접속사: 시간"}, {"num": "042", "ch": 7, "built": false, "name": "부사절을 만드는 접속사: 조건"}, {"num": "043", "ch": 7, "built": false, "name": "부사절을 만드는 접속사: 이유, 양보"}, {"num": "044", "ch": 7, "built": false, "name": "접속부사"}, {"num": "045", "ch": 8, "built": false, "name": "부정관사와 정관사"}, {"num": "046", "ch": 8, "built": false, "name": "재귀대명사"}, {"num": "047", "ch": 8, "built": false, "name": "부정대명사 1: one, it, another"}, {"num": "048", "ch": 8, "built": false, "name": "부정대명사 2: one, the other, some, (the) others"}, {"num": "049", "ch": 8, "built": false, "name": "all, every, each, any, some"}, {"num": "050", "ch": 8, "built": false, "name": "many, much, (a) few, (a) little"}, {"num": "051", "ch": 8, "built": false, "name": "다양한 형용사 관련 표현"}, {"num": "052", "ch": 8, "built": false, "name": "타동사 + 부사, too, either"}, {"num": "053", "ch": 9, "built": false, "name": "불규칙 동사표"}, {"num": "054", "ch": 9, "built": false, "name": "현재완료 1"}, {"num": "055", "ch": 9, "built": false, "name": "현재완료 2"}, {"num": "056", "ch": 9, "built": false, "name": "현재완료 진행형"}, {"num": "057", "ch": 9, "built": false, "name": "과거완료"}, {"num": "058", "ch": 9, "built": true}, {"num": "059", "ch": 9, "built": false, "name": "조동사 + have p.p."}, {"num": "060", "ch": 10, "built": false, "name": "It ~ to부정사: 가주어-진주어"}, {"num": "061", "ch": 10, "built": false, "name": "to부정사의 의미상 주어"}, {"num": "062–063", "ch": 10, "built": true}, {"num": "064", "ch": 10, "built": false, "name": "so that vs so ~ that"}, {"num": "065", "ch": 10, "built": false, "name": "seem to부정사 = It seems that"}, {"num": "066", "ch": 10, "built": false, "name": "to부정사와 동명사 1"}, {"num": "067", "ch": 10, "built": false, "name": "to부정사와 동명사 2"}, {"num": "068", "ch": 11, "built": false, "name": "현재분사와 과거분사"}, {"num": "069", "ch": 11, "built": false, "name": "현재분사와 동명사의 구별"}, {"num": "070", "ch": 11, "built": false, "name": "보어로 쓰이는 분사"}, {"num": "071", "ch": 11, "built": false, "name": "with + 명사 + 분사"}, {"num": "072", "ch": 11, "built": false, "name": "분사구문"}, {"num": "073", "ch": 12, "built": false, "name": "수동태는 왜 사용할까?"}, {"num": "074", "ch": 12, "built": false, "name": "수동태의 개념"}, {"num": "075", "ch": 12, "built": false, "name": "조동사, 동사구가 있는 문장의 수동태"}, {"num": "076", "ch": 12, "built": false, "name": "수동태의 부정문, 의문문"}, {"num": "077", "ch": 12, "built": false, "name": "by 이외의 전치사가 사용되는 수동태"}, {"num": "078", "ch": 13, "built": false, "name": "관계사는 왜 사용할까?"}, {"num": "079", "ch": 13, "built": true}, {"num": "080", "ch": 13, "built": false, "name": "관계대명사의 주격, 목적격 2"}, {"num": "081", "ch": 13, "built": false, "name": "관계대명사로 문장 연결하기"}, {"num": "082", "ch": 13, "built": false, "name": "관계대명사의 소유격"}, {"num": "083", "ch": 13, "built": false, "name": "관계대명사의 계속적 용법"}, {"num": "084", "ch": 13, "built": false, "name": "관계대명사 that"}, {"num": "085", "ch": 13, "built": false, "name": "관계대명사 what"}, {"num": "086", "ch": 13, "built": false, "name": "관계부사"}, {"num": "087", "ch": 14, "built": false, "name": "가정법이 무엇일까?"}, {"num": "088", "ch": 14, "built": false, "name": "가정법 과거와 가정법 과거완료"}, {"num": "089", "ch": 14, "built": false, "name": "가정법을 직설법으로 전환하기"}, {"num": "090", "ch": 14, "built": false, "name": "I wish 가정법 과거"}, {"num": "091", "ch": 15, "built": false, "name": "명사절을 만드는 접속사 that 2"}, {"num": "092", "ch": 15, "built": false, "name": "명사절을 만드는 접속사 if, whether"}, {"num": "093", "ch": 15, "built": false, "name": "접속사 as"}, {"num": "094", "ch": 15, "built": false, "name": "간접의문문 1"}, {"num": "095", "ch": 15, "built": false, "name": "간접의문문 2"}, {"num": "096", "ch": 16, "built": false, "name": "강조: 강조의 do, It ~ that 강조구문"}, {"num": "097", "ch": 16, "built": false, "name": "도치: 강조의 도치, 관용적 도치"}, {"num": "098", "ch": 16, "built": false, "name": "시제의 일치"}, {"num": "099", "ch": 16, "built": false, "name": "주어와 동사의 단수/복수 일치"}, {"num": "100", "ch": 16, "built": false, "name": "화법 전환"}];
+const CHAP = {"1": "문장의 기초, be동사, 일반동사", "2": "조동사와 시제 1", "3": "문장의 종류", "4": "to부정사와 동명사 1", "5": "문장의 5형식", "6": "원급, 비교급, 최상급 비교", "7": "접속사 1", "8": "관사, 대명사, 형용사, 부사", "9": "조동사와 시제 2", "10": "to부정사와 동명사 2", "11": "분사와 분사구문", "12": "능동태와 수동태", "13": "관계대명사와 관계부사", "14": "가정법 과거와 가정법 과거완료", "15": "접속사 2, 간접의문문", "16": "특수구문(강조, 도치, 일치, 화법)"};
+// TTS is currently disabled — the built-in browser voice is too robotic and mispronounces
+// words. Flip this back on once a natural-sounding voice source is wired in.
+const AUDIO_ENABLED = false;
+
+const SPEAK_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.5 8.5a5 5 0 0 1 0 7"></path><path d="M18.5 5.5a9 9 0 0 1 0 13"></path></svg>';
+const LOCK_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>';
+
+const MASCOT_NEUTRAL = '<svg viewBox="0 0 60 60"><circle cx="30" cy="32" r="22" fill="var(--accent)"/><circle cx="22" cy="28" r="3.2" fill="var(--surface)"/><circle cx="38" cy="28" r="3.2" fill="var(--surface)"/><path d="M22 40 Q30 44 38 40" stroke="var(--surface)" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>';
+const MASCOT_HAPPY = '<svg viewBox="0 0 60 60"><circle cx="30" cy="32" r="22" fill="var(--good)"/><path d="M18 27 Q22 23 26 27" stroke="var(--surface)" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M34 27 Q38 23 42 27" stroke="var(--surface)" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M19 38 Q30 48 41 38" stroke="var(--surface)" stroke-width="2.8" fill="none" stroke-linecap="round"/><circle cx="14" cy="34" r="2.4" fill="#fff" opacity=".6"/><circle cx="46" cy="34" r="2.4" fill="#fff" opacity=".6"/></svg>';
+const MASCOT_SAD = '<svg viewBox="0 0 60 60"><circle cx="30" cy="32" r="22" fill="var(--bad)"/><circle cx="22" cy="29" r="3" fill="var(--surface)"/><circle cx="38" cy="29" r="3" fill="var(--surface)"/><path d="M20 43 Q30 36 40 43" stroke="var(--surface)" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>';
+const BALLOON_GOOD = '<svg viewBox="0 0 34 42"><ellipse cx="17" cy="16" rx="15" ry="16" fill="var(--good)"/><ellipse cx="12" cy="10" rx="4" ry="5" fill="#fff" opacity=".35"/><path d="M17 32 L17 40" stroke="var(--good)" stroke-width="1.5" fill="none"/></svg>';
+const BALLOON_BAD = '<svg viewBox="0 0 34 42"><ellipse cx="17" cy="16" rx="15" ry="16" fill="var(--bad)"/><ellipse cx="12" cy="10" rx="4" ry="5" fill="#fff" opacity=".3"/><path d="M17 32 L17 40" stroke="var(--bad)" stroke-width="1.5" fill="none"/></svg>';
+
+let bestVoice = null;
+function pickBestVoice(){
+  try{
+    const voices = window.speechSynthesis.getVoices();
+    if (!voices.length) return null;
+    const prefs = [
+      v => /^en-US$/i.test(v.lang) && /natural|online|neural/i.test(v.name),
+      v => /^en-GB$/i.test(v.lang) && /natural|online|neural/i.test(v.name),
+      v => /^en-US$/i.test(v.lang) && /google/i.test(v.name),
+      v => /^en-US$/i.test(v.lang),
+      v => /^en/i.test(v.lang) && /natural|online|neural/i.test(v.name),
+      v => /^en/i.test(v.lang),
+    ];
+    for (const pred of prefs){ const found = voices.find(pred); if (found) return found; }
+    return voices[0];
+  }catch(e){ return null; }
+}
+if (AUDIO_ENABLED && 'speechSynthesis' in window){
+  bestVoice = pickBestVoice();
+  window.speechSynthesis.onvoiceschanged = () => { bestVoice = pickBestVoice(); };
+}
+
+function speak(text){
+  try{
+    if (!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US'; u.rate = 0.92;
+    if (bestVoice) u.voice = bestVoice;
+    window.speechSynthesis.speak(u);
+  }catch(e){}
+}
+function speakQueue(texts){
+  try{
+    if (!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    texts.forEach(t => {
+      const u = new SpeechSynthesisUtterance(t);
+      u.lang = 'en-US'; u.rate = 0.92;
+      if (bestVoice) u.voice = bestVoice;
+      window.speechSynthesis.speak(u);
+    });
+  }catch(e){}
+}
+
+let score = 0;
+function setMascot(mood){
+  const el = document.getElementById('mascot');
+  el.innerHTML = mood === 'happy' ? MASCOT_HAPPY : mood === 'sad' ? MASCOT_SAD : MASCOT_NEUTRAL;
+}
+function bounceMascot(mood){
+  const el = document.getElementById('mascot');
+  setMascot(mood);
+  el.classList.remove('bounce','wobble');
+  void el.offsetWidth;
+  el.classList.add(mood === 'happy' ? 'bounce' : 'wobble');
+  clearTimeout(bounceMascot._t);
+  bounceMascot._t = setTimeout(() => setMascot('neutral'), 900);
+}
+function popFeedback(x, y, delta){
+  const wrap = document.createElement('div');
+  wrap.className = 'pop-wrap';
+  wrap.style.left = x + 'px';
+  wrap.style.top = y + 'px';
+  const balloon = document.createElement('div');
+  balloon.className = 'pop-balloon';
+  balloon.innerHTML = delta > 0 ? BALLOON_GOOD : BALLOON_BAD;
+  const scoreEl = document.createElement('div');
+  scoreEl.className = 'pop-score ' + (delta > 0 ? 'good' : 'bad');
+  scoreEl.textContent = (delta > 0 ? '+' : '') + delta;
+  wrap.appendChild(balloon);
+  wrap.appendChild(scoreEl);
+  document.body.appendChild(wrap);
+  setTimeout(() => wrap.remove(), 1100);
+}
+function addScore(delta, ev){
+  score = Math.max(0, score + delta);
+  const badge = document.getElementById('scoreBadge');
+  if (badge) badge.textContent = '⭐ ' + score;
+  if (ev) popFeedback(ev.clientX, ev.clientY, delta);
+  bounceMascot(delta > 0 ? 'happy' : 'sad');
+}
+
+function plainText(segs){ return segs.map(s => s.v).join(''); }
+
+function blankKey(prefix){ let n = 0; return () => prefix + '-' + (n++); }
+
+const state = DATA.map(c => ({
+  revealed: new Set(),          // reveal-blank keys shown
+  choiceDone: new Set(),        // choice-blank keys answered correctly
+  choiceWrong: {},              // choice-blank key -> Set of wrong picks
+  quizDone: {},                 // qi -> true
+  quizWrong: {},                // qi -> Set of wrong picks
+  exSpoken: new Set(),          // example indices already auto-spoken
+}));
+
+let current = 0;
+
+function exampleBlankKeys(c, xi){
+  const keys = [];
+  let n = 0;
+  c.examples[xi].en.forEach(seg => { if (seg.t === 'blank') keys.push('xa' + xi + '-' + (n++)); });
+  return keys;
+}
+
+function isBlankSegDone(s, key, seg){
+  return seg.choices ? s.choiceDone.has(key) : s.revealed.has(key);
+}
+
+function isExampleDone(c, s, xi){
+  const keys = exampleBlankKeys(c, xi);
+  if (keys.length === 0) return true;
+  return keys.every(k => s.revealed.has(k) || s.choiceDone.has(k));
+}
+
+function isConceptDone(i){
+  const c = DATA[i], s = state[i];
+  if (!c.check.length) return false;
+  return c.check.every((q, qi) => s.quizDone[qi]);
+}
+
+let finderOpen = false, finderQuery = '';
+function renderNav(){
+  const c = DATA[current];
+  const done = DATA.filter((_, i) => isConceptDone(i)).length;
+  document.getElementById('progress').textContent = done + ' / ' + DATA.length + ' 완료';
+  const btn = document.getElementById('finderBtn');
+  btn.innerHTML = '<span>개념 찾기</span><span class="cur">' + escapeHtml(c.num + ' · ' + c.name) + (finderOpen ? '  ▲' : '  ▼') + '</span>';
+  document.getElementById('finderPanel').hidden = !finderOpen;
+  if (finderOpen) renderFinderList();
+}
+function renderFinderList(){
+  const q = finderQuery.trim().toLowerCase();
+  const list = document.getElementById('finderList');
+  let html = '', lastCh = null, shown = 0;
+  ALL.forEach(item => {
+    const di = item.built ? DATA.findIndex(c => c.num === item.num) : -1;
+    const name = item.built ? DATA[di].name : item.name;
+    const hay = (item.num + ' ' + name + ' ' + (item.built ? DATA[di].kw : '') + ' ' + CHAP[item.ch]).toLowerCase();
+    if (q && hay.indexOf(q) < 0) return;
+    if (item.ch !== lastCh){ html += '<div class="f-chap">Chapter ' + item.ch + ' · ' + escapeHtml(CHAP[item.ch]) + '</div>'; lastCh = item.ch; }
+    shown++;
+    if (item.built){
+      const dn = isConceptDone(di);
+      html += '<button class="f-row' + (di === current ? ' cur' : '') + '" data-go="' + di + '"><span class="n">' + escapeHtml(item.num) + '</span><span class="t">' + escapeHtml(name) + '</span>' + (dn ? '<span class="tagdone">완료</span>' : '') + '</button>';
+    } else {
+      html += '<div class="f-row soon"><span class="n">' + item.num + '</span><span class="t">' + escapeHtml(name) + '</span><span class="tagsoon">준비 중</span></div>';
+    }
+  });
+  list.innerHTML = shown ? html : '<div class="f-empty">찾는 개념이 없어요. 다른 낱말로 검색해 보세요.</div>';
+  list.querySelectorAll('[data-go]').forEach(el => el.onclick = () => {
+    current = parseInt(el.dataset.go, 10); finderOpen = false; finderQuery = ''; render(); window.scrollTo({top:0, behavior:'smooth'});
+  });
+}
+document.getElementById('finderBtn').onclick = () => { finderOpen = !finderOpen; renderNav(); if (finderOpen) document.getElementById('finderInput').focus(); };
+document.getElementById('finderInput').oninput = (e) => { finderQuery = e.target.value; renderFinderList(); };
+
+function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escapeAttr(s){ return escapeHtml(s).replace(/"/g,'&quot;'); }
+
+// tip text: bold English example sentences, and flag (×)/(X)/(x) markers in red
+function renderTip(str){
+  let esc = escapeHtml(str);
+  esc = esc.replace(/[A-Z][A-Za-z0-9,'\-\/ ]*[.!?]/g, m => '<b>' + m + '</b>');
+  esc = esc.replace(/\(\s*[×xX]\s*\)/g, m => '<span class="bad-mark">' + m + '</span>');
+  esc = esc.replace(/\{\{H:([^}]*)\}\}/g, (m, t) => '<span class="hl">' + t + '</span>');
+  return esc;
+}
+
+// quiz prompts: underline common negative-qualifier phrases ("쓸 수 없는", "옳지 않은" ...)
+// so students don't misread them as positive questions
+const NEGATIVE_PHRASES = ['쓸 수 없는', '올 수 없는', '붙일 수 없는', '옳지 않은', '알맞지 않은', '적절하지 않은', '바르지 않은', '틀린 것', '아닌 것'];
+function underlineNegatives(str){
+  let esc = escapeHtml(str);
+  NEGATIVE_PHRASES.forEach(p => { esc = esc.split(p).join('<u>' + p + '</u>'); });
+  return esc;
+}
+
+function renderSegs(segs, prefix, s){
+  const nextKey = blankKey(prefix);
+  return segs.map(seg => {
+    if (seg.t === 'text') return escapeHtml(seg.v);
+    if (seg.t === 'verb') return '<span class="verb">' + escapeHtml(seg.v) + '</span>';
+    if (seg.t === 'hl') return '<span class="hl">' + escapeHtml(seg.v) + '</span>';
+    // blank
+    const key = nextKey();
+    if (seg.choices){
+      const done = s.choiceDone.has(key);
+      if (done){
+        // once solved, collapse the choice buttons into plain confirmed text so the
+        // wrong option doesn't linger in red and break the reading flow of the sentence
+        return '<span class="blank revealed" data-key="' + key + '">' + escapeHtml(seg.v) + '</span>';
+      }
+      const wrongSet = s.choiceWrong[key] || new Set();
+      const btns = seg.choices.map(choice => {
+        let cls = 'cbtn';
+        let dis = '';
+        if (wrongSet.has(choice)){
+          cls += ' wrong'; dis = 'disabled';
+        }
+        return '<button class="' + cls + '" ' + dis + ' data-blankkey="' + key + '" data-choice="' + escapeAttr(choice) + '" data-answer="' + escapeAttr(seg.v) + '">' + escapeHtml(choice) + '</button>';
+      }).join('');
+      return '<span class="cgroup">' + btns + '</span>';
+    }
+    const isRevealed = s.revealed.has(key);
+    return '<span class="blank' + (isRevealed ? ' revealed' : '') + '" data-key="' + key + '" data-word="' + escapeAttr(seg.v) + '">' +
+      (isRevealed ? escapeHtml(seg.v) : '?') + '</span>';
+  }).join('');
+}
+
+function renderC3(c){
+  if (!c.c3 || !c.c3.length) return '';
+  return '<details class="more"><summary>더 알아두기</summary>' + c.c3.map(b =>
+    '<div class="more-block"><div class="more-title">' + escapeHtml(b.t) + '</div>' +
+    '<div class="more-body">' + escapeHtml(b.b) + '</div>' +
+    b.ex.map(e => '<div class="more-ex"><div class="en">' + escapeHtml(e[0]) + '</div><div class="kr">' + escapeHtml(e[1]) + '</div></div>').join('') +
+    (b.bad ? '<div class="more-ex"><div class="en">' + escapeHtml(b.bad) + ' <span class="bad-mark">(×)</span></div></div>' : '') +
+    '</div>').join('') + '</details>';
+}
+
+function renderSummarySegs(segs){
+  return segs.map(seg => {
+    if (seg.t === 'text') return escapeHtml(seg.v);
+    if (seg.t === 'verb') return '<span class="verb">' + escapeHtml(seg.v) + '</span>';
+    if (seg.t === 'hl') return '<span class="hl">' + escapeHtml(seg.v) + '</span>';
+    return '<span class="kw">' + escapeHtml(seg.v) + '</span>';
+  }).join('');
+}
+
+function render(){
+  renderNav();
+  const c = DATA[current];
+  const s = state[current];
+  const host = document.getElementById('cardHost');
+  const done = isConceptDone(current);
+
+  const explainHtml = c.explain.map((segs, pi) => '<p>' + renderSegs(segs, 'p' + pi, s) + '</p>').join('');
+
+  const examplesHtml = c.examples.map((ex, xi) => {
+    const en = plainText(ex.en);
+    const krParts = ex.krChunked.split('/').map(p => p.trim()).filter(Boolean);
+    const krHtml = krParts.map(p => escapeHtml(p)).join('<span class="slash">/</span>');
+    return '<div class="example">' +
+      '<div class="enrow">' +
+        (AUDIO_ENABLED ? '<button class="speak" data-speak="' + escapeAttr(en) + '" title="발음 듣기">' + SPEAK_ICON + '</button>' : '') +
+        '<div class="en">' + renderSegs(ex.en, 'xa' + xi, s) + '</div>' +
+      '</div>' +
+      '<div class="kr">' + krHtml + '</div>' +
+    '</div>';
+  }).join('');
+
+  const quizHtml = c.check.map((q, qi) => {
+    const qDone = s.quizDone[qi];
+    const wrongSet = s.quizWrong[qi] || new Set();
+    const choicesHtml = q.choices.map(choice => {
+      let cls = 'choice', dis = '';
+      if (qDone){
+        dis = 'disabled';
+        if (choice === q.answer) cls += ' correct';
+        else if (wrongSet.has(choice)) cls += ' wrong';
+      } else if (wrongSet.has(choice)){
+        cls += ' wrong'; dis = 'disabled';
+      }
+      return '<button class="' + cls + '" ' + dis + ' data-qi="' + qi + '" data-choice="' + escapeAttr(choice) + '">' + escapeHtml(choice) + '</button>';
+    }).join('');
+
+    let feedbackHtml;
+    if (qDone){
+      feedbackHtml = '<div class="feedback"><span class="answer-label">정답이다!</span> ' + escapeHtml(q.hint) + '</div>';
+    } else if (wrongSet.size > 0){
+      feedbackHtml = '<div class="feedback"><span class="retry-label">다시 골라보자.</span> ' + escapeHtml(q.hint) + '</div>' +
+        (c.c1 ? '<div class="c1line"><b>핵심 한 줄</b> · ' + escapeHtml(c.c1) + '</div>' : '');
+    } else {
+      feedbackHtml = '<div class="feedback"><span class="hint-label">힌트</span> ' + escapeHtml(q.hint) + '</div>';
+    }
+
+    return '<div class="q">' +
+      '<div class="prompt"><span class="tag">' + escapeHtml(q.type) + '</span>' + underlineNegatives(q.prompt) + '</div>' +
+      '<div class="choices">' + choicesHtml + '</div>' +
+      feedbackHtml +
+    '</div>';
+  }).join('');
+
+  let summaryHtml;
+  if (done){
+    const sumExplain = c.explain.map(segs => '<p>' + renderSummarySegs(segs) + '</p>').join('');
+    const sumExamples = c.examples.map(ex =>
+      '<div class="example"><div class="en">' + renderSummarySegs(ex.en) + '</div><div class="kr">' + escapeHtml(ex.kr) + '</div></div>'
+    ).join('');
+    summaryHtml =
+      '<div class="section summary">' +
+        '<h2>개념 정리</h2>' +
+        (c.c1 ? '<p class="c1sum">' + escapeHtml(c.c1) + '</p>' : '') +
+        '<div class="explain">' + sumExplain + '</div>' +
+        sumExamples +
+        renderC3(c) +
+        (AUDIO_ENABLED ?
+          '<div class="cardfoot" style="margin-top:10px;">' +
+            '<button class="reset" id="listenAllBtn">예문 전체 듣기</button>' +
+          '</div>'
+        : '') +
+      '</div>';
+  } else {
+    summaryHtml = '<div class="section"><div class="locked">' + LOCK_ICON + '문제를 모두 맞히면 이 개념의 정리 노트가 열린다.</div></div>';
+  }
+
+  host.innerHTML =
+    '<div class="card">' +
+      '<div class="eyebrow">Concept ' + c.num + ' · ' + c.chapter + '</div>' +
+      '<div class="cname">' + escapeHtml(c.name) + '</div>' +
+      '<h1>' + escapeHtml(c.question) + '</h1>' +
+      '<div class="section explain"><h2>설명</h2>' + explainHtml + '</div>' +
+      '<div class="section"><h2>예문</h2>' + examplesHtml + '</div>' +
+      (c.tip ? '<div class="section"><div class="tip"><span class="tip-label">헷갈리기 쉬운 포인트</span>' + renderTip(c.tip) + '</div></div>' : '') +
+      '<div class="section quiz"><h2>바로 확인</h2>' + quizHtml + '</div>' +
+      summaryHtml +
+      '<div class="cardfoot">' +
+        '<button class="reset" id="resetBtn">이 개념 다시 풀기</button>' +
+        '<div class="pager">' +
+          '<button class="ghost" id="prevBtn"' + (current === 0 ? ' disabled' : '') + '>이전</button>' +
+          '<button id="nextBtn"' + (current === DATA.length - 1 ? ' disabled' : '') + '>다음 개념</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+
+  // reveal-blank clicks
+  host.querySelectorAll('.blank').forEach(el => {
+    el.addEventListener('click', (ev) => {
+      if (el.classList.contains('revealed')) return;
+      const key = el.dataset.key;
+      s.revealed.add(key);
+      el.textContent = el.dataset.word;
+      el.classList.add('revealed');
+      addScore(2, ev);
+      maybeAutoSpeak(c, s, key);
+      renderNav();
+    });
+  });
+
+  // choice-blank clicks (inline, retry until correct)
+  host.querySelectorAll('.cbtn').forEach(el => {
+    el.addEventListener('click', (ev) => {
+      const key = el.dataset.blankkey;
+      if (s.choiceDone.has(key)) return;
+      const choice = el.dataset.choice, answer = el.dataset.answer;
+      if (choice === answer){
+        s.choiceDone.add(key);
+        addScore(10, ev);
+        maybeAutoSpeak(c, s, key);
+        render();
+      } else {
+        if (!s.choiceWrong[key]) s.choiceWrong[key] = new Set();
+        s.choiceWrong[key].add(choice);
+        addScore(-3, ev);
+        render();
+      }
+    });
+  });
+
+  // quiz choice clicks (retry until correct)
+  host.querySelectorAll('.choice').forEach(el => {
+    el.addEventListener('click', (ev) => {
+      const qi = el.dataset.qi;
+      if (s.quizDone[qi]) return;
+      const choice = el.dataset.choice;
+      const q = c.check[qi];
+      if (choice === q.answer){
+        s.quizDone[qi] = true;
+        addScore(10, ev);
+      } else {
+        if (!s.quizWrong[qi]) s.quizWrong[qi] = new Set();
+        s.quizWrong[qi].add(choice);
+        addScore(-3, ev);
+      }
+      render();
+    });
+  });
+
+  if (AUDIO_ENABLED){
+    host.querySelectorAll('[data-speak]').forEach(el => {
+      el.addEventListener('click', () => speak(el.dataset.speak));
+    });
+  }
+
+  const listenAllBtn = document.getElementById('listenAllBtn');
+  if (listenAllBtn) listenAllBtn.onclick = () => speakQueue(c.examples.map(ex => plainText(ex.en)));
+
+  document.getElementById('resetBtn').onclick = () => {
+    s.revealed.clear(); s.choiceDone.clear(); s.choiceWrong = {};
+    s.quizDone = {}; s.quizWrong = {}; s.exSpoken.clear();
+    render();
+  };
+  document.getElementById('prevBtn').onclick = () => { if (current > 0){ current--; render(); } };
+  document.getElementById('nextBtn').onclick = () => { if (current < DATA.length - 1){ current++; render(); } };
+}
+
+function maybeAutoSpeak(c, s, changedKey){
+  if (!AUDIO_ENABLED) return;
+  // if this blank belongs to an example and that example just became fully done, auto-speak it once
+  const m = /^(xa(\d+))-/.exec(changedKey);
+  if (!m) return;
+  const xi = parseInt(m[2], 10);
+  if (s.exSpoken.has(xi)) return;
+  if (isExampleDone(c, s, xi)){
+    s.exSpoken.add(xi);
+    speak(plainText(c.examples[xi].en));
+  }
+}
+
+setMascot('neutral');
+render();
+</script>
+
+</body></html>
