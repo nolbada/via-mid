@@ -277,6 +277,13 @@ function pageIndex(app){
   function lsub(p){return '<span class="lrd">문제 풀이 '+fmtDur(TS[p+'q'])+' · 오답 복습 '+fmtDur(TS[p+'w'])+' · 그 외 '+fmtDur(TS[p+'h'])+'</span>'}
   app.appendChild(el('div','lrc','<div class="lrh"><b>나의 학습 기록</b></div><div class="lrs"><div><em>누적 채점 문항</em><b>'+qg+'<small>문제</small></b></div><div><em>누적 유형 풀코스</em><b>'+solved+'<small>문제</small></b></div></div><div class="lrr"><em>누적 이용 시간</em><b>'+(tot?fmtDur(tot):'-')+'</b>'+lsub('')+'</div><div class="lrr"><em>오늘 · '+fmtMD(today,1)+'</em>'+trio(['이용 시간',tt?fmtDur(tt):'-','완료 회차',M+' / '+N+'회','채점 문항',qd+'문제'])+lsub('t')+'</div>'));
  }
+ 
+ var ROAD=[["10/26","11/1","1~4회 (7과)"],["11/2","11/8","5~8회 (7과)"],["11/9","11/15","9~10회 (7과) → 11~12회 (8과)"],["11/16","11/22","13~16회 (8과)"],["11/23","11/29","17~19회 (8과)"],["11/30","12/6","20회 (8과) → 21~22회 (최종점검) · 틀린 문제, 약한 유형 골라 풀기"]];
+ (function(){var yy=today.getFullYear(),pd=function(s){var p=s.split('/');return new Date(yy,p[0]-1,+p[1])},cw=ROAD.length;ROAD.forEach(function(w,i){if(cw===ROAD.length&&today<=pd(w[1]))cw=i});if(today<pd(ROAD[0][0]))cw=-1;
+  var rh='<div class="rh"><b>시험까지 큰 흐름</b><span>기말고사 ('+fmtMD(exS)+'~'+fmtMD(exE)+')</span></div>';
+  ROAD.forEach(function(w,i){rh+='<div class="wr'+(i===cw?' cur':'')+(cw>=0&&i<cw?' past':'')+'"><span class="wn">'+(i+1)+'주</span><span class="wd2">'+fmtMD(pd(w[0]),1)+'~'+fmtMD(pd(w[1]),1)+'</span><span class="wm">'+w[2]+'</span></div>'});
+  if(!document.getElementById('roadcss')){var cs=document.createElement('style');cs.id='roadcss';cs.textContent='.road{border:1px solid var(--line);border-radius:12px;padding:10px;margin:14px 0;background:var(--card)}.road .rh{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:14px;margin-bottom:6px}.road .rh b{font-size:15px}.road .rh span{color:var(--blue);font-weight:700;font-size:13px}.road .wr{display:flex;gap:6px;align-items:baseline;font-size:13px;padding:6px 7px;border-radius:8px;word-break:keep-all;line-height:1.5}.road .wr.cur{background:var(--pri);color:#fff}.road .wr.past{opacity:.5}.road .wn{font-weight:800;min-width:26px}.road .wd2{white-space:nowrap}.road .wm{flex:1 1 150px;min-width:0}';document.head.appendChild(cs)}
+  app.appendChild(el('div','road',rh))})();
  app.appendChild(el('div','note','내 진도는 내가 정해요. 활동을 누르면 바로 열리고, 풀던 곳부터 이어서 할 수 있어요. 기록은 이 폰에만 저장돼요.'));app.appendChild(foot());
  /* fixed tabs */
  var tabs=el('nav','tabs');
