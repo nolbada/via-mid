@@ -392,3 +392,10 @@ body[data-page=index]{--off:#e9eef8;--offInk:#6b7a93}
 .acc .row .go{color:inherit;font-weight:700}
 
 .bq,.bqt{text-align:left}
+
+/* one question at a time */
+.sq{display:flex;align-items:center;gap:10px;margin:14px 0 2px;font-size:14.5px;color:var(--sub);font-weight:700}
+.sqb{flex:1;height:6px;border-radius:9px;background:var(--line);overflow:hidden}.sqb i{display:block;height:100%;background:var(--pri)}
+.seqnext{margin:12px 0 6px;padding:14px;font-size:16.5px}
+.xin{flex:1 1 100%;min-width:0}
+.xin .answ{font-size:18px;font-weight:800;margin:4px 0}
