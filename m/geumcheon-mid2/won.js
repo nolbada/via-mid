@@ -3,7 +3,12 @@
 var APP=window.APP,UN=(new URLSearchParams(location.search).get('u')||String(APP.lessons[0].u)),T=window['TX'+UN],pg=document.body.getAttribute('data-page'),app=document.getElementById('app');app.classList.add('xp');
 function el(tag,cls,h){var e=document.createElement(tag);if(cls)e.className=cls;if(h!=null)e.innerHTML=h;return e}
 function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-function tabs(){}
+function tabs(){
+ var t=el('nav','tabs'),onAns=(pg==='ans');
+ var a=el('a',onAns?null:'on','원문');a.href='won.html';
+ var b=el('a',onAns?'on':null,'답안지');b.href='ans.html';
+ var c=el('a',null,'유형 풀코스');c.href='index.html';
+ t.appendChild(a);t.appendChild(b);t.appendChild(c);document.body.appendChild(t)}
 function foot(){return el('div','foot','비타민 영어클리닉 · '+APP.school)}
 function back(href,label){var d=el('div','top');var a=el('a','pill','‹ '+(label||'목록'));a.href=href||'won.html';d.appendChild(a);return d}
 function secRange(s){return s.sents[0].n+'~'+s.sents[s.sents.length-1].n+'번'}
@@ -17,7 +22,18 @@ function pageWon(){
   [['좌본문 우해석','jwa.html?u='+L.u],['문법 설명','gram.html?u='+L.u]].forEach(function(x){
    var r=el('div','arow','<b>'+x[0]+'</b>');var a=el('a','cell','열기');a.href=x[1];r.appendChild(a);rc.appendChild(r)});
   app.appendChild(rc)});
- app.appendChild(foot())}
+ app.appendChild(foot());tabs()}
+
+/* ---------- 답안지 목록 ---------- */
+function pageAns(){
+ app.appendChild(el('h1',null,APP.school+' 답안지'));
+ APP.lessons.forEach(function(L,i){
+  var rc=el('div','rc');if(i)rc.style.marginTop='10px';
+  rc.appendChild(el('div','rh','<h3>교과서 '+L.u+'과</h3><small class="rng">'+esc(APP.pub)+'</small>'));
+  ['빈칸 우리말 정답','어법 선택형','동사형','Check 정답','빈칸 영어 정답','예상문제 PRE-STEP 정답·해설','예상문제 1회 정답·해설','예상문제 2회 정답·해설'].forEach(function(n){
+   var r=el('div','arow','<b>'+n+'<span class="cn">정답·해설</span></b>');r.appendChild(el('span','cell off','준비 중'));rc.appendChild(r)});
+  app.appendChild(rc)});
+ app.appendChild(foot());tabs()}
 
 /* ---------- 좌본문 우해석 ---------- */
 function pageJwa(){
@@ -98,5 +114,5 @@ function pageGram(){
  });
  draw()}
 
-({won:pageWon,jwa:pageJwa,gram:pageGram})[pg]();
+({won:pageWon,ans:pageAns,jwa:pageJwa,gram:pageGram})[pg]();
 })();
