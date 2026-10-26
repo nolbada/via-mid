@@ -87,20 +87,22 @@ var SCN={'yonga-mid2':'용아중','geumcheon-mid2':'금천중','yongseong-mid2':
 var SCS={'yonga-mid2':'용아','geumcheon-mid2':'금천','yongseong-mid2':'용성'};
 var SCC={'yonga-mid2':'#0f766e','geumcheon-mid2':'#16a34a','yongseong-mid2':'#2563eb'};
 function rx(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
+var CNKM={'yonga-mid2':{'L7:hangeul':24,'L7:eobeop':21,'L7:dongsa':22,'L7:check':53,'L7:yeongeo':24,'L7:pre':66,'L7:yesang1':30,'L7:yesang2':30,'L8:hangeul':35,'L8:eobeop':35,'L8:dongsa':35,'L8:check':66,'L8:yeongeo':35,'L8:pre':47,'L8:yesang1':26,'L8:yesang2':26}};
 function info(id){
   var d=ALL[id],ks=Object.keys(d),p=id.split('|'),sk=p[1],pf=PFXS[sk]||'mid7:';
   var o={id:id,name:p[2],sk:sk,school:SCN[sk]||sk,short:SCS[sk]||String(sk).slice(0,2),color:SCC[sk]||'#94a3b8',last:0};
   var t0=day0(Date.now()),tmR=new RegExp('^'+rx(pf)+'tm:(\\d{4})-(\\d\\d)-(\\d\\d):[^:]+:([qwh])$'),stR=new RegExp('^'+rx(pf)+'(?:st:\\d+:[^:]+|xst:\\d+)$'),dnR=new RegExp('^'+rx(pf)+'done:'),dtR=new RegExp('^'+rx(pf)+'doneAt:');
-  var tt=0,td=0,qg=0,qok=0,wrong=0,done=0,days={};
+  var tt=0,td=0,qg=0,qok=0,qoff=0,wrong=0,done=0,days={},anR=new RegExp('^'+rx(pf)+'ans:(L\\d+:[a-z0-9]+)$'),CT=CNKM[sk]||{};
   ks.forEach(function(k){var t=d[k].t;if(t>1&&t>o.last)o.last=t;
     var m=tmR.exec(k);
     if(m){var v=+val(d[k])||0;if(v>0){tt+=v;if(new Date(+m[1],+m[2]-1,+m[3]).getTime()===t0)td+=v}}
     if(stR.test(k)){var s=val(d[k]);if(s&&typeof s==='object')Object.keys(s).forEach(function(q){qg++;var e=s[q];if(e&&e[1])qok++})}
+    var am=anR.exec(k);if(am){var ae=val(d[k]);if(ae&&ae.n>0&&CT[am[1]])qoff+=CT[am[1]]}
     if(k===pf+'w'){var w=val(d[k]);if(Array.isArray(w))wrong=w.length}
     if(dnR.test(k)&&String(val(d[k]))==='1')done++;
     if(dtR.test(k)){var x=val(d[k]);if(x){var dt=new Date(x);days[dt.getFullYear()+'-'+dt.getMonth()+'-'+dt.getDate()]=1}}
   });
-  o.stats=[['누적 이용시간',dur(tt)],['오늘 이용시간',dur(td)],['풀코스 누적 문항',qg+'문항'],['풀코스 중 오답노트',wrong+'개'],['누적 채점문항(오프라인)','0개']];
+  o.stats=[['누적 이용시간',dur(tt)],['오늘 이용시간',dur(td)],['풀코스 누적 문항',qg+'문항'],['풀코스 중 오답노트',wrong+'개'],['누적 채점문항(오프라인)',qoff+'문항']];
   o.sub='완료 유형 '+done+'개 · 학습한 날 '+Object.keys(days).length+'일';
   return o;
 }
