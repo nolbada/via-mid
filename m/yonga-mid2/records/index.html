@@ -92,7 +92,7 @@ function info(id){
   var d=ALL[id],ks=Object.keys(d),p=id.split('|'),sk=p[1],pf=PFXS[sk]||'mid7:';
   var o={id:id,name:p[2],sk:sk,school:SCN[sk]||sk,short:SCS[sk]||String(sk).slice(0,2),color:SCC[sk]||'#94a3b8',last:0};
   var t0=day0(Date.now()),tmR=new RegExp('^'+rx(pf)+'tm:(\\d{4})-(\\d\\d)-(\\d\\d):[^:]+:([qwh])$'),stR=new RegExp('^'+rx(pf)+'(?:st:\\d+:[^:]+|xst:\\d+)$'),dnR=new RegExp('^'+rx(pf)+'done:'),dtR=new RegExp('^'+rx(pf)+'doneAt:');
-  var tt=0,td=0,qg=0,qok=0,qoff=0,wrong=0,done=0,rtd={},days={},anR=new RegExp('^'+rx(pf)+'ans:(L\\d+:[a-z0-9]+)$'),CT=CNKM[sk]||{};
+  var tt=0,td=0,qg=0,qok=0,qoff=0,wrong=0,done=0,rtd={},lc=null,days={},anR=new RegExp('^'+rx(pf)+'ans:(L\\d+:[a-z0-9]+)$'),CT=CNKM[sk]||{};
   ks.forEach(function(k){var t=d[k].t;if(t>1&&t>o.last)o.last=t;
     var m=tmR.exec(k);
     if(m){var v=+val(d[k])||0;if(v>0){tt+=v;if(new Date(+m[1],+m[2]-1,+m[3]).getTime()===t0)td+=v}}
@@ -100,9 +100,9 @@ function info(id){
     var am=anR.exec(k);if(am){var ae=val(d[k]);if(ae&&ae.n>0&&CT[am[1]])qoff+=CT[am[1]]}
     if(k===pf+'w'){var w=val(d[k]);if(Array.isArray(w))wrong=w.length}
     if(dnR.test(k)&&String(val(d[k]))==='1')done++;
-    if(dtR.test(k)){var x=val(d[k]);if(x){var dt=new Date(x);days[dt.getFullYear()+'-'+dt.getMonth()+'-'+dt.getDate()]=1;if(day0(dt.getTime())===t0){var rm=/doneAt:([^:]+):/.exec(k);if(rm)rtd[rm[1]]=1}}}
+    if(dtR.test(k)){var x=val(d[k]);if(x){var dt=new Date(x);var lm=/doneAt:([^:]+):/.exec(k),d0=day0(dt.getTime());if(lm&&(!lc||d0>lc.d||(d0===lc.d&&+lm[1]>+lc.n)))lc={d:d0,n:lm[1]};days[dt.getFullYear()+'-'+dt.getMonth()+'-'+dt.getDate()]=1;if(day0(dt.getTime())===t0){var rm=/doneAt:([^:]+):/.exec(k);if(rm)rtd[rm[1]]=1}}}
   });
-  o.stats=[['누적 이용시간',dur(tt)],['오늘 이용시간',dur(td)],['누적 풀코스',qg+'문제'],['오늘 회차',Object.keys(rtd).length+'회'],['누적 채점',qoff+'문제'],['오답노트',wrong+'개']];
+  o.stats=[['누적 이용시간',dur(tt)],['오늘 이용시간',dur(td)],['누적 풀코스',qg+'문제'],['마지막 회차',lc?lc.n+'회차 · '+(new Date(lc.d).getMonth()+1)+'/'+new Date(lc.d).getDate():'없음'],['누적 채점',qoff+'문제'],['오답노트',wrong+'개']];
   o.sub='완료 유형 '+done+'개 · 학습한 날 '+Object.keys(days).length+'일';
   return o;
 }
