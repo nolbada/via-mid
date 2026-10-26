@@ -102,7 +102,7 @@ function info(id){
     if(dnR.test(k)&&String(val(d[k]))==='1')done++;
     if(dtR.test(k)){var x=val(d[k]);if(x){var dt=new Date(x);days[dt.getFullYear()+'-'+dt.getMonth()+'-'+dt.getDate()]=1}}
   });
-  o.stats=[['누적 이용시간',dur(tt)],['오늘 이용시간',dur(td)],['풀코스 누적 문항',qg+'문항'],['풀코스 중 오답노트',wrong+'개'],['누적 채점문항(오프라인)',qoff+'문항']];
+  o.stats=[['누적 이용시간',dur(tt)],['오늘 이용시간',dur(td)],['앱으로 푼 문제',qg+'문제'],['오답노트',wrong+'개'],['종이로 푼 문제',qoff+'문제']];
   o.sub='완료 유형 '+done+'개 · 학습한 날 '+Object.keys(days).length+'일';
   return o;
 }
