@@ -82,12 +82,13 @@ function load(){
   }).catch(function(){login('연결이 안 됐어요. 인터넷을 확인해 주세요.')});
 }
 function dur(s){s=Math.round(s);if(s<=0)return '0분';if(s<60)return '1분 미만';return s>=3600?Math.floor(s/3600)+'시간 '+Math.round(s%3600/60)+'분':Math.round(s/60)+'분'}
-var PFXS={'yonga-mid2':'mid7:','geumcheon-mid2':'gcm2:','yongseong-mid2':'ysm2:'};
-var SCN={'yonga-mid2':'용아중','geumcheon-mid2':'금천중','yongseong-mid2':'용성중'};
-var SCS={'yonga-mid2':'용아','geumcheon-mid2':'금천','yongseong-mid2':'용성'};
-var SCC={'yonga-mid2':'#0f766e','geumcheon-mid2':'#16a34a','yongseong-mid2':'#2563eb'};
+var PFXS={'yonga-mid2':'mid7:','geumcheon-mid2':'gcm2:','yongseong-mid2':'ysm2:','undong-mid2':'udm2:'};
+var SCN={'yonga-mid2':'용아중','geumcheon-mid2':'금천중','yongseong-mid2':'용성중','undong-mid2':'운동중'};
+var SCS={'yonga-mid2':'용아','geumcheon-mid2':'금천','yongseong-mid2':'용성','undong-mid2':'운동'};
+var SCC={'yonga-mid2':'#0f766e','geumcheon-mid2':'#16a34a','yongseong-mid2':'#2563eb','undong-mid2':'#7c3aed'};
 function rx(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
 var CNKM={'yonga-mid2':{'L7:hangeul':24,'L7:eobeop':21,'L7:dongsa':22,'L7:check':53,'L7:yeongeo':24,'L7:pre':66,'L7:yesang1':30,'L7:yesang2':30,'L8:hangeul':35,'L8:eobeop':35,'L8:dongsa':35,'L8:check':66,'L8:yeongeo':35,'L8:pre':47,'L8:yesang1':26,'L8:yesang2':26},'geumcheon-mid2':{'L5:hangeul':24,'L5:eobeop':24,'L5:dongsa':24,'L5:check':40,'L5:yeongeo':24,'L5:pre':66,'L5:yesang1':30,'L5:yesang2':30,'L6:hangeul':28,'L6:eobeop':24,'L6:dongsa':28,'L6:check':46,'L6:yeongeo':28,'L6:pre':68,'L6:yesang1':30,'L6:yesang2':30,'L7:hangeul':29,'L7:eobeop':28,'L7:dongsa':29,'L7:check':44,'L7:yeongeo':29,'L7:pre':71,'L7:yesang1':30,'L7:yesang2':30,'L8:hangeul':24,'L8:eobeop':24,'L8:dongsa':24,'L8:check':54,'L8:yeongeo':24},'yongseong-mid2':{'L8:hangeul':15,'L8:eobeop':15,'L8:dongsa':15,'L8:check':32,'L8:yeongeo':15}};
+CNKM['undong-mid2']=CNKM['yonga-mid2'];/* 운동중2는 용아중2 복제 */
 function info(id){
   var d=ALL[id],ks=Object.keys(d),p=id.split('|'),sk=p[1],pf=PFXS[sk]||'mid7:';
   var o={id:id,name:p[2],sk:sk,school:SCN[sk]||sk,short:SCS[sk]||String(sk).slice(0,2),color:SCC[sk]||'#94a3b8',last:0};
