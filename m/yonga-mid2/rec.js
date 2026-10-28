@@ -38,9 +38,18 @@
   function merge(loc,rem){try{return JSON.stringify(dm(JSON.parse(loc),JSON.parse(rem)))}catch(e){return rem}}
   /* 서버가 "명단에 없는 이름"이라고 하면 이 기기의 이름 등록을 풀어 잠금 화면으로 돌린다 */
   function deny(){if(!g(NK))return;d(NK);d(UK);d(MK);reloadOnce()}
+  /* 저장 상태 표시: 두 번 이상 연속 실패하면 카드에 빨간 안내를 띄운다 */
+  var bad=0;
+  function stat(ok){
+    var e=D.getElementById('rec-st');
+    if(ok){bad=0;if(e){e.textContent='기록 저장 중';e.style.color=''}return}
+    bad++;
+    if(e&&bad>=2){e.textContent='저장이 안 되고 있어요. 인터넷을 확인해 주세요';e.style.color='#dc2626'}
+  }
   function post(body,keep){
     return fetch(URL_,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(body),keepalive:!!keep})
-      .then(function(r){return r.json()}).then(function(r){if(!r||!r.ok){var e=new Error('rec');e.code=r&&r.err;if(e.code==='noname')deny();throw e}return r});
+      .then(function(r){return r.json()}).then(function(r){if(!r||!r.ok){var e=new Error('rec');e.code=r&&r.err;if(e.code==='noname')deny();throw e}return r})
+      .then(function(r){stat(true);return r},function(e){if(!e||e.code!=='noname')stat(false);throw e});
   }
   /* 이름 등록 전 확인(기존 등록을 건드리지 않는다) */
   function chk(id){
@@ -150,12 +159,29 @@
         },function(){fail(net)});
       };
     }else{
-      box.innerHTML='<span style="flex:1"><b>'+name.replace(/[<>&"]/g,'')+'</b> 기록 저장 중</span><button id="rec-x" type="button" style="font-size:11.5px;padding:4px 9px;border:1px solid var(--line,#dbe4e1);border-radius:8px;background:transparent;color:inherit">저장하고 나가기</button>';
+      box.innerHTML='<span style="flex:1"><b>'+name.replace(/[<>&"]/g,'')+'</b> <span id="rec-st">기록 저장 중</span></span><button id="rec-x" type="button" style="font-size:11.5px;padding:4px 9px;border:1px solid var(--line,#dbe4e1);border-radius:8px;background:transparent;color:inherit">저장하고 나가기</button>';
       host.insertBefore(box,host.firstChild);
       D.getElementById('rec-x').onclick=function(){
         if(!W.confirm('이름이 풀립니다. 학원 기기에서 다 풀고 나갈 때만 누르세요. 저장하고 나갈까요?'))return;
         var b=this,id=g(UK);b.disabled=true;b.textContent='저장하는 중...';
-        (id?push(id,false):Promise.resolve()).then(function(){wipe();d(NK);d(UK);location.reload()},function(){b.disabled=false;b.textContent='저장이 안 됐어요. 다시 눌러 주세요'});
+        var done=function(){wipe();d(NK);d(UK);location.reload()};
+        var oops=function(t){
+          b.disabled=false;b.textContent='저장하고 나가기';
+          var e=D.getElementById('rec-st');if(e){e.textContent='저장이 안 됐어요';e.style.color='#dc2626'}
+          W.alert(t);
+        };
+        if(!id){done();return}
+        /* 올린 뒤 서버에서 다시 읽어 모든 기록이 있는지 확인하고, 확인된 때만 지운다 */
+        push(id,false).then(function(){return post({act:'put',id:id,data:{}})}).then(function(r){
+          var rem=r.data||{},miss=0,big=0;
+          keys().forEach(function(k){var v=g(k);if(v===null)return;if(v.length>MAXV){big++;return}var e=rem[k];if(!e||unwrap(e.v)===null)miss++});
+          if(miss){oops('기록 '+miss+'개가 서버에 올라가지 않았어요. 나가지 말고 인터넷을 확인한 뒤 다시 눌러 주세요. 계속 안 되면 선생님께 알려 주세요.');return}
+          if(big&&!W.confirm('너무 커서 저장되지 않는 기록이 '+big+'개 있어요. 그래도 나갈까요?\n(나가면 이 기록은 사라져요)')){oops('나가지 않았어요. 선생님께 알려 주세요.');return}
+          done();
+        },function(e){
+          if(e&&e.code==='noname')oops('등록된 학생 이름이 아니라서 저장할 수 없어요. 나가지 말고 선생님께 알려 주세요.');
+          else oops('저장이 안 됐어요. 나가지 말고 인터넷을 확인한 뒤 다시 눌러 주세요. 계속 안 되면 선생님께 알려 주세요.');
+        });
       };
     }
   }
