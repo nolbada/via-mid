@@ -110,7 +110,7 @@ function info(id){
 var SEL='';try{SEL=localStorage.getItem('recm_sel')||''}catch(e){}
 function draw(){
   var ids=Object.keys(ALL).filter(function(id){return id.indexOf('RECM|')===0});
-  var all0=ids.map(info).filter(function(r){return r.name!=='신유정'}).sort(function(a,b){return a.sk===b.sk?String(a.name||'~').localeCompare(String(b.name||'~'),'ko'):(Object.keys(PFXS).indexOf(a.sk)-Object.keys(PFXS).indexOf(b.sk))});
+  var all0=ids.map(info).filter(function(r){return r.name!=='신유정'&&r.name!=='김현식'}).sort(function(a,b){return a.sk===b.sk?String(a.name||'~').localeCompare(String(b.name||'~'),'ko'):(Object.keys(PFXS).indexOf(a.sk)-Object.keys(PFXS).indexOf(b.sk))});
   if(SEL&&!all0.some(function(r){return r.id===SEL}))SEL='';
   var t0=day0(Date.now()),todayN=all0.filter(function(r){return r.last>=t0}).length;
   var late=all0.filter(function(r){return !r.last||t0-day0(r.last)>=3*86400000});
