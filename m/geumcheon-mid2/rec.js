@@ -128,6 +128,35 @@
     });
     W.addEventListener('pagehide',function(){push(id,true).catch(function(){})});
   }
+  /* 나가기 보관함: 서버에 올라간 것이 확인될 때까지 이 기기에 남겨 두고 자동으로 다시 보낸다 */
+  var OK_='recm_out'+SFX,fl=false;
+  function outq(){try{var a=JSON.parse(g(OK_)||'[]');return Array.isArray(a)?a:[]}catch(e){return[]}}
+  function tpost(body){
+    var ac=W.AbortController?new AbortController():null,t=ac?setTimeout(function(){ac.abort()},25000):0;
+    return fetch(URL_,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(body),signal:ac?ac.signal:undefined})
+      .then(function(r){clearTimeout(t);return r.json()},function(e){clearTimeout(t);throw e});
+  }
+  function flushOut(){
+    if(fl)return;
+    var q=outq().filter(function(x){return !x.dead});if(!q.length)return;
+    fl=true;var x=q[0];
+    tpost({act:'put',id:x.id,data:x.ch||{}}).then(function(r){
+      if(!r||!r.ok){var e=new Error('out');e.code=r&&r.err;throw e}
+      return tpost({act:'put',id:x.id,data:{}});
+    }).then(function(r){
+      if(!r||!r.ok)throw new Error('out');
+      var rem=r.data||{},miss=0;
+      (x.keys||[]).forEach(function(k){var e=rem[k];if(!e||unwrap(e.v)===null)miss++});
+      if(miss)throw new Error('miss');
+      s(OK_,JSON.stringify(outq().filter(function(y){return y.t!==x.t})));
+      fl=false;flushOut();
+    }).catch(function(e){
+      fl=false;
+      if(e&&e.code==='noname'){s(OK_,JSON.stringify(outq().map(function(y){if(y.t===x.t)y.dead=1;return y})))}
+    });
+  }
+  W.addEventListener('online',flushOut);
+  setInterval(flushOut,45000);
   /* 이름 입력 카드 (첫 화면에서만) */
   function mountCard(){
     if(!new RegExp('/'+SCH+'/(index\\.html|won\\.html|ans\\.html)?$').test(P))return;
@@ -163,29 +192,22 @@
       host.insertBefore(box,host.firstChild);
       D.getElementById('rec-x').onclick=function(){
         if(!W.confirm('이름이 풀립니다. 학원 기기에서 다 풀고 나갈 때만 누르세요. 저장하고 나갈까요?'))return;
-        var b=this,id=g(UK);b.disabled=true;b.textContent='저장하는 중...';
-        var done=function(){wipe();d(NK);d(UK);location.reload()};
-        var oops=function(t){
-          b.disabled=false;b.textContent='저장하고 나가기';
-          var e=D.getElementById('rec-st');if(e){e.textContent='저장이 안 됐어요';e.style.color='#dc2626'}
-          W.alert(t);
-        };
-        if(!id){done();return}
-        /* 올린 뒤 서버에서 다시 읽어 모든 기록이 있는지 확인하고, 확인된 때만 지운다 */
-        push(id,false).then(function(){return post({act:'put',id:id,data:{}})}).then(function(r){
-          var rem=r.data||{},miss=0,big=0;
-          keys().forEach(function(k){var v=g(k);if(v===null)return;if(v.length>MAXV){big++;return}var e=rem[k];if(!e||unwrap(e.v)===null)miss++});
-          if(miss){oops('기록 '+miss+'개가 서버에 올라가지 않았어요. 나가지 말고 인터넷을 확인한 뒤 다시 눌러 주세요. 계속 안 되면 선생님께 알려 주세요.');return}
-          if(big&&!W.confirm('너무 커서 저장되지 않는 기록이 '+big+'개 있어요. 그래도 나갈까요?\n(나가면 이 기록은 사라져요)')){oops('나가지 않았어요. 선생님께 알려 주세요.');return}
-          done();
-        },function(e){
-          if(e&&e.code==='noname')oops('등록된 학생 이름이 아니라서 저장할 수 없어요. 나가지 말고 선생님께 알려 주세요.');
-          else oops('저장이 안 됐어요. 나가지 말고 인터넷을 확인한 뒤 다시 눌러 주세요. 계속 안 되면 선생님께 알려 주세요.');
-        });
+        var b=this,id=g(UK);
+        if(!id){wipe();d(NK);d(UK);location.reload();return}
+        var ch=pending().ch,ks=[],big=0;
+        keys().forEach(function(k){var v=g(k);if(v===null)return;if(v.length>MAXV){big++;return}ks.push(k)});
+        if(big&&!W.confirm('너무 커서 저장되지 않는 기록이 '+big+'개 있어요. 그래도 나갈까요?\n(나가면 이 기록은 사라져요)'))return;
+        /* 기록은 이 기기의 보관함에 먼저 담고, 바로 이름 화면으로 넘어간다. 서버 저장은 뒤에서 확인될 때까지 자동 재시도 */
+        var item={id:id,ch:ch,keys:ks,t:Date.now()},q=outq();q.push(item);
+        s(OK_,JSON.stringify(q));
+        var okw=false;try{okw=outq().some(function(y){return y.t===item.t})}catch(e){}
+        if(!okw){W.alert('이 기기에 임시 보관을 하지 못했어요. 나가지 말고 선생님께 알려 주세요.');return}
+        b.disabled=true;b.textContent='나가는 중...';
+        wipe();d(NK);d(UK);location.reload();
       };
     }
   }
   W.RECM={id:ident,sync:function(){var id=ident();return id?sync(id,true):Promise.resolve(false)}};
-  function ready(){start();mountCard()}
+  function ready(){flushOut();start();mountCard()}
   if(D.readyState==='complete')ready();else W.addEventListener('load',ready);
 })();
