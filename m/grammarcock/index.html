@@ -763,6 +763,18 @@ function maybeAutoSpeak(c, s, changedKey){
   }
 }
 
+/* 다른 앱에서 개념으로 바로 오기: ?c=060&back=<돌아갈 주소> — 개념 카드를 열고 '본문으로 돌아가기' 띠를 보여 준다 */
+(function(){
+  try{
+    var q=new URLSearchParams(location.search),cn=q.get('c'),bk=q.get('back');
+    if(cn){var di=DATA.findIndex(function(x){return x.num===cn});if(di>=0)current=di}
+    if(bk&&/^https:\/\/nolbada\.github\.io\//.test(bk)){
+      var bar=document.createElement('a');bar.href=bk;bar.textContent='\u2190 본문으로 돌아가기';
+      bar.style.cssText='display:block;position:fixed;top:0;left:0;right:0;z-index:999;background:#244138;color:#fff;text-decoration:none;font-weight:800;font-size:15px;text-align:center;padding:12px 10px';
+      document.body.appendChild(bar);document.body.style.paddingTop='46px';
+    }
+  }catch(e){}
+})();
 setMascot('neutral');
 render();
 </script>
