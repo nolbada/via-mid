@@ -71,9 +71,9 @@
     return post({act:'put',id:id,data:c.ch},keep).then(function(){
       var meta=jg(MK)||{},k;for(k in c.sent)meta[k]=c.sent[k];s(MK,JSON.stringify(meta));return true});
   }
-  function sync(id,apply){
+  function sync(id,apply,pre){
     if(busy){again=true;return Promise.resolve(false)}busy=true;
-    return post({act:'put',id:id,data:{}}).then(function(r){
+    return (pre?Promise.resolve(pre):post({act:'put',id:id,data:{}})).then(function(r){
       var rem=r.data||{},meta=jg(MK)||{},rl=false,skip={},k;
       for(k in rem){
         if(!mirrored(k))continue;
@@ -167,6 +167,7 @@
     if(!name){
       box.innerHTML='<b style="flex:1 1 100%">이름을 등록해야 시작할 수 있어요</b><input id="rec-n" type="text" autocomplete="off" placeholder="이름" style="flex:1;min-width:120px;font-size:16px;padding:9px 10px;border:1px solid var(--line,#dbe4e1);border-radius:8px;background:transparent;color:inherit"><button id="rec-b" type="button" style="font-size:15px;font-weight:700;padding:9px 16px;border:0;border-radius:8px;background:var(--pri,#1d4ed8);color:var(--onpri,#fff)">시작</button><div id="rec-m" style="flex:1 1 100%;font-size:13px;color:var(--sub,#5a6b67)"></div>';
       host.insertBefore(box,host.firstChild);
+      try{fetch(URL_,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({act:'put',id:'RECM|'+SCH+'|__warm|'+NUM,data:{}})}).catch(function(){})}catch(e){}
       D.getElementById('rec-b').onclick=function(){
         var v=(D.getElementById('rec-n').value||'').replace(/\s+/g,'');
         if(!v){D.getElementById('rec-m').textContent='이름을 적어 주세요.';return}
@@ -174,17 +175,17 @@
         var prevId=g(UK),newId='RECM|'+SCH+'|'+v+'|'+NUM;
         var fail=function(t){b.disabled=false;D.getElementById('rec-m').textContent=t};
         var net='연결이 안 됐어요. 인터넷을 확인하고 다시 눌러 주세요.';
-        var go=function(){
+        var go=function(pre){
           D.getElementById('rec-m').textContent='기록을 불러오는 중...';
           s(NK,v);var id=ident();
           if(prevId&&prevId!==id){wipe()}
           s(UK,id);d(MK);
-          sync(id,true).then(function(){location.reload()},function(){d(NK);d(UK);fail(net)});
+          sync(id,true,pre).then(function(){location.reload()},function(){d(NK);d(UK);fail(net)});
         };
         chk(newId).then(function(r){
           if(!r.ok){fail(r.err==='noname'?'등록된 학생 이름이 아니에요. 이름을 다시 확인하거나 선생님께 알려 주세요.':net);return}
-          if(prevId&&prevId!==newId)push(prevId,false).then(go,function(e){if(e&&e.code==='noname')go();else fail('이전 기록을 저장하지 못했어요. 인터넷을 확인하고 다시 눌러 주세요.')});
-          else go();
+          if(prevId&&prevId!==newId)push(prevId,false).then(function(){go(r)},function(e){if(e&&e.code==='noname')go(r);else fail('이전 기록을 저장하지 못했어요. 인터넷을 확인하고 다시 눌러 주세요.')});
+          else go(r);
         },function(){fail(net)});
       };
     }else{
