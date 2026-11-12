@@ -37,7 +37,7 @@
   }
   function merge(loc,rem){try{return JSON.stringify(dm(JSON.parse(loc),JSON.parse(rem)))}catch(e){return rem}}
   /* 서버가 "명단에 없는 이름"이라고 하면 이 기기의 이름 등록을 풀어 잠금 화면으로 돌린다 */
-  function deny(){if(!g(NK))return;d(NK);d(UK);d(MK);reloadOnce()}
+  function deny(){if(!g(NK))return;d(NK);d(UK);d(MK);reloadOnce(true)}
   /* 저장 상태 표시: 두 번 이상 연속 실패하면 카드에 빨간 안내를 띄운다 */
   var bad=0;
   function stat(ok){
@@ -92,7 +92,8 @@
     },function(e){busy=false;throw e});
   }
   function wipe(){keys().forEach(d);d(MK)}
-  function reloadOnce(){
+  var TCH=0;try{['click','touchstart','keydown'].forEach(function(ev){W.addEventListener(ev,function(){TCH=1},true)})}catch(e){}
+  function reloadOnce(force){if(!force&&TCH)return;
     try{var t=Number(sessionStorage.getItem('recm_rl'+SFX)||0);if(Date.now()-t>20000){sessionStorage.setItem('recm_rl'+SFX,String(Date.now()));location.reload()}}catch(e){}
   }
   var timer=null;
@@ -109,11 +110,11 @@
     var prev=g(UK);
     var first=function(){
       s(UK,id);d(MK);
-      return sync(id,true).then(function(rl){if(rl)reloadOnce()}).catch(function(){});
+      return sync(id,true).then(function(rl){if(rl)reloadOnce(true)}).catch(function(){});
     };
     if(prev&&prev!==id){
       /* 이전 학생 기록을 올리는 데 성공했을 때만 지운다. 실패하면 기록을 그대로 둔다 */
-      push(prev,false).then(function(){wipe();return first()}).then(function(){reloadOnce()},function(){});
+      push(prev,false).then(function(){wipe();return first()}).then(function(){reloadOnce(true)},function(){});
       return;
     }
     if(!prev){first();return}
