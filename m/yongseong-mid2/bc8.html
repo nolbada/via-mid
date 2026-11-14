@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="ko" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>8과 문장 성분 연습</title>
+<style>
+:root{--bg:#f1efe9;--panel:#fff;--ink:#1f1d1a;--mute:#5d584f;--soft:#8a847a;--line:#e0dbd0;--accent:#2f4858;--bad:#c0392b;--good:#2e7d32;
+--S:#ffc83d;--V:#ff8f87;--O:#a9e6a4;--C:#9fd3f2;--MA:#d5bbff;--MB:#ffdcae;--CJ:#dcdcdc;--font:'Noto Sans KR',system-ui,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif}
+*{box-sizing:border-box}html,body{overflow-x:hidden;max-width:100%}html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.55;padding:18px max(16px,env(safe-area-inset-right)) 60px max(16px,env(safe-area-inset-left))}
+button{font:inherit;color:inherit;cursor:pointer}
+.shell{min-width:0;max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+h1{font-size:26px;font-weight:900;margin:0}h2{font-size:15px;font-weight:800;margin:6px 0 0;color:var(--mute)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.big{background:var(--panel);border:0;border-radius:14px;padding:18px 14px;text-align:left;font-weight:800;font-size:17px;border-left:6px solid var(--c,#888)}
+.big small{display:block;font-weight:500;font-size:12px;color:var(--soft);margin-top:2px}
+.wide{grid-column:1/-1}
+.card{background:var(--panel);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.no{font-size:12px;font-weight:800;color:var(--soft)}
+.sent{font-size:19px;line-height:1.5;font-weight:600;overflow-wrap:anywhere}
+#sent{background:#e6f1ff;border:2px solid #2b6cb0;border-radius:12px;padding:12px 12px 4px;color:#0f3459;font-size:20px}
+#sent .t{background:#c9dffa}
+.ch{display:inline-block;margin:0 3px 8px 0;text-align:center;vertical-align:top;max-width:100%}
+.ch .t{display:inline-block;padding:2px 6px;border-radius:4px;background:#ecebe6}
+.ch .l{display:block;margin-top:2px;line-height:1.25}
+.ch .g{display:block;font-size:13.5px;font-weight:600;color:var(--ink)}
+.ch .r{display:block;font-size:11.5px;color:var(--mute)}
+.ch .r small{font-size:10px;color:var(--soft);opacity:.8}
+.k-S{background:var(--S)!important}.k-V{background:var(--V)!important}.k-O{background:var(--O)!important}.k-C{background:var(--C)!important}.k-MA{background:var(--MA)!important}.k-MB{background:var(--MB)!important}.k-CJ{background:var(--CJ)!important}
+.ko{color:var(--mute);font-size:14px}
+.wm{font-size:12.5px;color:var(--soft)}
+.note,.postit{font-size:13px;background:#fff1a8;border-radius:3px;padding:9px 11px;box-shadow:1px 2px 4px rgba(0,0,0,.14);line-height:1.5;margin-top:8px}
+.qr .g{flex-basis:100%;font-size:13.5px;font-weight:600;color:#333}
+.sub{font-size:13px;color:var(--mute);border-left:3px solid var(--line);padding-left:8px}
+.anc{font-size:13px;color:var(--mute);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.anc b{font-weight:800;color:var(--ink)}
+.anc .x{padding:1px 6px;border-radius:4px;color:#2a2a2a}
+.legend{display:flex;gap:6px;flex-wrap:wrap}.legend span{font-size:12px;font-weight:700;padding:2px 8px;border-radius:5px;color:#2a2a2a}
+.nav,.btnrow{display:flex;gap:10px}
+.pri{flex:1;border:0;border-radius:999px;padding:14px;font-weight:800;background:var(--accent);color:#fff;font-size:15px}
+.pri.warn{background:#b3541e}
+.back{border:0;background:var(--panel);border-radius:999px;padding:14px;font-weight:800;font-size:15px;width:100%}
+.rows{display:flex;flex-direction:column}
+.qr{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:9px 0;border-top:1px solid var(--line)}
+.qr:first-child{border-top:0}
+.qr .t{font-size:18px;font-weight:600;background:#ecebe6;border-radius:4px;padding:2px 8px}
+.opt{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.opt button{border:2px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-weight:700;font-size:14px}
+.opt button.sel,.popt button.sel{background:#2f4858;border-color:#2f4858;color:#fff}
+.popt{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:6px;width:100%}
+.popt button{border:2px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-weight:700;font-size:14px}
+.pbox{width:100%}.pbox:empty{display:none}
+.mk{display:inline-block;width:24px;height:24px;border-radius:50%;text-align:center;font-weight:900;color:#fff;font-size:14px;line-height:24px}
+.mko{background:var(--good)}.mkx{background:var(--bad)}
+.qr.wr{background:#fff1ef;border-radius:8px;padding-left:8px;padding-right:8px}
+.mine{color:var(--bad);font-weight:700;font-size:14px;text-decoration:line-through}
+.res{font-weight:800;font-size:15px;padding:4px 0}.resx{color:var(--bad)}.reso{color:var(--good)}
+.cap{flex-basis:100%;font-size:11.5px;font-weight:800;color:#2f4858;margin-bottom:-4px}
+.cap2{flex-basis:100%;font-size:11.5px;font-weight:700;color:#8a847a}
+.pbox{margin-top:2px;padding-top:6px;border-top:1px dashed #d8d3c8}
+.popt button{background:#f4f2ee;border:1.5px dashed #cfc9bc;color:#6f6a60;font-weight:600;font-size:13px;padding:5px 11px}
+.popt button.sel{background:#9a948a;border:1.5px solid #9a948a;color:#fff}
+.wrap{min-width:0;max-width:100%;background:#ffe3ea;border-radius:10px;padding:12px 14px;margin-top:10px;display:flex;flex-direction:column;gap:8px}
+.wh{font-weight:900;font-size:15px;color:#7a2a45}
+.wl{display:flex;gap:8px;align-items:flex-start;min-width:0}.wc{display:flex;flex-wrap:wrap;gap:6px;flex:1;min-width:0}
+.wn{flex:0 0 58px;padding-top:5px;font-size:12px;font-weight:800;color:#7a2a45}
+.wl .x{flex:0 1 auto;overflow-wrap:anywhere;min-width:0;padding:3px 8px;border-radius:5px;font-size:15px;font-weight:600}
+.lk{border:0;background:none;color:#2b6cb0;font-weight:800;font-size:13px;margin-left:8px;text-decoration:underline;padding:0}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}
+.ov .card{max-width:520px;width:100%}
+.cc{display:flex;flex-direction:column;gap:10px}.cch{font-weight:900;font-size:16px}
+.ccl{font-size:15px}.ccx{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:17px}
+.ccx .x{padding:3px 8px;border-radius:5px;font-weight:600}
+.why{flex-basis:100%;font-size:13px;color:#5d584f;font-weight:600;padding-left:32px}
+.confl{margin-top:10px;font-size:14px;line-height:1.7}
+.pri:disabled{opacity:.35}
+@keyframes sh{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px)}40%{transform:translateX(5px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+.opt button.sh{animation:sh .35s}
+.opt button.bad{border-color:var(--bad);color:var(--bad)}
+.ok{color:var(--good);font-weight:800;font-size:14px}
+.prog{font-size:13px;font-weight:800;color:var(--soft)}
+.sum{font-size:15px}
+.inner{margin:12px 0 4px 2px;padding:10px 6px 10px 10px;border-left:6px solid var(--O);border-radius:0 10px 10px 0;background:#faf9f5}
+.inner.m{border-left-color:var(--MA)}
+.ftag{font-size:12px;font-weight:800;color:var(--soft)}
+.inner .ftag{color:#5a5448}
+.sm{border:2px solid var(--line);background:#fff;border-radius:999px;padding:9px 16px;font-weight:800;font-size:14px;margin:8px 8px 0 0}
+.tg{font-size:12px;color:#7b4fc0;font-weight:700}
+
+.wl{flex-wrap:wrap}.wl .x{flex:0 0 auto!important;max-width:100%;overflow-wrap:break-word!important}
+.inner .card{padding:10px 8px}
+@media(max-width:480px){
+body{padding-left:10px;padding-right:10px}
+.opt,.popt{gap:4px}
+.opt button,.popt button{padding:5px 8px;font-size:13px;border-width:1.5px}
+.popt button{font-size:12.5px;padding:4px 7px}
+.card{padding:12px 12px}
+.inner{padding:8px 4px 8px 6px;border-left-width:5px}
+.qr{gap:6px;padding:8px 0}
+}
+#sent1,#sent2{background:#e6f1ff;border:2px solid #2b6cb0;border-radius:12px;padding:12px 12px 4px;color:#0f3459;font-size:20px}
+#sent1 .t,#sent2 .t{background:#c9dffa}
+.clos{background:#fff6c2;border:1px solid #ecd978;border-radius:6px 6px 16px 6px;box-shadow:2px 3px 0 rgba(0,0,0,.09);padding:14px 14px 14px;margin-top:14px;display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden}
+.clos::after{content:"";position:absolute;right:0;bottom:0;width:24px;height:24px;background:linear-gradient(135deg,#fff6c2 50%,#ead66c 50%)}
+.clos .wh{font-size:15px;color:#5b4a08}
+.rw{position:relative;padding-top:0}.rw.has{padding-top:40px}.grp .n{font-size:11.5px;font-weight:800;color:#6b5a10;margin-bottom:2px}.grp.l2{margin-left:6px;padding-left:10px;border-left:4px solid #a9e6a4}.grp.l2.m{border-left-color:#d5bbff}.clos{padding-right:30px}
+.rw svg.ar{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.cl{display:flex;flex-wrap:wrap;gap:6px 6px;align-items:flex-end}
+.cl .n{flex:0 0 100%;font-size:11.5px;font-weight:800;color:#6b5a10}
+.cb{display:flex;flex-direction:column;gap:1px}
+.cb i{font-style:normal;font-size:10.5px;font-weight:700;color:#7a6a20}
+.cb .x{padding:3px 8px;border-radius:5px;font-size:15px;font-weight:600;overflow-wrap:break-word;max-width:100%}
+.clz{font-size:13.5px;font-weight:700;color:#4d4210;line-height:1.55;border-top:1px dashed #d9c55a;padding-top:8px}
+.tgb{font-size:13px}
+
+.rw.has .cl{row-gap:30px}
+.sec{font-size:13px;font-weight:800;color:var(--soft);margin-top:8px}
+.bgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.blk{position:relative;background:var(--panel);border:0;border-left:5px solid var(--c,#888);border-radius:10px;padding:11px 4px 11px 8px;font-weight:800;font-size:13px;text-align:left;white-space:nowrap}
+.blk.dn{background:#f6f4ee;color:#6d675c}
+.blk i{font-style:normal;position:absolute;right:3px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--good)}
+</style>
+</head>
+<body>
+<div class="shell" id="app"></div>
+<script>
+const DATA={"sets":[{"id":"ys8","label":"용성중2 · 8과","color":"#0f766e","items":[{"no":"1","en":"Emily’s family is on vacation in Australia.","ko":"Emily의 가족은 호주에서 휴가 중이다.","pattern":"1형식","pt":"SV","chunks":[{"t":"Emily’s family","role":"S","who":"명사","k":"Emily의 가족은"},{"t":"is","role":"V","k":"있다"},{"t":"on vacation","role":"M","kind":"부사구","to":1,"k":"휴가 중에"},{"t":"in Australia","role":"M","kind":"부사구","to":1,"k":"호주에서"}],"words":[{"w":"Emily’s","pos":"명사","mean":"Emily (사람 이름)"},{"w":"family","pos":"명사","mean":"가족"},{"w":"is","pos":"동사","mean":"있다"},{"w":"on","pos":"전치사","mean":"~중인"},{"w":"vacation","pos":"명사","mean":"휴가"},{"w":"in","pos":"전치사","mean":"~에서"},{"w":"Australia","pos":"명사","mean":"호주"}],"memo":{"basis":"기준: 거의 필수에 가까운 부사구는 수식어로 처리","text":"on vacation(휴가 중)은 is를 채우는 말에 가깝지만 수식어(M)로 두어 1형식"}},{"no":"2","en":"They are traveling for a week.","ko":"그들은 일주일 동안 여행하고 있다.","pattern":"1형식","pt":"SV","chunks":[{"t":"They","role":"S","who":"대명사","k":"그들은"},{"t":"are traveling","role":"V","k":"여행하고 있다"},{"t":"for a week","role":"M","kind":"부사구","to":1,"k":"일주일 동안"}],"words":[{"w":"They","pos":"대명사","mean":"그들"},{"w":"are","pos":"동사","mean":"(진행형을 만드는 be)"},{"w":"traveling","pos":"동사","mean":"여행하다"},{"w":"for","pos":"전치사","mean":"~동안"},{"w":"a","pos":"관사","mean":"하나의"},{"w":"week","pos":"명사","mean":"주"}],"memo":null},{"no":"3","en":"They are talking about their plans for the day.","ko":"그들은 오늘의 계획에 대해 이야기하고 있다.","pattern":"1형식","pt":"SV","chunks":[{"t":"They","role":"S","who":"대명사","k":"그들은"},{"t":"are talking","role":"V","k":"이야기하고 있다"},{"t":"about their plans","role":"M","kind":"부사구","to":1,"k":"그들의 계획에 대해"},{"t":"for the day","role":"M","kind":"형용사구","to":2,"k":"오늘의"}],"words":[{"w":"They","pos":"대명사","mean":"그들"},{"w":"are","pos":"동사","mean":"(진행형을 만드는 be)"},{"w":"talking","pos":"동사","mean":"이야기하다"},{"w":"about","pos":"전치사","mean":"~에 대해"},{"w":"their","pos":"대명사","mean":"그들의"},{"w":"plans","pos":"명사","mean":"계획"},{"w":"for","pos":"전치사","mean":"~의"},{"w":"the","pos":"관사","mean":"그"},{"w":"day","pos":"명사","mean":"날, 하루"}],"memo":null},{"no":"4","en":"Mom: Guys, what do you want to do today?","ko":"엄마: 얘들아, 오늘 무엇을 하고 싶니?","pattern":"3형식(의문문)","pt":"SVO","chunks":[{"t":"Mom:","role":"M","kind":"호칭","to":-1,"k":"엄마"},{"t":"Guys,","role":"M","kind":"호칭","to":-1,"k":"얘들아"},{"t":"what","role":"O","who":"대명사","k":"무엇을"},{"t":"do","role":"V","k":"(의문을 만드는 do)"},{"t":"you","role":"S","who":"대명사","k":"너희는"},{"t":"want","role":"V","k":"원하니"},{"t":"to do","role":"O","who":"to부정사","k":"하기를"},{"t":"today","role":"M","kind":"부사","to":5,"k":"오늘"}],"words":[{"w":"Mom","pos":"명사","mean":"엄마"},{"w":"Guys","pos":"명사","mean":"녀석, 친구"},{"w":"what","pos":"의문사","mean":"무엇"},{"w":"do","pos":"조동사","mean":"(의문을 만드는 do)"},{"w":"you","pos":"대명사","mean":"너희"},{"w":"want","pos":"동사","mean":"원하다, ~하고 싶다"},{"w":"to","pos":"to(부정사)","mean":"(to do의 일부)"},{"w":"do","pos":"동사","mean":"하다"},{"w":"today","pos":"부사","mean":"오늘"}],"memo":{"basis":"기준: 의문문은 평서문 어순(You want to do what today)으로 되돌려 판정","text":"what은 want가 아니라 to do의 목적어지만 문장 맨 앞으로 나가 따로 표시. want의 목적어는 to do(to부정사)"}},{"no":"5","en":"Nick: I really want to see koalas.","ko":"Nick: 저는 코알라를 정말 보고 싶어요.","pattern":"3형식","pt":"SVO","chunks":[{"t":"Nick:","role":"M","kind":"호칭","to":-1,"k":"Nick"},{"t":"I","role":"S","who":"대명사","k":"저는"},{"t":"really","role":"M","kind":"부사","to":3,"k":"정말"},{"t":"want","role":"V","k":"원해요"},{"t":"to see koalas","role":"O","kind":"to부정사(명사적 용법)","who":"to부정사","k":"코알라를 보기를","subpt":"SVO","sub":[{"t":"to see","role":"V","k":"보기를"},{"t":"koalas","role":"O","who":"명사","k":"코알라를"}]}],"words":[{"w":"Nick","pos":"명사","mean":"Nick (사람 이름)"},{"w":"I","pos":"대명사","mean":"나"},{"w":"really","pos":"부사","mean":"정말"},{"w":"want","pos":"동사","mean":"원하다, ~하고 싶다"},{"w":"to","pos":"to(부정사)","mean":"~하는 것"},{"w":"see","pos":"동사","mean":"보다"},{"w":"koalas","pos":"명사","mean":"코알라"}],"memo":null},{"no":"6","en":"They’re so cute!","ko":"코알라들은 너무 귀여워요!","pattern":"2형식","pt":"SVC","chunks":[{"t":"They","role":"S","who":"대명사","k":"그들은"},{"t":"’re","role":"V","k":"~이다"},{"t":"so","role":"M","kind":"부사","to":3,"k":"너무"},{"t":"cute","role":"C","who":"형용사","k":"귀여운"}],"words":[{"w":"They","pos":"대명사","mean":"그들"},{"w":"’re","pos":"동사","mean":"~이다"},{"w":"so","pos":"부사","mean":"너무"},{"w":"cute","pos":"형용사","mean":"귀여운"}],"memo":null},{"no":"7","en":"Emily: There may be some koala tours.","ko":"Emily: 코알라 투어가 몇 개 있을지도 몰라요.","pattern":"1형식","pt":"SV","chunks":[{"t":"Emily:","role":"M","kind":"호칭","to":-1,"k":"Emily"},{"t":"There","role":"M","kind":"유도부사","to":-2,"k":"(있다 구문)"},{"t":"may be","role":"V","k":"있을지도 모른다"},{"t":"some koala tours","role":"S","who":"명사","k":"몇 개의 코알라 투어가"}],"words":[{"w":"Emily","pos":"명사","mean":"Emily (사람 이름)"},{"w":"There","pos":"부사","mean":"(해석 안 함)"},{"w":"may","pos":"조동사","mean":"~일지도 모른다"},{"w":"be","pos":"동사","mean":"있다"},{"w":"some","pos":"형용사","mean":"몇몇의"},{"w":"koala","pos":"명사","mean":"코알라"},{"w":"tours","pos":"명사","mean":"투어, 관광"}],"memo":null},{"no":"8","en":"Should I ask for information at the desk?","ko":"제가 안내 데스크에서 정보를 좀 물어볼까요?","pattern":"1형식(의문문)","pt":"SV","chunks":[{"t":"Should","role":"V","k":"(의문을 만드는 말)"},{"t":"I","role":"S","who":"대명사","k":"제가"},{"t":"ask","role":"V","k":"물어볼까요"},{"t":"for information","role":"M","kind":"부사구","to":2,"k":"정보에 대해"},{"t":"at the desk","role":"M","kind":"부사구","to":2,"k":"안내 데스크에서"}],"words":[{"w":"Should","pos":"조동사","mean":"~해야 하다, ~할까요"},{"w":"I","pos":"대명사","mean":"나"},{"w":"ask","pos":"동사","mean":"묻다"},{"w":"for","pos":"전치사","mean":"~에 대해"},{"w":"information","pos":"명사","mean":"정보"},{"w":"at","pos":"전치사","mean":"~에서"},{"w":"the","pos":"관사","mean":"그"},{"w":"desk","pos":"명사","mean":"안내 데스크"}],"memo":null},{"no":"9","en":"Dad: You don’t have to.","ko":"Dad: 너는 그럴 필요가 없단다.","pattern":"1형식","pt":"SV","chunks":[{"t":"Dad:","role":"M","kind":"호칭","to":-1,"k":"아빠"},{"t":"You","role":"S","who":"대명사","k":"너는"},{"t":"don’t have to","role":"V","k":"그럴 필요가 없다"}],"words":[{"w":"Dad","pos":"명사","mean":"아빠"},{"w":"You","pos":"대명사","mean":"너"},{"w":"don’t","pos":"조동사","mean":"~하지 않다"},{"w":"have","pos":"동사","mean":"~할 필요가 있다 (have to 전체 뜻)"},{"w":"to","pos":"to(부정사)","mean":"(have to의 일부)"}],"memo":{"basis":"기준: have to를 한 덩어리 V로 처리, 뒤 동사 생략","text":"don’t have to 다음에 ask for information at the desk가 생략된 문장이라 목적어 없는 1형식"}},{"no":"10","en":"There are three tour brochures here: Smile Tour, Star Tour, and Top Tour.","ko":"여기에 관광 안내 책자가 세 개 있구나. Smile Tour, Star Tour, Top Tour야.","pattern":"1형식","pt":"SV","chunks":[{"t":"There","role":"M","kind":"유도부사","to":-2,"k":"(있다 구문)"},{"t":"are","role":"V","k":"있다"},{"t":"three tour brochures","role":"S","who":"명사","k":"세 개의 관광 안내 책자가"},{"t":"here:","role":"M","kind":"부사","to":1,"k":"여기에"},{"t":"Smile Tour, Star Tour, and Top Tour","role":"M","kind":"명사구(동격 설명)","to":2,"k":"Smile Tour, Star Tour, 그리고 Top Tour"}],"words":[{"w":"There","pos":"부사","mean":"(해석 안 함)"},{"w":"are","pos":"동사","mean":"있다"},{"w":"three","pos":"형용사","mean":"세 개의"},{"w":"tour","pos":"명사","mean":"관광, 투어"},{"w":"brochures","pos":"명사","mean":"안내 책자"},{"w":"here","pos":"부사","mean":"여기에"},{"w":"Smile","pos":"명사","mean":"스마일(투어 이름)"},{"w":"Tour","pos":"명사","mean":"투어, 관광"},{"w":"Star","pos":"명사","mean":"스타(투어 이름)"},{"w":"Tour","pos":"명사","mean":"투어, 관광"},{"w":"and","pos":"접속사","mean":"그리고"},{"w":"Top","pos":"명사","mean":"탑(투어 이름)"},{"w":"Tour","pos":"명사","mean":"투어, 관광"}],"memo":{"basis":"기준: 콜론 뒤 나열은 앞 명사를 설명하는 수식어(M)로 처리","text":"Smile Tour, Star Tour, and Top Tour는 brochures의 이름을 풀어 주는 동격 설명"}},{"no":"11","en":"Let’s see which koala tour will be the best for us.","ko":"어떤 코알라 투어가 우리에게 가장 좋을지 살펴보자.","pattern":"3형식(청유문)","pt":"SVO","chunks":[{"t":"Let’s see","role":"V","kind":"","to":"","k":"살펴보자"},{"t":"which koala tour will be the best for us","role":"O","kind":"","to":"","k":"어떤 코알라 투어가 우리에게 가장 좋을지를","who":"절","info":"명사절, 의문사절","subpt":"SVC","sub":[{"t":"which koala tour","role":"S","kind":"","to":"","k":"어떤 코알라 투어가","who":"명사"},{"t":"will be","role":"V","kind":"","to":"","k":"~일지"},{"t":"the best","role":"C","kind":"","to":"","k":"가장 좋은","who":"형용사"},{"t":"for us","role":"M","kind":"부사구","to":2,"k":"우리에게"}]}],"words":[{"w":"Let’s","pos":"동사","mean":"~하자"},{"w":"see","pos":"동사","mean":"알아보다, 살펴보다"},{"w":"which","pos":"의문사","mean":"어느, 어떤"},{"w":"koala","pos":"명사","mean":"코알라"},{"w":"tour","pos":"명사","mean":"투어, 관광"},{"w":"will","pos":"조동사","mean":"~일 것이다"},{"w":"be","pos":"동사","mean":"~이다"},{"w":"the","pos":"관사","mean":"그"},{"w":"best","pos":"형용사","mean":"가장 좋은"},{"w":"for","pos":"전치사","mean":"~에게"},{"w":"us","pos":"대명사","mean":"우리"}],"memo":{"basis":"기준: Let’s + 동사 = 한 덩어리 동사","text":""}},{"no":"12","en":"Nick: First, let me compare the prices.","ko":"Nick: 먼저, 제가 가격을 비교해 볼게요.","pattern":"5형식(명령문)","pt":"SVOC","chunks":[{"t":"Nick:","role":"M","kind":"호칭","to":-1,"k":"Nick"},{"t":"First,","role":"M","kind":"부사","to":-1,"k":"먼저"},{"t":"let","role":"V","k":"~하게 해 주세요"},{"t":"me","role":"O","who":"대명사","k":"제가"},{"t":"compare the prices","role":"OC","who":"동사원형","k":"가격을 비교해 보게","subpt":"SVO","sub":[{"t":"compare","role":"V","k":"비교해 보게"},{"t":"the prices","role":"O","who":"명사","k":"가격들을"}]}],"words":[{"w":"Nick","pos":"명사","mean":"Nick (사람 이름)"},{"w":"First","pos":"부사","mean":"먼저"},{"w":"let","pos":"동사","mean":"~하게 해 주다"},{"w":"me","pos":"대명사","mean":"나"},{"w":"compare","pos":"동사","mean":"비교하다"},{"w":"the","pos":"관사","mean":"그"},{"w":"prices","pos":"명사","mean":"가격"}],"memo":{"basis":"기준: 사역동사 let + 목적어 + 동사원형 = 5형식","text":"me가 목적어, 뒤 동사원형(구)이 목적격보어"}},{"no":"13","en":"The price of Smile Tour looks really good!","ko":"Smile Tour 가격이 정말 좋아 보여요!","pattern":"2형식","pt":"SVC","chunks":[{"t":"The price","role":"S","who":"명사","k":"가격이"},{"t":"of Smile Tour","role":"M","kind":"형용사구","to":0,"k":"Smile Tour의"},{"t":"looks","role":"V","k":"~해 보인다"},{"t":"really","role":"M","kind":"부사","to":4,"k":"정말"},{"t":"good","role":"C","who":"형용사","k":"좋은"}],"words":[{"w":"The","pos":"관사","mean":"그"},{"w":"price","pos":"명사","mean":"가격"},{"w":"of","pos":"전치사","mean":"~의"},{"w":"Smile","pos":"명사","mean":"스마일(투어 이름)"},{"w":"Tour","pos":"명사","mean":"투어, 관광"},{"w":"looks","pos":"동사","mean":"~해 보이다"},{"w":"really","pos":"부사","mean":"정말"},{"w":"good","pos":"형용사","mean":"좋은"}],"memo":null},{"no":"14","en":"It’s only $25.","ko":"겨우 25달러예요.","pattern":"2형식","pt":"SVC","chunks":[{"t":"It","role":"S","who":"대명사","k":"그것은"},{"t":"’s","role":"V","k":"~이다"},{"t":"only","role":"M","kind":"부사","to":3,"k":"겨우"},{"t":"$25","role":"C","who":"명사","k":"25달러"}],"words":[{"w":"It","pos":"대명사","mean":"그것"},{"w":"’s","pos":"동사","mean":"~이다"},{"w":"only","pos":"부사","mean":"겨우, 단지"},{"w":"$25","pos":"명사","mean":"25달러"}],"memo":null},{"no":"15","en":"Emily: Oh, it’s $25 for one hour.","ko":"Emily: 오, 그건 한 시간당 25달러야.","pattern":"2형식","pt":"SVC","chunks":[{"t":"Emily:","role":"M","kind":"호칭","to":-1,"k":"Emily"},{"t":"Oh,","role":"M","kind":"감탄사","to":-1,"k":"오"},{"t":"it","role":"S","who":"대명사","k":"그것은"},{"t":"’s","role":"V","k":"~이다"},{"t":"$25","role":"C","who":"명사","k":"25달러"},{"t":"for one hour","role":"M","kind":"형용사구","to":4,"k":"한 시간에"}],"words":[{"w":"Emily","pos":"명사","mean":"Emily (사람 이름)"},{"w":"Oh","pos":"감탄사","mean":"오"},{"w":"it","pos":"대명사","mean":"그것"},{"w":"’s","pos":"동사","mean":"~이다"},{"w":"$25","pos":"명사","mean":"25달러"},{"w":"for","pos":"전치사","mean":"~에"},{"w":"one","pos":"형용사","mean":"한"},{"w":"hour","pos":"명사","mean":"시간"}],"memo":null},{"no":"16","en":"Look, the other tours are all 3 hours.","ko":"봐, 다른 투어들은 모두 3시간짜리야.","pattern":"2형식","pt":"SVC","chunks":[{"t":"Look,","role":"M","kind":"감탄사","to":-1,"k":"봐"},{"t":"the other tours","role":"S","who":"명사","k":"다른 투어들이"},{"t":"are","role":"V","k":"~이다"},{"t":"all","role":"M","kind":"형용사","to":1,"k":"모두"},{"t":"3 hours","role":"C","who":"명사","k":"3시간"}],"words":[{"w":"Look","pos":"감탄사","mean":"봐, 보세요"},{"w":"the","pos":"관사","mean":"그"},{"w":"other","pos":"형용사","mean":"다른"},{"w":"tours","pos":"명사","mean":"투어, 관광"},{"w":"are","pos":"동사","mean":"~이다"},{"w":"all","pos":"형용사","mean":"모두"},{"w":"3","pos":"형용사","mean":"3개의"},{"w":"hours","pos":"명사","mean":"시간"}],"memo":{"basis":"기준: 문두의 Look,은 주의를 끄는 말로 보아 수식어(감탄사)로 처리","text":"Look을 명령문 동사로 보는 설명도 가능하나 뒤 문장과 이어지지 않아 감탄사처럼 처리"}},{"no":"17","en":"Dad: Right.","ko":"Dad: 맞아.","pattern":"형식 없음(응답어)","pt":null,"chunks":[{"t":"Dad:","role":"M","kind":"호칭","to":-1,"k":"아빠"},{"t":"Right","role":"M","kind":"감탄사","to":-1,"k":"맞아"}],"words":[{"w":"Dad","pos":"명사","mean":"아빠"},{"w":"Right","pos":"감탄사","mean":"맞아"}],"memo":{"basis":"기준: 단독 응답어는 형식 없이 수식어(감탄사)로 처리","text":"Right.는 (That is) right.가 줄어든 것으로 보아 2형식으로 가르치기도 함"}},{"no":"18","en":"We need to find out the price for the same amount of time.","ko":"우리는 동일한 시간에 대한 가격을 알아내야 해.","pattern":"3형식","pt":"SVO","chunks":[{"t":"We","role":"S","who":"대명사","k":"우리는"},{"t":"need","role":"V","k":"필요로 한다"},{"t":"to find out the price for the same amount of time","role":"O","kind":"to부정사(명사적 용법)","who":"to부정사","k":"같은 양의 시간에 대한 가격을 알아내는 것을","subpt":"SVO","sub":[{"t":"to find out","role":"V","k":"알아내는 것을"},{"t":"the price","role":"O","who":"명사","k":"가격을"},{"t":"for the same amount of time","role":"M","kind":"형용사구","to":1,"k":"같은 양의 시간에 대한"}]}],"words":[{"w":"We","pos":"대명사","mean":"우리"},{"w":"need","pos":"동사","mean":"필요로 하다"},{"w":"to","pos":"to(부정사)","mean":"~하는 것"},{"w":"find","pos":"동사","mean":"알아내다 (find out 전체 뜻)"},{"w":"out","pos":"부사","mean":"(find out의 일부)"},{"w":"the","pos":"관사","mean":"그"},{"w":"price","pos":"명사","mean":"가격"},{"w":"for","pos":"전치사","mean":"~에 대한"},{"w":"the","pos":"관사","mean":"그"},{"w":"same","pos":"형용사","mean":"같은"},{"w":"amount","pos":"명사","mean":"양"},{"w":"of","pos":"전치사","mean":"~의"},{"w":"time","pos":"명사","mean":"시간"}],"memo":null},{"no":"19","en":"Nick: Okay, but how can we do that?","ko":"Nick: 알겠어요, 그런데 그걸 어떻게 알아낼 수 있죠?","pattern":"3형식(의문문)","pt":"SVO","chunks":[{"t":"Nick:","role":"M","kind":"호칭","to":-1,"k":"Nick"},{"t":"Okay,","role":"M","kind":"감탄사","to":-1,"k":"알겠어요"},{"t":"but","role":"M","kind":"접속사","k":"그런데"},{"t":"how","role":"M","kind":"부사(의문부사)","to":6,"k":"어떻게"},{"t":"can","role":"V","k":"(~할 수 있죠)"},{"t":"we","role":"S","who":"대명사","k":"우리가"},{"t":"do","role":"V","k":"하다"},{"t":"that","role":"O","who":"대명사","k":"그것을"}],"words":[{"w":"Nick","pos":"명사","mean":"Nick (사람 이름)"},{"w":"Okay","pos":"감탄사","mean":"알겠어"},{"w":"but","pos":"접속사","mean":"하지만, 그런데"},{"w":"how","pos":"의문사","mean":"어떻게"},{"w":"can","pos":"조동사","mean":"~할 수 있다"},{"w":"we","pos":"대명사","mean":"우리"},{"w":"do","pos":"동사","mean":"하다"},{"w":"that","pos":"대명사","mean":"그것"}],"memo":null},{"no":"20","en":"Emily: Let’s start with Smile Tour.","ko":"Emily: Smile Tour부터 시작해 보자.","pattern":"1형식(청유문)","pt":"SV","chunks":[{"t":"Emily:","role":"M","kind":"호칭","to":-1,"k":"Emily"},{"t":"Let’s start","role":"V","kind":"","to":"","k":"시작하자"},{"t":"with Smile Tour","role":"M","kind":"부사구","to":1,"k":"Smile Tour부터"}],"words":[{"w":"Emily","pos":"명사","mean":"Emily (사람 이름)"},{"w":"Let’s","pos":"동사","mean":"~하자"},{"w":"start","pos":"동사","mean":"시작하다"},{"w":"with","pos":"전치사","mean":"~부터"},{"w":"Smile","pos":"명사","mean":"스마일(투어 이름)"},{"w":"Tour","pos":"명사","mean":"투어, 관광"}],"memo":{"basis":"기준: Let’s + 동사 = 한 덩어리 동사","text":""}},{"no":"21","en":"If we take a 3-hour tour, it will cost $75.","ko":"만약 우리가 3시간짜리 투어를 한다면, 75달러가 들 거야.","pattern":"3형식","pt":"SVO","chunks":[{"t":"If we take a 3-hour tour,","role":"M","kind":"부사절","to":2,"k":"만약 우리가 3시간짜리 투어를 한다면","subpt":"SVO","sub":[{"t":"If","role":"CJ","k":"만약 ~라면"},{"t":"we","role":"S","who":"대명사","k":"우리가"},{"t":"take","role":"V","k":"한다면"},{"t":"a 3-hour tour","role":"O","who":"명사","k":"3시간짜리 투어를"}]},{"t":"it","role":"S","who":"대명사","k":"그것은"},{"t":"will cost","role":"V","k":"들 것이다"},{"t":"$75","role":"O","who":"명사","k":"75달러를"}],"words":[{"w":"If","pos":"접속사","mean":"만약 ~라면"},{"w":"we","pos":"대명사","mean":"우리"},{"w":"take","pos":"동사","mean":"(투어를) 하다"},{"w":"a","pos":"관사","mean":"하나의"},{"w":"3-hour","pos":"형용사","mean":"3시간짜리"},{"w":"tour","pos":"명사","mean":"투어, 관광"},{"w":"it","pos":"대명사","mean":"그것"},{"w":"will","pos":"조동사","mean":"~일 것이다"},{"w":"cost","pos":"동사","mean":"(돈이) 들다"},{"w":"$75","pos":"명사","mean":"75달러"}],"memo":null},{"no":"22","en":"Nick: Star Tour is $60 for 3 hours, and Top Tour is $110.","ko":"Nick: Star Tour는 3시간에 60달러이고, Top Tour는 110달러네요.","pattern":"2형식 + 2형식","pt":null,"chunks":[{"t":"Nick:","role":"M","kind":"호칭","to":-1,"k":"Nick"},{"t":"Star Tour","role":"S","who":"명사","k":"Star Tour는"},{"t":"is","role":"V","k":"~이다"},{"t":"$60","role":"C","who":"명사","k":"60달러"},{"t":"for 3 hours,","role":"M","kind":"형용사구","to":3,"k":"3시간에"},{"t":"and","role":"M","kind":"접속사","k":"그리고"},{"t":"Top Tour","role":"S","who":"명사","k":"Top Tour는"},{"t":"is","role":"V","k":"~이다"},{"t":"$110.","role":"C","who":"명사","k":"110달러"}],"words":[{"w":"Nick","pos":"명사","mean":"Nick (사람 이름)"},{"w":"Star","pos":"명사","mean":"스타(투어 이름)"},{"w":"Tour","pos":"명사","mean":"투어, 관광"},{"w":"is","pos":"동사","mean":"~이다"},{"w":"$60","pos":"명사","mean":"60달러"},{"w":"for","pos":"전치사","mean":"~에"},{"w":"3","pos":"형용사","mean":"3개의"},{"w":"hours","pos":"명사","mean":"시간"},{"w":"and","pos":"접속사","mean":"그리고"},{"w":"Top","pos":"명사","mean":"탑(투어 이름)"},{"w":"Tour","pos":"명사","mean":"투어, 관광"},{"w":"is","pos":"동사","mean":"~이다"},{"w":"$110","pos":"명사","mean":"110달러"}],"memo":null},{"no":"23","en":"Wow, now Star Tour is the cheapest!","ko":"와, 이제 Star Tour가 가장 저렴하네요!","pattern":"2형식","pt":"SVC","chunks":[{"t":"Wow,","role":"M","kind":"감탄사","to":-1,"k":"와"},{"t":"now","role":"M","kind":"부사","to":3,"k":"이제"},{"t":"Star Tour","role":"S","who":"명사","k":"Star Tour가"},{"t":"is","role":"V","k":"~이다"},{"t":"the cheapest","role":"C","who":"형용사","k":"가장 저렴한"}],"words":[{"w":"Wow","pos":"감탄사","mean":"와"},{"w":"now","pos":"부사","mean":"이제"},{"w":"Star","pos":"명사","mean":"스타(투어 이름)"},{"w":"Tour","pos":"명사","mean":"투어, 관광"},{"w":"is","pos":"동사","mean":"~이다"},{"w":"the","pos":"관사","mean":"그"},{"w":"cheapest","pos":"형용사","mean":"가장 싼, 가장 저렴한"}],"memo":null},{"no":"24","en":"Mom: Right, but we have one more thing to check.","ko":"Mom: 맞아, 하지만 우리가 확인할 것이 하나 더 있어.","pattern":"3형식","pt":"SVO","chunks":[{"t":"Mom:","role":"M","kind":"호칭","to":-1,"k":"엄마"},{"t":"Right,","role":"M","kind":"감탄사","to":-1,"k":"맞아"},{"t":"but","role":"M","kind":"접속사","k":"하지만"},{"t":"we","role":"S","who":"대명사","k":"우리가"},{"t":"have","role":"V","k":"가지고 있다"},{"t":"one more thing","role":"O","who":"명사","k":"하나 더 있는 것을"},{"t":"to check","role":"M","kind":"to부정사(형용사적 용법)","to":5,"k":"확인할"}],"words":[{"w":"Mom","pos":"명사","mean":"엄마"},{"w":"Right","pos":"감탄사","mean":"맞아"},{"w":"but","pos":"접속사","mean":"하지만"},{"w":"we","pos":"대명사","mean":"우리"},{"w":"have","pos":"동사","mean":"가지다, 있다"},{"w":"one","pos":"형용사","mean":"하나의"},{"w":"more","pos":"형용사","mean":"더 많은"},{"w":"thing","pos":"명사","mean":"것, 일"},{"w":"to","pos":"to(부정사)","mean":"~할"},{"w":"check","pos":"동사","mean":"확인하다"}],"memo":null},{"no":"25","en":"Nick: What is it, Mom?","ko":"Nick: 그게 뭐예요, 엄마?","pattern":"2형식(의문문)","pt":"SVC","chunks":[{"t":"Nick:","role":"M","kind":"호칭","to":-1,"k":"Nick"},{"t":"What","role":"C","who":"대명사","k":"무엇"},{"t":"is","role":"V","k":"~이니"},{"t":"it,","role":"S","who":"대명사","k":"그것은"},{"t":"Mom?","role":"M","kind":"호칭","to":-1,"k":"엄마"}],"words":[{"w":"Nick","pos":"명사","mean":"Nick (사람 이름)"},{"w":"What","pos":"의문사","mean":"무엇"},{"w":"is","pos":"동사","mean":"~이다"},{"w":"it","pos":"대명사","mean":"그것"},{"w":"Mom","pos":"명사","mean":"엄마"}],"memo":null},{"no":"26","en":"Mom: The price of Top Tour is $110, but it’s for two people.","ko":"Mom: Top Tour 가격은 110달러지만, 그것은 두 사람 기준이야.","pattern":"2형식 + 1형식","pt":null,"chunks":[{"t":"Mom:","role":"M","kind":"호칭","to":-1,"k":"엄마"},{"t":"The price","role":"S","who":"명사","k":"가격은"},{"t":"of Top Tour","role":"M","kind":"형용사구","to":1,"k":"Top Tour의"},{"t":"is","role":"V","k":"~이다"},{"t":"$110,","role":"C","who":"명사","k":"110달러"},{"t":"but","role":"M","kind":"접속사","k":"하지만"},{"t":"it","role":"S","who":"대명사","k":"그것은"},{"t":"’s","role":"V","k":"~이다"},{"t":"for two people","role":"M","kind":"부사구","to":7,"k":"두 사람 기준"}],"words":[{"w":"Mom","pos":"명사","mean":"엄마"},{"w":"The","pos":"관사","mean":"그"},{"w":"price","pos":"명사","mean":"가격"},{"w":"of","pos":"전치사","mean":"~의"},{"w":"Top","pos":"명사","mean":"탑(투어 이름)"},{"w":"Tour","pos":"명사","mean":"투어, 관광"},{"w":"is","pos":"동사","mean":"~이다"},{"w":"$110","pos":"명사","mean":"110달러"},{"w":"but","pos":"접속사","mean":"하지만"},{"w":"it","pos":"대명사","mean":"그것"},{"w":"’s","pos":"동사","mean":"~이다"},{"w":"for","pos":"전치사","mean":"~을 위한"},{"w":"two","pos":"형용사","mean":"두 명의"},{"w":"people","pos":"명사","mean":"사람들"}],"memo":{"basis":"기준: 거의 필수에 가까운 부사구는 수식어로 처리","text":"it’s for two people의 for two people은 ’s를 채우는 말에 가깝지만 수식어(M)로 두어 1형식"}},{"no":"27","en":"Nick: Really?","ko":"Nick: 정말요?","pattern":"형식 없음(응답어)","pt":null,"chunks":[{"t":"Nick:","role":"M","kind":"호칭","to":-1,"k":"Nick"},{"t":"Really?","role":"M","kind":"감탄사","to":-1,"k":"정말요"}],"words":[{"w":"Nick","pos":"명사","mean":"Nick (사람 이름)"},{"w":"Really","pos":"부사","mean":"정말"}],"memo":{"basis":"기준: 단독 응답어는 형식 없이 수식어(감탄사)로 처리","text":"Really?는 부사 한 단어로 된 되묻는 말이라 문장 성분을 따로 두지 않음"}},{"no":"28","en":"Where does it say that?","ko":"그게 어디에 쓰여 있나요?","pattern":"3형식(의문문)","pt":"SVO","chunks":[{"t":"Where","role":"M","kind":"부사(의문부사)","to":3,"k":"어디에"},{"t":"does","role":"V","k":"(의문을 만드는 do)"},{"t":"it","role":"S","who":"대명사","k":"그것이"},{"t":"say","role":"V","k":"말하나요"},{"t":"that?","role":"O","who":"대명사","k":"그것을"}],"words":[{"w":"Where","pos":"의문사","mean":"어디에"},{"w":"does","pos":"조동사","mean":"(의문을 만드는 do)"},{"w":"it","pos":"대명사","mean":"그것"},{"w":"say","pos":"동사","mean":"(글에) 쓰여 있다, 말하다"},{"w":"that","pos":"대명사","mean":"그것"}],"memo":null},{"no":"29","en":"Mom: Here, it says $110 “per pair.”","ko":"Mom: 여기, 110달러 “한 쌍[두 사람]당”이라고 되어 있지.","pattern":"3형식","pt":"SVO","chunks":[{"t":"Mom:","role":"M","kind":"호칭","to":-1,"k":"엄마"},{"t":"Here,","role":"M","kind":"부사","to":3,"k":"여기에"},{"t":"it","role":"S","who":"대명사","k":"그것은"},{"t":"says","role":"V","k":"말한다"},{"t":"$110","role":"O","who":"명사","k":"110달러라고"},{"t":"“per pair.”","role":"M","kind":"형용사구","to":4,"k":"한 쌍당"}],"words":[{"w":"Mom","pos":"명사","mean":"엄마"},{"w":"Here","pos":"부사","mean":"여기에"},{"w":"it","pos":"대명사","mean":"그것"},{"w":"says","pos":"동사","mean":"(글에) 쓰여 있다, 말하다"},{"w":"$110","pos":"명사","mean":"110달러"},{"w":"per","pos":"전치사","mean":"~당"},{"w":"pair","pos":"명사","mean":"쌍, 한 쌍"}],"memo":{"basis":"기준: 따옴표 속 per pair는 $110을 꾸미는 수식어로 처리","text":"“per pair”까지 says의 목적어로 묶는 설명도 가능"}},{"no":"30","en":"Do you know what a pair is?","ko":"너는 ‘pair’가 뭔지 아니?","pattern":"3형식(의문문)","pt":"SVO","chunks":[{"t":"Do","role":"V","k":"(의문을 만드는 do)"},{"t":"you","role":"S","who":"대명사","k":"너는"},{"t":"know","role":"V","k":"아니"},{"t":"what a pair is?","role":"O","who":"절","info":"명사절, 의문사절","k":"pair가 무엇인지를","subpt":"SVC","sub":[{"t":"what","role":"C","who":"대명사","k":"무엇"},{"t":"a pair","role":"S","who":"명사","k":"pair가"},{"t":"is?","role":"V","k":"~인지"}]}],"words":[{"w":"Do","pos":"조동사","mean":"(의문을 만드는 do)"},{"w":"you","pos":"대명사","mean":"너"},{"w":"know","pos":"동사","mean":"알다"},{"w":"what","pos":"의문사","mean":"무엇"},{"w":"a","pos":"관사","mean":"하나의"},{"w":"pair","pos":"명사","mean":"쌍, 한 쌍"},{"w":"is","pos":"동사","mean":"~이다"}],"memo":null},{"no":"31","en":"It means two.","ko":"그건 둘을 의미한단다.","pattern":"3형식","pt":"SVO","chunks":[{"t":"It","role":"S","who":"대명사","k":"그것은"},{"t":"means","role":"V","k":"의미한다"},{"t":"two.","role":"O","who":"명사","k":"둘을"}],"words":[{"w":"It","pos":"대명사","mean":"그것"},{"w":"means","pos":"동사","mean":"의미하다"},{"w":"two","pos":"명사","mean":"둘, 2"}],"memo":null},{"no":"32","en":"Emily: Oh, now I know what to do!","ko":"Emily: 오, 이제 무엇을 해야 할지 알겠어요!","pattern":"3형식","pt":"SVO","chunks":[{"t":"Emily:","role":"M","kind":"호칭","to":-1,"k":"Emily"},{"t":"Oh,","role":"M","kind":"감탄사","to":-1,"k":"오"},{"t":"now","role":"M","kind":"부사","to":4,"k":"이제"},{"t":"I","role":"S","who":"대명사","k":"저는"},{"t":"know","role":"V","k":"알겠다"},{"t":"what to do!","role":"O","kind":"to부정사(명사적 용법)","who":"to부정사","k":"무엇을 해야 할지를","subpt":"SVO","sub":[{"t":"what","role":"O","who":"대명사","k":"무엇을"},{"t":"to do!","role":"V","k":"해야 할지"}]}],"words":[{"w":"Emily","pos":"명사","mean":"Emily (사람 이름)"},{"w":"Oh","pos":"감탄사","mean":"오"},{"w":"now","pos":"부사","mean":"이제"},{"w":"I","pos":"대명사","mean":"나"},{"w":"know","pos":"동사","mean":"알다"},{"w":"what","pos":"의문사","mean":"무엇"},{"w":"to","pos":"to(부정사)","mean":"~할"},{"w":"do","pos":"동사","mean":"하다"}],"memo":null},{"no":"33","en":"Divide 110 by 2 to get the price for one person.","ko":"한 사람당 가격을 구하기 위해 110을 2로 나누면 돼요.","pattern":"3형식(명령문)","pt":"SVO","chunks":[{"t":"Divide","role":"V","k":"나눠라"},{"t":"110","role":"O","who":"명사","k":"110을"},{"t":"by 2","role":"M","kind":"부사구","to":0,"k":"2로"},{"t":"to get the price for one person.","role":"M","kind":"to부정사(부사적 용법)","to":0,"k":"한 사람에 대한 가격을 구하기 위해","subpt":"SVO","sub":[{"t":"to get","role":"V","k":"구하기 위해"},{"t":"the price","role":"O","who":"명사","k":"가격을"},{"t":"for one person.","role":"M","kind":"형용사구","to":1,"k":"한 사람에 대한"}]}],"words":[{"w":"Divide","pos":"동사","mean":"나누다"},{"w":"110","pos":"명사","mean":"110"},{"w":"by","pos":"전치사","mean":"~로"},{"w":"2","pos":"명사","mean":"2"},{"w":"to","pos":"to(부정사)","mean":"~하기 위해"},{"w":"get","pos":"동사","mean":"구하다, 얻다"},{"w":"the","pos":"관사","mean":"그"},{"w":"price","pos":"명사","mean":"가격"},{"w":"for","pos":"전치사","mean":"~에 대한"},{"w":"one","pos":"형용사","mean":"한"},{"w":"person","pos":"명사","mean":"사람"}],"memo":null},{"no":"34","en":"Nick: It’s $55!","ko":"Nick: 그건 55달러예요!","pattern":"2형식","pt":"SVC","chunks":[{"t":"Nick:","role":"M","kind":"호칭","to":-1,"k":"Nick"},{"t":"It","role":"S","who":"대명사","k":"그것은"},{"t":"’s","role":"V","k":"~이다"},{"t":"$55!","role":"C","who":"명사","k":"55달러"}],"words":[{"w":"Nick","pos":"명사","mean":"Nick (사람 이름)"},{"w":"It","pos":"대명사","mean":"그것"},{"w":"’s","pos":"동사","mean":"~이다"},{"w":"$55","pos":"명사","mean":"55달러"}],"memo":null},{"no":"35","en":"Wow, it’s cheaper than Star Tour.","ko":"와, Star Tour보다 더 저렴해요.","pattern":"2형식","pt":"SVC","chunks":[{"t":"Wow,","role":"M","kind":"감탄사","to":-1,"k":"와"},{"t":"it","role":"S","who":"대명사","k":"그것은"},{"t":"’s","role":"V","k":"~이다"},{"t":"cheaper","role":"C","who":"형용사","k":"더 저렴한"},{"t":"than Star Tour.","role":"M","kind":"부사구","to":3,"k":"Star Tour보다"}],"words":[{"w":"Wow","pos":"감탄사","mean":"와"},{"w":"it","pos":"대명사","mean":"그것"},{"w":"’s","pos":"동사","mean":"~이다"},{"w":"cheaper","pos":"형용사","mean":"더 싼, 더 저렴한"},{"w":"than","pos":"전치사","mean":"~보다"},{"w":"Star","pos":"명사","mean":"스타(투어 이름)"},{"w":"Tour","pos":"명사","mean":"투어, 관광"}],"memo":null},{"no":"36","en":"That’s amazing!","ko":"놀라워요!","pattern":"2형식","pt":"SVC","chunks":[{"t":"That","role":"S","who":"대명사","k":"그것은"},{"t":"’s","role":"V","k":"~이다"},{"t":"amazing!","role":"C","who":"형용사","k":"놀라운"}],"words":[{"w":"That","pos":"대명사","mean":"그것"},{"w":"’s","pos":"동사","mean":"~이다"},{"w":"amazing","pos":"형용사","mean":"놀라운"}],"memo":null},{"no":"37","en":"Let me make a chart.","ko":"제가 표를 만들어 볼게요.","pattern":"5형식(명령문)","pt":"SVOC","chunks":[{"t":"Let","role":"V","k":"~하게 해 주세요"},{"t":"me","role":"O","who":"대명사","k":"제가"},{"t":"make a chart.","role":"OC","who":"동사원형","k":"표를 만들게","subpt":"SVO","sub":[{"t":"make","role":"V","k":"만들게"},{"t":"a chart.","role":"O","who":"명사","k":"표를"}]}],"words":[{"w":"Let","pos":"동사","mean":"~하게 해 주다"},{"w":"me","pos":"대명사","mean":"나"},{"w":"make","pos":"동사","mean":"만들다"},{"w":"a","pos":"관사","mean":"하나의"},{"w":"chart","pos":"명사","mean":"표, 도표"}],"memo":{"basis":"기준: 사역동사 let + 목적어 + 동사원형 = 5형식","text":"me가 목적어, 뒤 동사원형(구)이 목적격보어"}},{"no":"38","en":"Mom: Nick, you did a good job.","ko":"Mom: Nick, 너 아주 잘했구나.","pattern":"3형식","pt":"SVO","chunks":[{"t":"Mom:","role":"M","kind":"호칭","to":-1,"k":"엄마"},{"t":"Nick,","role":"M","kind":"호칭","to":-1,"k":"Nick"},{"t":"you","role":"S","who":"대명사","k":"너는"},{"t":"did","role":"V","k":"했다"},{"t":"a good job.","role":"O","who":"명사","k":"좋은 일을"}],"words":[{"w":"Mom","pos":"명사","mean":"엄마"},{"w":"Nick","pos":"명사","mean":"Nick (사람 이름)"},{"w":"you","pos":"대명사","mean":"너"},{"w":"did","pos":"동사","mean":"하다"},{"w":"a","pos":"관사","mean":"하나의"},{"w":"good","pos":"형용사","mean":"좋은"},{"w":"job","pos":"명사","mean":"일"}],"memo":null},{"no":"39","en":"Now you can see why Top Tour is the cheapest.","ko":"이제 왜 Top Tour가 가장 저렴한지 알 수 있겠지.","pattern":"3형식","pt":"SVO","chunks":[{"t":"Now","role":"M","kind":"부사","to":2,"k":"이제"},{"t":"you","role":"S","who":"대명사","k":"너는"},{"t":"can see","role":"V","k":"알 수 있다"},{"t":"why Top Tour is the cheapest.","role":"O","who":"절","info":"명사절, 의문사절","k":"왜 Top Tour가 가장 저렴한지를","subpt":"SVC","sub":[{"t":"why","role":"M","kind":"부사(의문부사)","to":2,"k":"왜"},{"t":"Top Tour","role":"S","who":"명사","k":"Top Tour가"},{"t":"is","role":"V","k":"~인지"},{"t":"the cheapest.","role":"C","who":"형용사","k":"가장 저렴한"}]}],"words":[{"w":"Now","pos":"부사","mean":"이제"},{"w":"you","pos":"대명사","mean":"너"},{"w":"can","pos":"조동사","mean":"~할 수 있다"},{"w":"see","pos":"동사","mean":"알다"},{"w":"why","pos":"의문사","mean":"왜"},{"w":"Top","pos":"명사","mean":"탑(투어 이름)"},{"w":"Tour","pos":"명사","mean":"투어, 관광"},{"w":"is","pos":"동사","mean":"~이다"},{"w":"the","pos":"관사","mean":"그"},{"w":"cheapest","pos":"형용사","mean":"가장 싼, 가장 저렴한"}],"memo":null},{"no":"40","en":"Let’s go with this one.","ko":"이것으로 결정하자.","pattern":"1형식(청유문)","pt":"SV","chunks":[{"t":"Let’s go","role":"V","kind":"","to":"","k":"정하자"},{"t":"with this one.","role":"M","kind":"부사구","to":0,"k":"이것으로"}],"words":[{"w":"Let’s","pos":"동사","mean":"~하자"},{"w":"go","pos":"동사","mean":"가다 (go with ~: ~로 정하다)"},{"w":"with","pos":"전치사","mean":"~으로"},{"w":"this","pos":"형용사","mean":"이"},{"w":"one","pos":"대명사","mean":"것 (앞에 나온 것을 대신함)"}],"memo":{"basis":"기준: Let’s + 동사 = 한 덩어리 동사","text":"go with ~(~로 정하다)는 자동사+전치사로 보아 with this one은 수식어로 처리"}}]}]};
+const app=document.getElementById('app');
+const LEVEL={gibon:0,baljeon:1,simhwa:2,gogyo:2};
+LEVEL[DATA.sets[0].id]=1;
+const NAME={S:'주어',V:'동사',O:'목적어',IO:'간접목적어',DO:'직접목적어',C:'보어',OC:'목적격보어',M:'수식어',CJ:'접속사'};
+const BN={S:'주어',V:'동사',O:'목적어',C:'보어',M:'수식어',CJ:'접속사'};
+const ANCH={SV:['SV','1형식',[['Birds','S'],['fly','V']]],SVC:['SVC','2형식',[['She','S'],['is','V'],['happy','C']]],SVO:['SVO','3형식',[['I','S'],['like','V'],['apples','O']]],SVOO:['SVOO','4형식',[['She','S'],['gave','V'],['me','O'],['a book','O']]],SVOC:['SVOC','5형식',[['They','S'],['call','V'],['him','O'],['Tom','C']]]};
+const WHO=['명사','대명사','형용사','동명사','to부정사','동사원형','절'];
+const WHYWHO={'명사':'이름(사람·사물·장소)을 나타내는 말','대명사':'이름을 대신해 쓰는 말','형용사':'상태를 설명하는 말','동명사':'동사+ing 모양이 명사 역할을 함','to부정사':'to+동사원형 모양이 명사 역할을 함','동사원형':'to 없이 동사 그대로의 모양','절':'주어+동사가 들어 있는 덩어리'};
+const ROLEOPT=[['S','주어'],['V','동사'],['O','목적어'],['C','보어'],['M','수식어'],['CJ','접속사']];
+const BASE={S:'S',V:'V',O:'O',IO:'O',DO:'O',C:'C',OC:'C',M:'M',CJ:'CJ'};
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function en(s){return '<span lang="en" translate="no">'+esc(s)+'</span>'}
+function B(c){if(c.role==='CJ'||(c.role==='M'&&c.kind==='접속사'))return 'CJ';return BASE[c.role]}
+function ck(c){const b=B(c);if(b==='M')return /형용사/.test(c.kind||'')?'MA':'MB';return b}
+function sp(c,i){return (i>0&&!/^['’.,?!;:]/.test(c.t))?' ':''}
+function barCol(c){const b=B(c);if(b==='S')return '#ffc83d';if(b==='O')return '#a9e6a4';if(b==='C')return '#9fd3f2';return /형용사/.test(c.kind||'')?'#c9a6f5':'#f2b36b'}
+function cands(it){return it.chunks.concat(it.extra||[])}
+function toName(c,it){return c.to===-1?'문장 전체':c.to===-2?'꾸밈 없음':cands(it)[c.to].t}
+function eul(w){const ch=String(w).charCodeAt(String(w).length-1);return (ch>=0xAC00&&ch<=0xD7A3&&(ch-0xAC00)%28!==0)?'을':'를'}
+function isAdj(c){return /형용사/.test(c.kind||'')}
+function rel(c,it){
+  if(c.to===-2)return '유도부사 = 문장을 여는 말, 꾸미는 대상 없음';
+  if(c.to===-1)return '부사가 문장 전체를 꾸밈';
+  const t=cands(it)[c.to],tb=B(t);
+  if(/비교/.test(c.kind||''))return '비교하는 대상을 나타냄';
+  if(isAdj(c)){if(tb==='V')return '';const n=(t.who==='대명사'?'대명사':'명사');return '형용사가 '+n+eul(n)+' 꾸밈'}
+  if(tb==='CJ')return '부사가 접속사를 꾸밈';
+  if(tb==='V')return '부사가 동사를 꾸밈';
+  if(tb==='M')return '부사가 '+(isAdj(t)?'형용사':'부사')+'를 꾸밈';
+  if(t.who==='형용사')return '부사가 형용사를 꾸밈';
+  return '수식어가 '+(t.who&&t.who!=='절'?t.who+eul(t.who):'앞의 말을')+' 꾸밈';
+}
+function head(c){
+  let det=[c.kind,c.info].filter(Boolean).join(', ').split(/\s*,\s*/).filter(Boolean);
+  const seen=[];det.forEach(d=>{const dd=d.replace(/\(.*\)/,'').trim();if(dd&&!seen.some(x=>x.indexOf(dd)>=0||dd.indexOf(x)>=0)){seen.push(d)}});
+  det=seen;let h=c.who||'';
+  det=det.filter(d=>d!==h);
+  if(det.length&&h&&det[0].indexOf(h)===0){h=det.shift()}
+  return esc(h)+det.map(d=>' · '+esc(d)).join('');
+}
+function ansText(c,it){
+  const b=B(c);
+  if(b==='V')return '동사';
+  if(b==='CJ')return '접속사';
+  if(b==='M'){if(c.to===-2)return '수식어 ('+esc(c.kind||'')+') · 꾸밈 없음<br><small>'+esc(rel(c,it))+'</small>';return '수식어 ('+esc(c.kind||'')+(c.info?' · '+esc(c.info):'')+') → '+(c.to>=0?en(toName(c,it)):esc(toName(c,it)))+' 꾸밈'+(rel(c,it)?'<br><small>'+esc(rel(c,it))+'</small>':'')}
+  return NAME[c.role]+' ('+head(c)+')';
+}
+const BEV=['is','am','are','was','were','be','been','being'];
+function mainV(c,it){
+  const ch=it.chunks,k=ch.indexOf(c);let a=0,z=ch.length;
+  for(let j=k-1;j>=0;j--)if(B(ch[j])==='CJ'){a=j+1;break}
+  for(let j=k+1;j<ch.length;j++)if(B(ch[j])==='CJ'){z=j;break}
+  const vs=ch.slice(a,z).filter(x=>x.role==='V');
+  return vs.length?vs[vs.length-1]:(ch.filter(x=>x.role==='V')[0]||{t:'동사'});
+}
+function whyRole(c,it){
+  const b=B(c),vc=mainV(c,it),v=vc.t,be=BEV.indexOf(v.toLowerCase().split(' ').pop())>=0;
+  if(b==='S')return c.t+(be?' = 설명의 대상이 되는 쪽':' = '+v+' 하는 쪽');
+  if(b==='V')return c.t+' = 동작·상태를 말하는 말';
+  if(b==='O')return c.t+' = '+v+' 의 대상 (~을/를)';
+  if(b==='C')return c.t+' = 앞의 말을 설명하는 말';
+  if(b==='CJ')return c.t+' = 말과 말을 이어 주는 말';
+  if(c.to===-2)return c.t+' = 문장을 여는 말 (뒤에 진짜 주어가 옴)';
+  return c.t+' = 빼도 문장이 성립하는 꾸미는 말';
+}
+let cur=null,round=0,cust=null,retried=false,conf={};
+function bump(k){conf[k]=(conf[k]||0)+1}
+function home(){rounds(DATA.sets[0].id)}
+function nr(){return Math.ceil(cur.items.length/10)}
+function recKey(){return 'bc_rec_'+cur.id}
+function recGet(){try{return JSON.parse(localStorage.getItem(recKey())||'{}')}catch(e){return {}}}
+function recSet(r,wrong){try{const o=recGet();const d=new Date();o[r]={w:wrong,d:d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)};localStorage.setItem(recKey(),JSON.stringify(o))}catch(e){}}
+function rounds(id){
+  cur=DATA.sets[0];cust=null;
+  const rec=recGet();
+  let h='<h1>문장 성분 연습</h1><h2>'+esc(cur.label)+'</h2><div class="wm">10문장씩 골라서 풀기 · 앞에서부터</div>';
+  for(let r=0;r<nr();r++){
+    if(r%10===0){const e=Math.min(cur.items.length,(r+10)*10);h+=(r?'</div>':'')+'<div class="sec">'+cur.items[r*10].no+' – '+cur.items[e-1].no+'</div><div class="bgrid">'}
+    const a=cur.items[r*10].no,b=cur.items[Math.min(cur.items.length,(r+1)*10)-1].no;
+    h+='<button class="blk'+(rec[r]?' dn':'')+'" style="--c:'+cur.color+'" data-r="'+r+'"'+(rec[r]?' title="'+esc(rec[r].d)+'"':'')+'>'+a.slice(-4)+'–'+b.slice(-4)+(rec[r]?'<i>✓</i>':'')+'</button>';
+  }
+  app.innerHTML=h+'</div><button class="back" id="bcx">목록으로</button>';
+  document.getElementById('bcx').onclick=()=>{location.href='won.html'};
+  app.querySelectorAll('.blk').forEach(b=>b.onclick=()=>startQ(+b.dataset.r));
+  window.scrollTo(0,0);
+}
+function items(){return cust||cur.items.slice(round*10,round*10+10)}
+function seen(){try{return localStorage.getItem('bc_concept')==='1'}catch(e){return false}}
+function mark(){try{localStorage.setItem('bc_concept','1')}catch(e){}}
+function conceptHTML(){
+  return '<div class="cc"><div class="cch">역할과 모양은 다름</div><div class="ccl"><b>문장성분</b> = 문장 안에서 하는 역할 <span class="wm">주어 · 동사 · 목적어 · 보어</span></div><div class="ccl"><b>누가 들어갔나</b> = 그 자리에 들어간 말의 모양 <span class="wm">명사 · 대명사 · 형용사 · 동명사 · to부정사 · 동사원형 · 절</span></div><div class="ccx"><span lang="en" translate="no"><span class="x k-S">Apples</span> <span class="x k-V">are</span> red.</span><span class="wm">주어 · 들어간 말은 명사</span></div><div class="ccx"><span lang="en" translate="no"><span class="x k-S">I</span> <span class="x k-V">like</span> <span class="x k-O">apples</span>.</span><span class="wm">목적어 · 들어간 말은 명사</span></div><div class="ccl">같은 단어, 다른 역할</div></div>';
+}
+function concept(next){
+  app.innerHTML='<div class="card">'+conceptHTML()+'</div><div class="btnrow"><button class="pri" id="cgo">시작</button></div><button class="back" id="lst">목록으로</button>';
+  document.getElementById('cgo').onclick=()=>{mark();next()};document.getElementById('lst').onclick=()=>rounds(cur.id);window.scrollTo(0,0);
+}
+function showConcept(){
+  const d=document.createElement('div');d.className='ov';d.innerHTML='<div class="card">'+conceptHTML()+'<button class="back" id="cx">닫기</button></div>';
+  document.body.appendChild(d);d.querySelector('#cx').onclick=()=>d.remove();
+}
+function startQ(r){round=r;cust=null;retried=false;conf={};if(seen())quiz(0,0,[]);else concept(()=>quiz(0,0,[]))}
+/* ---------- copy view ---------- */
+function label(c,it){
+  const b=B(c);let sm='';
+  if(c.who)sm=head(c);else if(b==='M'&&c.kind)sm=esc(c.kind);
+  let tg='';
+  if(b==='M'){if(c.to===-1)tg=' → 문장 전체 꾸밈';else if(c.to>=0)tg=' → '+en(cands(it)[c.to].t)+' 꾸밈'}
+  return (c.k?'<span class="g">'+esc(c.k)+'</span>':'')+'<span class="r">'+(b==='CJ'?'접속사':NAME[c.role])+(sm?' <small>('+sm+')</small>':'')+tg+'</span>';
+}
+function chunkSpans(it){
+  return it.chunks.map((c,i)=>sp(c,i)+'<span class="ch"><span class="t k-'+ck(c)+'">'+esc(c.t)+'</span><span class="l">'+label(c,it)+'</span></span>').join('');
+}
+function subHTML(chs){
+  return chs.map(c=>{
+    const b=B(c);let extra='';
+    if(b==='M'&&c.to>=0&&chs[c.to])extra=' → '+en(chs[c.to].t)+' 꾸밈';
+    return '<div class="sub"><b>'+(b==='CJ'?'접속사':NAME[c.role])+'</b> '+en(c.t)+(c.who?' <span class="wm">'+head(c)+'</span>':(c.kind?' <span class="wm">'+esc(c.kind)+'</span>':''))+extra+'</div>';
+  }).join('');
+}
+function anchHTML(code){
+  const a=ANCH[code];
+  return '<div class="anc"><b>'+a[0]+'</b>'+a[2].map(e=>'<span class="x k-'+e[1]+'" lang="en" translate="no">'+esc(e[0])+'</span>').join('')+'<span>와 같은 구조</span></div>';
+}
+function copyView(wl,wrong){
+  const its=items();
+  let h='<h1>틀린 문장 색칠</h1><div class="legend"><span class="k-S">주어</span><span class="k-V">동사</span><span class="k-O">목적어</span><span class="k-C">보어</span><span class="k-MA">형용사 수식어</span><span class="k-MB">그 밖의 수식어</span></div>';
+  wl.forEach(i=>{
+    const it=its[i];
+    const wm=it.words.filter(w=>w.pos!=='관사').map(w=>en(w.w)+' '+esc(w.mean)).join(' · ');
+    const subs=it.chunks.filter(c=>c.sub).map(c=>subHTML(c.sub)).join('');
+    h+='<div class="card"><div class="no">'+esc(it.no)+(it.pt?'':' · '+esc(it.pattern))+'</div><div class="sent" lang="en" translate="no">'+chunkSpans(it)+'</div>'+(it.pt?anchHTML(it.pt):'')+subs+'<div class="ko">'+esc(it.ko)+'</div><div class="wm">'+wm+'</div>'+(it.memo?'<div class="note"><b>'+esc(it.memo.basis)+'</b> '+esc(it.memo.text||'')+'</div>':'')+'</div>';
+  });
+  h+='<div class="btnrow"><button class="pri" id="go">다 칠했음</button></div><button class="back" id="lst">목록으로</button>';
+  app.innerHTML=h;
+  document.getElementById('lst').onclick=()=>rounds(cur.id);
+  const go=document.getElementById('go');
+  go.onclick=()=>{if(!go.classList.contains('warn')){go.classList.add('warn');go.textContent='한 번 더 누르면 끝남';return}afterCopy(wl,wrong)};
+  window.scrollTo(0,0);
+}
+function afterCopy(wl,wrong){
+  if(!retried&&wl.length>=5){const its=items();cust=wl.map(i=>its[i]);retried=true;quiz(0,wrong,[])}else done(wrong)
+}
+function confHTML(){
+  const a=Object.keys(conf).map(k=>[k,conf[k]]).sort((x,y)=>y[1]-x[1]).slice(0,3);
+  if(!a.length)return '';
+  return '<div class="confl"><b>많이 헷갈린 것</b>'+a.map(e=>'<div>'+esc(e[0])+' · '+e[1]+'번</div>').join('')+'</div>';
+}
+function done(wrong){
+  cust=null;const its=items();recSet(round,wrong);
+  app.innerHTML='<h1>'+its[0].no+' – '+its[its.length-1].no+' 완료</h1><div class="card sum">오답 '+wrong+'번'+confHTML()+'</div><button class="pri" id="bk">목록으로</button>';
+  document.getElementById('bk').onclick=()=>rounds(cur.id);window.scrollTo(0,0);
+}
+/* ---------- one floor ---------- */
+function mount(it,host,floor,cls,done,opt){
+  opt=opt||{};
+  host.innerHTML='<div class="card"><div class="ftag"></div><div class="sent" lang="en" translate="no" id="sent'+floor+'">'+it.chunks.map((c,k)=>sp(c,k)+'<span class="t" data-k="'+k+'">'+esc(c.t)+'</span>').join('')+'</div><div class="rows"></div></div><div class="btnrow"><button class="pri" disabled>제출</button></div>';
+  host.className=cls;
+  host.querySelector('.ftag').textContent=opt.tag||(floor+'층');
+  const rows=host.querySelector('.rows'),sub=host.querySelector('.pri');
+  const st=it.chunks.map(()=>({role:opt.fixedM?'M':null,who:null,to:undefined}));let pat=null;
+  const cd=cands(it),noneOK=true,cjOK=cd.some(x=>x.role==='M'&&B(x)!=='CJ'&&x.to>=0&&B(cd[x.to])==='CJ');
+  function complete(){
+    for(let k=0;k<it.chunks.length;k++){const s=st[k];if(!s.role)return false;
+      if((s.role==='S'||s.role==='O'||s.role==='C')&&!s.who)return false;
+      if(s.role==='M'&&s.to===undefined)return false}
+    if(it.pt&&!pat)return false;return true;
+  }
+  function refresh(){sub.disabled=!complete()}
+  const rowEls=[];
+  it.chunks.forEach((c,k)=>{
+    const r=document.createElement('div');r.className='qr';
+    r.innerHTML='<span class="t" lang="en" translate="no">'+esc(c.t)+'</span>'+(c.k?'<span class="g">'+esc(c.k)+'</span>':'')+(opt.fixedM?'':'<div class="cap">문장성분</div><span class="opt"></span>')+'<div class="pbox"></div>';
+    const o=r.querySelector('.opt'),pb=r.querySelector('.pbox');
+    function drawSub(){
+      pb.innerHTML='';const s=st[k];
+      if(s.role==='S'||s.role==='O'||s.role==='C'){
+        const line=document.createElement('div');line.className='popt';
+        line.innerHTML='<span class="cap2">누가 들어갔나?</span>';
+        WHO.forEach((w,wi)=>{if(wi===3){const br=document.createElement('span');br.style.cssText='flex:0 0 100%;height:0';line.appendChild(br)}const b=document.createElement('button');b.textContent=w;if(s.who===w)b.className='sel';b.onclick=()=>{s.who=w;drawSub();refresh()};line.appendChild(b)});
+        pb.appendChild(line);
+      }else if(s.role==='M'){
+        const line=document.createElement('div');line.className='popt';
+        line.innerHTML='<span class="cap2">누구를 꾸미나?</span>';
+        cd.forEach((x,j)=>{if(j===k||(B(x)==='CJ'&&!cjOK))return;const b=document.createElement('button');const same=cd.filter(y=>y.t===x.t&&!(B(y)==='CJ'&&!cjOK));const ord=same.length>1?' '+'①②③④⑤'[same.indexOf(x)]:'';b.textContent=x.t+ord;b.dataset.j=j;b.setAttribute('lang','en');if(s.to===j)b.className='sel';b.onclick=()=>{s.to=j;drawSub();refresh()};line.appendChild(b)});
+        const b=document.createElement('button');b.textContent='문장 전체';if(s.to===-1)b.className='sel';b.onclick=()=>{s.to=-1;drawSub();refresh()};line.appendChild(b);
+        if(noneOK){const b2=document.createElement('button');b2.textContent='꾸밈 없음';if(s.to===-2)b2.className='sel';b2.onclick=()=>{s.to=-2;drawSub();refresh()};line.appendChild(b2)}
+        pb.appendChild(line);
+      }
+    }
+    if(o)ROLEOPT.forEach(([key,nm])=>{
+      const b=document.createElement('button');b.textContent=nm;
+      b.onclick=()=>{st[k].role=key;st[k].who=null;st[k].to=undefined;o.querySelectorAll('button').forEach(x=>x.className=x===b?'sel':'');drawSub();refresh()};
+      o.appendChild(b)});
+    if(opt.fixedM)drawSub();
+    rows.appendChild(r);rowEls.push(r);
+  });
+  let pr=null;
+  if(it.pt){
+    pr=document.createElement('div');pr.className='qr';
+    pr.innerHTML='<span class="t" style="background:transparent;padding-left:0">문형</span><span class="opt"></span>';
+    const o=pr.querySelector('.opt');
+    Object.keys(ANCH).forEach(code=>{
+      const b=document.createElement('button');b.textContent=code;
+      b.onclick=()=>{pat=code;o.querySelectorAll('button').forEach(x=>x.className=x===b?'sel':'');refresh()};
+      o.appendChild(b)});
+    rows.appendChild(pr);
+  }
+  sub.onclick=()=>{
+    if(!complete())return;
+    sub.style.display='none';let bad=0;
+    it.chunks.forEach((c,k)=>{
+      const s=st[k],r=rowEls[k],b=B(c);
+      let ok=s.role===b,kind='role';
+      if(ok&&(b==='S'||b==='O'||b==='C')){ok=s.who===c.who;kind='who'}
+      if(ok&&b==='M'){ok=s.to===c.to;kind='to'}
+      const cls2='k-'+ck(c);r.querySelector('.t').classList.add(cls2);host.querySelector('.sent .t[data-k="'+k+'"]').classList.add(cls2);
+      const oo=r.querySelector('.opt');if(oo)oo.remove();r.querySelector('.pbox').remove();
+      const cp=r.querySelector('.cap');if(cp)cp.remove();
+      if(ok){r.insertAdjacentHTML('beforeend','<span class="mk mko">O</span><span class="ok">'+ansText(c,it)+'</span>')}
+      else{bad++;r.classList.add('wr');
+        let why;
+        if(kind==='role'){why=whyRole(c,it);bump((BN[s.role]||'')+' → '+BN[b])}
+        else if(kind==='to'){why=c.to===-2?c.t+' = 문장을 여는 말, 꾸미는 대상이 없음':c.t+' 는 '+toName(c,it)+' 를 꾸미는 말';bump('꾸미는 대상')}
+        else{why=c.t+' = '+WHYWHO[c.who];bump(s.who+' → '+c.who)}
+        const mine=(BN[s.role]||'')+(s.who?' ('+s.who+')':'')+(s.role==='M'&&s.to!==undefined?' → '+(s.to===-1?'문장 전체':s.to===-2?'꾸밈 없음':cd[s.to].t):'');
+        r.insertAdjacentHTML('beforeend','<span class="mk mkx">X</span><span class="mine">내 답: '+esc(mine)+'</span><span class="ok">정답: '+ansText(c,it)+'</span><div class="why" lang="ko">'+esc(why)+'</div>')}
+    });
+    if(it.pt){
+      const ok=pat===it.pt;pr.querySelector('.opt').remove();
+      if(ok)pr.insertAdjacentHTML('beforeend','<span class="mk mko">O</span><span class="ok">'+it.pt+' · '+ANCH[it.pt][1]+'</span>');
+      else{bad++;bump('문형');pr.classList.add('wr');pr.insertAdjacentHTML('beforeend','<span class="mk mkx">X</span><span class="mine">내 답: '+pat+'</span><span class="ok">정답: '+it.pt+' · '+ANCH[it.pt][1]+'</span>')}
+      const sk=it.chunks.filter(c=>B(c)!=='M'&&B(c)!=='CJ').map(c=>'<span class="x k-'+ck(c)+'" lang="en" translate="no">'+esc(c.t)+'</span>').join('');
+      const an=ANCH[it.pt][2].map(e=>'<span class="x k-'+e[1]+'" lang="en" translate="no">'+esc(e[0])+'</span>').join('');
+      rows.insertAdjacentHTML('afterend','<div class="wrap"><div class="wh">'+it.pt+' · '+ANCH[it.pt][1]+'</div><div class="wl"><span class="wn">이 문장</span>'+sk+'</div><div class="wl"><span class="wn">기본 예문</span>'+an+'</div></div>');
+    }
+    rows.insertAdjacentHTML('beforebegin','<div class="res '+(bad?'resx':'reso')+'">'+(bad?'틀린 곳 '+bad+'개':'모두 맞음')+'</div>');
+    if(floor===1)window.scrollTo(0,0);else host.scrollIntoView({block:'start'});
+    done(bad);
+  };
+}
+/* ---------- closing card with arrows ---------- */
+function ilab(x){
+  const d=(x.kind||'')+(x.info||'');
+  if(B(x)==='S'&&/가주어/.test(d))return '가주어';
+  if(B(x)==='S'&&/진주어/.test(d))return '진주어';
+  if(B(x)==='CJ')return '접속사';
+  return NAME[x.role]||'';
+}
+function rowHTML(chunks,extra,label,cls,bar){
+  const all=chunks.concat(extra||[]);
+  const pairs=[];
+  all.forEach((c,i)=>{if(c.role==='M'&&B(c)!=='CJ'&&c.to!==undefined&&c.to>-2)pairs.push([i,c.to,isAdj(c)?'#6f3fc2':'#c9680f'])});
+  const gi=chunks.findIndex(x=>B(x)==='S'&&/가주어/.test((x.kind||'')+(x.info||'')));
+  const ji=chunks.findIndex(x=>B(x)==='S'&&/진주어/.test((x.kind||'')+(x.info||'')));
+  if(gi>=0&&ji>=0)pairs.push([gi,ji,'#8a7a2a','d']);
+  return '<div class="grp'+(cls||'')+'"'+(bar?' style="border-left-color:'+bar+'"':'')+'><div class="n">'+label+'</div><div class="rw" data-pairs=\''+JSON.stringify(pairs)+'\'><svg class="ar"></svg><div class="cl">'+all.map(x=>'<span class="cb"><i>'+ilab(x)+'</i><span class="x k-'+ck(x)+'" lang="en" translate="no">'+esc(x.t)+'</span></span>').join('')+'</div></div></div>';
+}
+function draw(){
+  document.querySelectorAll('.rw').forEach(rw=>{
+    const pairs=JSON.parse(rw.getAttribute('data-pairs')||'[]');
+    rw.classList.toggle('has',pairs.length>0);
+    const svg=rw.querySelector('svg'),R=rw.getBoundingClientRect(),cbs=[].slice.call(rw.querySelectorAll('.cb'));let out='';
+    function box(i){const b=cbs[i].getBoundingClientRect();return {x:b.left-R.left+b.width/2,top:b.top-R.top,bot:b.bottom-R.top,l:b.left-R.left,r:b.right-R.left}}
+    pairs.forEach(p=>{
+      const a=box(p[0]),col=p[2];
+      if(p[1]===-1){
+        const first=box(0),last=box(cbs.length-1),y=10;
+        out+='<path d="M'+a.x+' '+(a.top-2)+' V'+y+' M'+first.l+' '+(y+7)+' V'+y+' H'+last.r+' V'+(y+7)+'" fill="none" stroke="'+col+'" stroke-width="2.2" stroke-linecap="round"/><text x="'+((first.l+last.r)/2)+'" y="'+(y-3)+'" font-size="11" font-weight="700" fill="'+col+'" text-anchor="middle">문장 전체</text>';
+        return;
+      }
+      const b=box(p[1]);
+      if(p[3]==='d'){
+        const d=Math.abs(a.x-b.x),h=Math.min(22,10+d/12),y0=a.top-2;
+        out+='<path d="M'+a.x+' '+y0+' C'+a.x+' '+(y0-h*1.3)+' '+b.x+' '+(y0-h*1.3)+' '+b.x+' '+y0+'" fill="none" stroke="'+col+'" stroke-width="2" stroke-dasharray="2 4" stroke-linecap="round"/>';
+        return;
+      }
+      if(Math.abs(a.top-b.top)>10){const dn=a.top>b.top,x1=a.x,y1=dn?a.top-1:a.bot+1,x2=b.x,y2=dn?b.bot+2:b.top-2,sg=dn?1:-1;out+='<path d="M'+x1+' '+y1+' C'+x1+' '+(y1-sg*8)+' '+x2+' '+(y2+sg*8)+' '+x2+' '+y2+'" fill="none" stroke="'+col+'" stroke-width="2.2" stroke-linecap="round"/><path d="M'+(x2-5)+' '+(y2+sg*6)+' L'+x2+' '+y2+' L'+(x2+5)+' '+(y2+sg*6)+'" fill="none" stroke="'+col+'" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>';return}
+      const d=Math.abs(a.x-b.x),h=Math.min(24,12+d/12),y0=a.top-2,y1=a.top-3;
+      out+='<path d="M'+a.x+' '+y0+' C'+a.x+' '+(y0-h*1.3)+' '+b.x+' '+(y0-h*1.3)+' '+b.x+' '+(y1-1)+'" fill="none" stroke="'+col+'" stroke-width="2.2" stroke-linecap="round"/><path d="M'+(b.x-5)+' '+(y1-7)+' L'+b.x+' '+y1+' L'+(b.x+5)+' '+(y1-7)+'" fill="none" stroke="'+col+'" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>';
+    });
+    svg.innerHTML=out;
+  });
+}
+window.addEventListener('resize',draw);
+function plab(it){return it.pt?it.pt+' ('+ANCH[it.pt][1]+')':esc(it.pattern)}
+function closing(it,floors){
+  let h='<div class="clos"><div class="wh">구조 정리</div>'+rowHTML(it.chunks,null,'1층 · '+plab(it),'',null);
+  const zs=[];
+  floors.forEach(f=>{
+    const c=f.c,sit=f.sit;
+    if(c.sub){
+      h+=rowHTML(c.sub,null,'2층 · '+(c.subpt?c.subpt+' ('+ANCH[c.subpt][1]+')':''),' l2',barCol(c));
+      let z=B(c)==='M'?(en(toName(c,it))+' 를 꾸미는 덩어리 = '+c.subpt+' 구조'):(NAME[c.role]+' 자리에 '+c.subpt+' 구조가 통째로 들어간 모양');
+      const tg=c.sub.filter(x=>x.role==='M'&&x.to>=0&&B(x)!=='CJ');
+      if(tg.length)z+='<br>2층 '+en(tg[0].t)+' → '+en(c.sub[tg[0].to].t)+' 꾸밈';
+      zs.push(z);
+    }else if(c.chain){
+      h+=rowHTML(c.chain.chunks,c.chain.extra,'꾸밈 사슬',' l2',barCol(c));
+      zs.push(en(c.chain.chunks.map(x=>x.t).concat(c.chain.extra.map(x=>x.t)).join(' → '))+' 순서로 꾸밈이 이어지는 구조');
+    }
+  });
+  it.chunks.forEach(c=>{
+    if(c.role==='M'&&c.to===-1)zs.push(en(c.t)+' = 문장 전체를 꾸미는 말 (뺄 수 있음)');
+    if(c.role==='M'&&c.to===-2){const s=it.chunks.filter(x=>B(x)==='S')[0];zs.push(en(c.t)+' = 문장을 여는 유도부사'+(s?' · 뒤의 '+en(s.t)+' 가 진짜 주어 (도치)':''))}
+  });
+  const g=it.chunks.filter(x=>ilab(x)==='가주어')[0],j=it.chunks.filter(x=>ilab(x)==='진주어')[0];
+  if(g&&j)zs.push(en(g.t)+' = 가주어 · '+en(j.t)+' = 진주어 (점선으로 연결)');
+  if(zs.length)h+='<div class="clz">'+zs.join('<br>')+'</div>';
+  return h+'</div>';
+}
+function floorsOf(it){return it.chunks.filter(c=>c.sub||c.chain)}
+/* ---------- quiz ---------- */
+function quiz(i,wrong,wl){
+  const its=items();
+  if(i>=its.length){if(wl.length)copyView(wl,wrong);else done(wrong);return}
+  const it=its[i],lv=LEVEL[cur.id];
+  app.innerHTML='<div class="prog">'+(retried?'다시 · ':'')+(i+1)+' / '+its.length+' <button class="lk" id="cc">개념</button></div><div id="f1"></div><div id="f2"></div><div id="nxt"></div><button class="back" id="lst">목록으로</button>';
+  document.getElementById('cc').onclick=showConcept;document.getElementById('lst').onclick=()=>rounds(cur.id);
+  const f2=document.getElementById('f2'),nxt=document.getElementById('nxt');
+  let bad=0;
+  function finish(opened){
+    nxt.innerHTML=closing(it,opened)+(it.memo?'<div class="postit"><b>'+esc(it.memo.basis)+'</b>'+(it.memo.text?'<br>'+esc(it.memo.text):'')+'</div>':'')+'<button class="pri" style="width:100%;margin-top:12px">'+(i+1<its.length?'다음 문장':'끝')+'</button>';
+    nxt.lastChild.onclick=()=>{if(bad){wrong+=bad;if(wl.indexOf(i)<0)wl.push(i)}quiz(i+1,wrong,wl)};
+    draw();setTimeout(draw,250);setTimeout(draw,800);
+  }
+  function run(list,n,opened){
+    if(n>=list.length){finish(opened);return}
+    const c=list[n],sit=c.sub?{chunks:c.sub,pt:c.subpt}:{chunks:c.chain.chunks,extra:c.chain.extra};
+    const host=document.createElement('div');f2.appendChild(host);
+    mount(sit,host,2,'inner',b=>{bad+=b;opened.push({c:c,sit:sit});run(list,n+1,opened)},c.chain?{fixedM:true,tag:'꾸밈 사슬'}:{});
+    host.style.borderLeftColor=barCol(c);
+  }
+  mount(it,document.getElementById('f1'),1,'',b1=>{
+    bad+=b1;
+    const fl=lv===0?[]:floorsOf(it);
+    if(!fl.length){finish([]);return}
+    if(lv===2){run(fl,0,[]);return}
+    f2.innerHTML='<button class="sm" id="op">속 문장 열기</button><button class="sm" id="sk">건너뛰기</button>';
+    document.getElementById('op').onclick=()=>{f2.innerHTML='';run(fl,0,[])};
+    document.getElementById('sk').onclick=()=>{f2.innerHTML='';finish([])};
+  });
+  window.scrollTo(0,0);
+}
+home();
+</script>
+</body>
+</html>
