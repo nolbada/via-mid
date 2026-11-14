@@ -20,7 +20,7 @@ function secRange(s){return s.sents[0].n+'~'+s.sents[s.sents.length-1].n+'번'}
 function pageWon(){
  var h='';
  h+=acc('교과서 7과',true,lrow('jwa.html','좌본문 우해석')+lrow('gram.html','문법 설명')+lrow('https://nolbada.github.io/via/mid/dongah-yun/l7/basic/','문장 성분 연습','기본 · 핵심 문장 26개')+lrow('https://nolbada.github.io/via/mid/dongah-yun/l7/adv/','문장 성분 연습','심화 · 핵심 문장 26개'));
- h+=acc('교과서 8과',false,lrow('jwa8.html','좌본문 우해석')+lrow('gram8.html','문법 설명'));
+ h+=acc('교과서 8과',false,lrow('jwa8.html','좌본문 우해석')+lrow('gram8.html','문법 설명')+lrow('bc8.html','문장 성분 연습','문장 86개'));
  app.innerHTML=h;
  app.appendChild(foot());tabs()}
 
