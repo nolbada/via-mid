@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="ko" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>7과 문장 성분 연습</title>
+<style>
+:root{--bg:#f1efe9;--panel:#fff;--ink:#1f1d1a;--mute:#5d584f;--soft:#8a847a;--line:#e0dbd0;--accent:#2f4858;--bad:#c0392b;--good:#2e7d32;
+--S:#ffc83d;--V:#ff8f87;--O:#a9e6a4;--C:#9fd3f2;--MA:#d5bbff;--MB:#ffdcae;--CJ:#dcdcdc;--font:'Noto Sans KR',system-ui,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif}
+*{box-sizing:border-box}html,body{overflow-x:hidden;max-width:100%}html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.55;padding:18px max(16px,env(safe-area-inset-right)) 60px max(16px,env(safe-area-inset-left))}
+button{font:inherit;color:inherit;cursor:pointer}
+.shell{min-width:0;max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+h1{font-size:26px;font-weight:900;margin:0}h2{font-size:15px;font-weight:800;margin:6px 0 0;color:var(--mute)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.big{background:var(--panel);border:0;border-radius:14px;padding:18px 14px;text-align:left;font-weight:800;font-size:17px;border-left:6px solid var(--c,#888)}
+.big small{display:block;font-weight:500;font-size:12px;color:var(--soft);margin-top:2px}
+.wide{grid-column:1/-1}
+.card{background:var(--panel);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.no{font-size:12px;font-weight:800;color:var(--soft)}
+.sent{font-size:19px;line-height:1.5;font-weight:600;overflow-wrap:anywhere}
+#sent{background:#e6f1ff;border:2px solid #2b6cb0;border-radius:12px;padding:12px 12px 4px;color:#0f3459;font-size:20px}
+#sent .t{background:#c9dffa}
+.ch{display:inline-block;margin:0 3px 8px 0;text-align:center;vertical-align:top;max-width:100%}
+.ch .t{display:inline-block;padding:2px 6px;border-radius:4px;background:#ecebe6}
+.ch .l{display:block;margin-top:2px;line-height:1.25}
+.ch .g{display:block;font-size:13.5px;font-weight:600;color:var(--ink)}
+.ch .r{display:block;font-size:11.5px;color:var(--mute)}
+.ch .r small{font-size:10px;color:var(--soft);opacity:.8}
+.k-S{background:var(--S)!important}.k-V{background:var(--V)!important}.k-O{background:var(--O)!important}.k-C{background:var(--C)!important}.k-MA{background:var(--MA)!important}.k-MB{background:var(--MB)!important}.k-CJ{background:var(--CJ)!important}
+.ko{color:var(--mute);font-size:14px}
+.wm{font-size:12.5px;color:var(--soft)}
+.note,.postit{font-size:13px;background:#fff1a8;border-radius:3px;padding:9px 11px;box-shadow:1px 2px 4px rgba(0,0,0,.14);line-height:1.5;margin-top:8px}
+.qr .g{flex-basis:100%;font-size:13.5px;font-weight:600;color:#333}
+.sub{font-size:13px;color:var(--mute);border-left:3px solid var(--line);padding-left:8px}
+.anc{font-size:13px;color:var(--mute);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.anc b{font-weight:800;color:var(--ink)}
+.anc .x{padding:1px 6px;border-radius:4px;color:#2a2a2a}
+.legend{display:flex;gap:6px;flex-wrap:wrap}.legend span{font-size:12px;font-weight:700;padding:2px 8px;border-radius:5px;color:#2a2a2a}
+.nav,.btnrow{display:flex;gap:10px}
+.pri{flex:1;border:0;border-radius:999px;padding:14px;font-weight:800;background:var(--accent);color:#fff;font-size:15px}
+.pri.warn{background:#b3541e}
+.back{border:0;background:var(--panel);border-radius:999px;padding:14px;font-weight:800;font-size:15px;width:100%}
+.rows{display:flex;flex-direction:column}
+.qr{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:9px 0;border-top:1px solid var(--line)}
+.qr:first-child{border-top:0}
+.qr .t{font-size:18px;font-weight:600;background:#ecebe6;border-radius:4px;padding:2px 8px}
+.opt{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.opt button{border:2px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-weight:700;font-size:14px}
+.opt button.sel,.popt button.sel{background:#2f4858;border-color:#2f4858;color:#fff}
+.popt{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:6px;width:100%}
+.popt button{border:2px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-weight:700;font-size:14px}
+.pbox{width:100%}.pbox:empty{display:none}
+.mk{display:inline-block;width:24px;height:24px;border-radius:50%;text-align:center;font-weight:900;color:#fff;font-size:14px;line-height:24px}
+.mko{background:var(--good)}.mkx{background:var(--bad)}
+.qr.wr{background:#fff1ef;border-radius:8px;padding-left:8px;padding-right:8px}
+.mine{color:var(--bad);font-weight:700;font-size:14px;text-decoration:line-through}
+.res{font-weight:800;font-size:15px;padding:4px 0}.resx{color:var(--bad)}.reso{color:var(--good)}
+.cap{flex-basis:100%;font-size:11.5px;font-weight:800;color:#2f4858;margin-bottom:-4px}
+.cap2{flex-basis:100%;font-size:11.5px;font-weight:700;color:#8a847a}
+.pbox{margin-top:2px;padding-top:6px;border-top:1px dashed #d8d3c8}
+.popt button{background:#f4f2ee;border:1.5px dashed #cfc9bc;color:#6f6a60;font-weight:600;font-size:13px;padding:5px 11px}
+.popt button.sel{background:#9a948a;border:1.5px solid #9a948a;color:#fff}
+.wrap{min-width:0;max-width:100%;background:#ffe3ea;border-radius:10px;padding:12px 14px;margin-top:10px;display:flex;flex-direction:column;gap:8px}
+.wh{font-weight:900;font-size:15px;color:#7a2a45}
+.wl{display:flex;gap:8px;align-items:flex-start;min-width:0}.wc{display:flex;flex-wrap:wrap;gap:6px;flex:1;min-width:0}
+.wn{flex:0 0 58px;padding-top:5px;font-size:12px;font-weight:800;color:#7a2a45}
+.wl .x{flex:0 1 auto;overflow-wrap:anywhere;min-width:0;padding:3px 8px;border-radius:5px;font-size:15px;font-weight:600}
+.lk{border:0;background:none;color:#2b6cb0;font-weight:800;font-size:13px;margin-left:8px;text-decoration:underline;padding:0}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}
+.ov .card{max-width:520px;width:100%}
+.cc{display:flex;flex-direction:column;gap:10px}.cch{font-weight:900;font-size:16px}
+.ccl{font-size:15px}.ccx{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:17px}
+.ccx .x{padding:3px 8px;border-radius:5px;font-weight:600}
+.why{flex-basis:100%;font-size:13px;color:#5d584f;font-weight:600;padding-left:32px}
+.confl{margin-top:10px;font-size:14px;line-height:1.7}
+.pri:disabled{opacity:.35}
+@keyframes sh{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px)}40%{transform:translateX(5px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+.opt button.sh{animation:sh .35s}
+.opt button.bad{border-color:var(--bad);color:var(--bad)}
+.ok{color:var(--good);font-weight:800;font-size:14px}
+.prog{font-size:13px;font-weight:800;color:var(--soft)}
+.sum{font-size:15px}
+.inner{margin:12px 0 4px 2px;padding:10px 6px 10px 10px;border-left:6px solid var(--O);border-radius:0 10px 10px 0;background:#faf9f5}
+.inner.m{border-left-color:var(--MA)}
+.ftag{font-size:12px;font-weight:800;color:var(--soft)}
+.inner .ftag{color:#5a5448}
+.sm{border:2px solid var(--line);background:#fff;border-radius:999px;padding:9px 16px;font-weight:800;font-size:14px;margin:8px 8px 0 0}
+.tg{font-size:12px;color:#7b4fc0;font-weight:700}
+
+.wl{flex-wrap:wrap}.wl .x{flex:0 0 auto!important;max-width:100%;overflow-wrap:break-word!important}
+.inner .card{padding:10px 8px}
+@media(max-width:480px){
+body{padding-left:10px;padding-right:10px}
+.opt,.popt{gap:4px}
+.opt button,.popt button{padding:5px 8px;font-size:13px;border-width:1.5px}
+.popt button{font-size:12.5px;padding:4px 7px}
+.card{padding:12px 12px}
+.inner{padding:8px 4px 8px 6px;border-left-width:5px}
+.qr{gap:6px;padding:8px 0}
+}
+#sent1,#sent2{background:#e6f1ff;border:2px solid #2b6cb0;border-radius:12px;padding:12px 12px 4px;color:#0f3459;font-size:20px}
+#sent1 .t,#sent2 .t{background:#c9dffa}
+.clos{background:#fff6c2;border:1px solid #ecd978;border-radius:6px 6px 16px 6px;box-shadow:2px 3px 0 rgba(0,0,0,.09);padding:14px 14px 14px;margin-top:14px;display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden}
+.clos::after{content:"";position:absolute;right:0;bottom:0;width:24px;height:24px;background:linear-gradient(135deg,#fff6c2 50%,#ead66c 50%)}
+.clos .wh{font-size:15px;color:#5b4a08}
+.rw{position:relative;padding-top:0}.rw.has{padding-top:40px}.grp .n{font-size:11.5px;font-weight:800;color:#6b5a10;margin-bottom:2px}.grp.l2{margin-left:6px;padding-left:10px;border-left:4px solid #a9e6a4}.grp.l2.m{border-left-color:#d5bbff}.clos{padding-right:30px}
+.rw svg.ar{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.cl{display:flex;flex-wrap:wrap;gap:6px 6px;align-items:flex-end}
+.cl .n{flex:0 0 100%;font-size:11.5px;font-weight:800;color:#6b5a10}
+.cb{display:flex;flex-direction:column;gap:1px}
+.cb i{font-style:normal;font-size:10.5px;font-weight:700;color:#7a6a20}
+.cb .x{padding:3px 8px;border-radius:5px;font-size:15px;font-weight:600;overflow-wrap:break-word;max-width:100%}
+.clz{font-size:13.5px;font-weight:700;color:#4d4210;line-height:1.55;border-top:1px dashed #d9c55a;padding-top:8px}
+.tgb{font-size:13px}
+
+.rw.has .cl{row-gap:30px}
+.sec{font-size:13px;font-weight:800;color:var(--soft);margin-top:8px}
+.bgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.blk{position:relative;background:var(--panel);border:0;border-left:5px solid var(--c,#888);border-radius:10px;padding:11px 4px 11px 8px;font-weight:800;font-size:13px;text-align:left;white-space:nowrap}
+.blk.dn{background:#f6f4ee;color:#6d675c}
+.blk i{font-style:normal;position:absolute;right:3px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--good)}
+</style>
+</head>
+<body>
+<div class="shell" id="app"></div>
+<script>
+const DATA={"sets":[{"id":"ys7","label":"용성중2 · 7과","color":"#0f766e","items":[{"no":"1","en":"When it gets cold outside, people put on jackets and gloves.","ko":"바깥 날씨가 추워지면, 사람들은 외투를 입고 장갑을 낀다.","pattern":"3형식","pt":"SVO","chunks":[{"t":"When it gets cold outside,","role":"M","kind":"부사절","to":2,"k":"바깥 날씨가 추워지면","sub":[{"t":"When","role":"CJ","k":"~하면"},{"t":"it","role":"S","who":"대명사","k":"날씨가"},{"t":"gets","role":"V","k":"~해지다"},{"t":"cold","role":"C","who":"형용사","k":"추운"},{"t":"outside,","role":"M","kind":"부사","to":2,"k":"바깥에서"}],"subpt":"SVC"},{"t":"people","role":"S","who":"명사","k":"사람들은"},{"t":"put on","role":"V","k":"입는다"},{"t":"jackets and gloves.","role":"O","who":"명사","k":"외투와 장갑을"}],"words":[{"w":"When","pos":"접속사","mean":"~하면"},{"w":"it","pos":"대명사","mean":"그것(날씨)"},{"w":"gets","pos":"동사","mean":"~해지다"},{"w":"cold","pos":"형용사","mean":"추운"},{"w":"outside","pos":"부사","mean":"바깥에서"},{"w":"people","pos":"명사","mean":"사람들"},{"w":"put","pos":"동사","mean":"입다 (put on 전체 뜻)"},{"w":"on","pos":"부사","mean":"(put on의 일부)"},{"w":"jackets","pos":"명사","mean":"재킷, 외투"},{"w":"and","pos":"접속사","mean":"그리고"},{"w":"gloves","pos":"명사","mean":"장갑"}],"memo":null},{"no":"2","en":"Some people drink hot chocolate.","ko":"어떤 사람들은 핫 초콜릿을 마신다.","pattern":"3형식","pt":"SVO","chunks":[{"t":"Some people","role":"S","who":"명사","k":"어떤 사람들은"},{"t":"drink","role":"V","k":"마신다"},{"t":"hot chocolate.","role":"O","who":"명사","k":"핫 초콜릿을"}],"words":[{"w":"Some","pos":"형용사","mean":"어떤"},{"w":"people","pos":"명사","mean":"사람들"},{"w":"drink","pos":"동사","mean":"마시다"},{"w":"hot","pos":"형용사","mean":"뜨거운"},{"w":"chocolate","pos":"명사","mean":"초콜릿"}],"memo":null},{"no":"3","en":"Others stay inside under blankets.","ko":"다른 사람들은 담요를 덮고 집 안에 머문다.","pattern":"1형식","pt":"SV","chunks":[{"t":"Others","role":"S","who":"대명사","k":"다른 사람들은"},{"t":"stay","role":"V","k":"머문다"},{"t":"inside","role":"M","kind":"부사","to":1,"k":"집 안에"},{"t":"under blankets.","role":"M","kind":"부사구","to":1,"k":"담요 아래에"}],"words":[{"w":"Others","pos":"대명사","mean":"다른 사람들"},{"w":"stay","pos":"동사","mean":"머물다"},{"w":"inside","pos":"부사","mean":"집 안에"},{"w":"under","pos":"전치사","mean":"~아래에"},{"w":"blankets","pos":"명사","mean":"담요"}],"memo":{"basis":"기준: 거의 필수에 가까운 부사구는 수식어로 처리","text":"stay 뒤 inside, under blankets는 장소를 나타내는 말이라 거의 필수에 가깝지만 엄밀히 수식어로 봄"}},{"no":"4","en":"But how about animals?","ko":"하지만 동물들은 어떨까?","pattern":"형식 없음(How about ~?)","pt":null,"chunks":[{"t":"But","role":"M","kind":"접속사","k":"하지만"},{"t":"how about animals?","role":"M","kind":"관용 표현","to":-1,"k":"동물들은 어떨까?"}],"words":[{"w":"But","pos":"접속사","mean":"하지만"},{"w":"how","pos":"의문사","mean":"~은 어때 (how about 전체 뜻)"},{"w":"about","pos":"전치사","mean":"(how about의 일부)"},{"w":"animals","pos":"명사","mean":"동물"}],"memo":{"basis":"기준: How about ~?는 동사 없는 관용 표현이라 한 덩어리 수식어로 처리","text":"How about 뒤에 명사를 붙여 '~은 어때?'라는 뜻으로 쓰는 표현이라 뼈대(S V O)를 나누지 않음"}},{"no":"5","en":"How do they survive the cold?","ko":"그들은 어떻게 추위에서 살아남을까?","pattern":"3형식(의문문)","pt":"SVO","chunks":[{"t":"How","role":"M","kind":"부사","to":3,"k":"어떻게"},{"t":"do","role":"V","k":"(의문을 만드는 do)"},{"t":"they","role":"S","who":"대명사","k":"그들은"},{"t":"survive","role":"V","k":"살아남을까"},{"t":"the cold?","role":"O","who":"명사","k":"추위를"}],"words":[{"w":"How","pos":"의문사","mean":"어떻게"},{"w":"do","pos":"조동사","mean":"(의문을 만드는 do)"},{"w":"they","pos":"대명사","mean":"그들"},{"w":"survive","pos":"동사","mean":"살아남다"},{"w":"the","pos":"관사","mean":"그"},{"w":"cold","pos":"명사","mean":"추위"}],"memo":null},{"no":"6","en":"Let’s find out some of their survival secrets.","ko":"그들의 생존 비결 몇 가지를 알아보자.","pattern":"3형식(청유문)","pt":"SVO","chunks":[{"t":"Let’s find out","role":"V","k":"알아보자"},{"t":"some of their survival secrets.","role":"O","who":"명사","k":"그들의 생존 비결 몇 가지를"}],"words":[{"w":"Let","pos":"동사","mean":"~하자 (Let’s 전체 뜻)"},{"w":"’s","pos":"대명사","mean":"(Let’s의 일부)"},{"w":"find","pos":"동사","mean":"알아내다 (find out 전체 뜻)"},{"w":"out","pos":"부사","mean":"(find out의 일부)"},{"w":"some","pos":"대명사","mean":"몇몇"},{"w":"of","pos":"전치사","mean":"~중에서"},{"w":"their","pos":"대명사","mean":"그들의"},{"w":"survival","pos":"명사","mean":"생존"},{"w":"secrets","pos":"명사","mean":"비결, 비밀"}],"memo":{"basis":"기준: Let’s + 동사는 청유 표현 한 덩어리 동사로 처리","text":"Let’s는 Let us의 줄임말이지만 청유문에서는 Let’s find out 전체를 동사로 보고 3형식으로 처리"}},{"no":"7","en":"First, meet polar bears.","ko":"먼저, 북극곰을 만나 보자.","pattern":"3형식(명령문)","pt":"SVO","chunks":[{"t":"First,","role":"M","kind":"부사","to":1,"k":"먼저"},{"t":"meet","role":"V","k":"만나 보자"},{"t":"polar bears.","role":"O","who":"명사","k":"북극곰을"}],"words":[{"w":"First","pos":"부사","mean":"먼저"},{"w":"meet","pos":"동사","mean":"만나다"},{"w":"polar","pos":"형용사","mean":"북극의"},{"w":"bears","pos":"명사","mean":"곰"}],"memo":null},{"no":"8","en":"Did you know that polar bears have clear fur?","ko":"북극곰이 투명한 털을 가지고 있다는 것을 알고 있었니?","pattern":"3형식(의문문)","pt":"SVO","chunks":[{"t":"Did","role":"V","k":"(의문을 만드는 did)"},{"t":"you","role":"S","who":"대명사","k":"너는"},{"t":"know","role":"V","k":"알고 있었니"},{"t":"that polar bears have clear fur?","role":"O","kind":"명사절","who":"절","info":"명사절, that절","k":"북극곰이 투명한 털을 가지고 있다는 것을","sub":[{"t":"that","role":"CJ","k":"~라는 것"},{"t":"polar bears","role":"S","who":"명사","k":"북극곰이"},{"t":"have","role":"V","k":"가지고 있다"},{"t":"clear fur?","role":"O","who":"명사","k":"투명한 털을"}],"subpt":"SVO"}],"words":[{"w":"Did","pos":"조동사","mean":"(의문을 만드는 did)"},{"w":"you","pos":"대명사","mean":"너"},{"w":"know","pos":"동사","mean":"알다"},{"w":"that","pos":"접속사","mean":"~라는 것"},{"w":"polar","pos":"형용사","mean":"북극의"},{"w":"bears","pos":"명사","mean":"곰"},{"w":"have","pos":"동사","mean":"가지다"},{"w":"clear","pos":"형용사","mean":"투명한"},{"w":"fur","pos":"명사","mean":"털"}],"memo":null},{"no":"9","en":"Their fur only looks white to us because of the sunlight.","ko":"그들의 털은 햇빛 때문에 우리에게 하얗게 보일 뿐이다.","pattern":"2형식","pt":"SVC","chunks":[{"t":"Their fur","role":"S","who":"명사","k":"그들의 털은"},{"t":"only","role":"M","kind":"부사","to":2,"k":"단지"},{"t":"looks","role":"V","k":"~처럼 보인다"},{"t":"white","role":"C","who":"형용사","k":"하얀"},{"t":"to us","role":"M","kind":"부사구","to":2,"k":"우리에게"},{"t":"because of the sunlight.","role":"M","kind":"부사구","to":2,"k":"햇빛 때문에"}],"words":[{"w":"Their","pos":"대명사","mean":"그들의"},{"w":"fur","pos":"명사","mean":"털"},{"w":"only","pos":"부사","mean":"단지, ~뿐"},{"w":"looks","pos":"동사","mean":"~처럼 보이다"},{"w":"white","pos":"형용사","mean":"하얀"},{"w":"to","pos":"전치사","mean":"~에게"},{"w":"us","pos":"대명사","mean":"우리"},{"w":"because","pos":"전치사","mean":"~때문에 (because of 전체 뜻)"},{"w":"of","pos":"전치사","mean":"(because of의 일부)"},{"w":"the","pos":"관사","mean":"그"},{"w":"sunlight","pos":"명사","mean":"햇빛"}],"memo":null},{"no":"10","en":"So, why is clear fur helpful in the cold?","ko":"그렇다면, 왜 투명한 털이 추위에서 도움이 될까?","pattern":"2형식(의문문)","pt":"SVC","chunks":[{"t":"So,","role":"M","kind":"접속사","k":"그렇다면"},{"t":"why","role":"M","kind":"부사","to":2,"k":"왜"},{"t":"is","role":"V","k":"~이니"},{"t":"clear fur","role":"S","who":"명사","k":"투명한 털이"},{"t":"helpful","role":"C","who":"형용사","k":"도움이 되는"},{"t":"in the cold?","role":"M","kind":"부사구","to":4,"k":"추위에서"}],"words":[{"w":"So","pos":"접속사","mean":"그렇다면"},{"w":"why","pos":"의문사","mean":"왜"},{"w":"is","pos":"동사","mean":"~이다"},{"w":"clear","pos":"형용사","mean":"투명한"},{"w":"fur","pos":"명사","mean":"털"},{"w":"helpful","pos":"형용사","mean":"도움이 되는"},{"w":"in","pos":"전치사","mean":"~에서"},{"w":"the","pos":"관사","mean":"그"},{"w":"cold","pos":"명사","mean":"추위"}],"memo":null},{"no":"11","en":"It lets more sunlight reach their skin.","ko":"그것(=투명한 털)은 더 많은 햇빛이 그들의 피부에 닿게 해 준다.","pattern":"5형식","pt":"SVOC","chunks":[{"t":"It","role":"S","who":"대명사","k":"그것은"},{"t":"lets","role":"V","k":"~하게 해 준다"},{"t":"more sunlight","role":"O","who":"명사","k":"더 많은 햇빛이"},{"t":"reach their skin.","role":"OC","kind":"원형부정사구","who":"동사원형","k":"그들의 피부에 닿게","sub":[{"t":"reach","role":"V","k":"닿게"},{"t":"their skin.","role":"O","who":"명사","k":"그들의 피부에"}],"subpt":"SVO"}],"words":[{"w":"It","pos":"대명사","mean":"그것(투명한 털)"},{"w":"lets","pos":"동사","mean":"~하게 해 주다"},{"w":"more","pos":"형용사","mean":"더 많은"},{"w":"sunlight","pos":"명사","mean":"햇빛"},{"w":"reach","pos":"동사","mean":"닿다"},{"w":"their","pos":"대명사","mean":"그들의"},{"w":"skin","pos":"명사","mean":"피부"}],"memo":null},{"no":"12","en":"Here comes another interesting fact about polar bears.","ko":"여기 북극곰에 관한 또 다른 흥미로운 사실이 있다.","pattern":"1형식","pt":"SV","chunks":[{"t":"Here","role":"M","kind":"부사","to":1,"k":"여기에"},{"t":"comes","role":"V","k":"온다"},{"t":"another interesting fact","role":"S","who":"명사","k":"또 다른 흥미로운 사실이"},{"t":"about polar bears.","role":"M","kind":"형용사구","to":2,"k":"북극곰에 관한"}],"words":[{"w":"Here","pos":"부사","mean":"여기에"},{"w":"comes","pos":"동사","mean":"오다"},{"w":"another","pos":"형용사","mean":"또 다른"},{"w":"interesting","pos":"형용사","mean":"흥미로운"},{"w":"fact","pos":"명사","mean":"사실"},{"w":"about","pos":"전치사","mean":"~에 관한"},{"w":"polar","pos":"형용사","mean":"북극의"},{"w":"bears","pos":"명사","mean":"곰"}],"memo":{"basis":"기준: Here comes ~는 주어가 뒤로 간 도치 1형식으로 처리","text":"Here는 comes를 꾸미는 부사, 주어는 comes 뒤의 another interesting fact"}},{"no":"13","en":"They have black skin!","ko":"그들은 검은색 피부를 가지고 있다!","pattern":"3형식","pt":"SVO","chunks":[{"t":"They","role":"S","who":"대명사","k":"그들은"},{"t":"have","role":"V","k":"가지고 있다"},{"t":"black skin!","role":"O","who":"명사","k":"검은색 피부를"}],"words":[{"w":"They","pos":"대명사","mean":"그들"},{"w":"have","pos":"동사","mean":"가지다"},{"w":"black","pos":"형용사","mean":"검은색의"},{"w":"skin","pos":"명사","mean":"피부"}],"memo":null},{"no":"14","en":"Dark skin helps them take in more heat.","ko":"어두운 피부는 그들이 더 많은 열을 흡수하도록 돕는다.","pattern":"5형식","pt":"SVOC","chunks":[{"t":"Dark skin","role":"S","who":"명사","k":"어두운 피부는"},{"t":"helps","role":"V","k":"돕는다"},{"t":"them","role":"O","who":"대명사","k":"그들이"},{"t":"take in more heat.","role":"OC","kind":"원형부정사구","who":"동사원형","k":"더 많은 열을 흡수하도록","sub":[{"t":"take in","role":"V","k":"흡수하도록"},{"t":"more heat.","role":"O","who":"명사","k":"더 많은 열을"}],"subpt":"SVO"}],"words":[{"w":"Dark","pos":"형용사","mean":"어두운"},{"w":"skin","pos":"명사","mean":"피부"},{"w":"helps","pos":"동사","mean":"돕다"},{"w":"them","pos":"대명사","mean":"그들"},{"w":"take","pos":"동사","mean":"흡수하다 (take in 전체 뜻)"},{"w":"in","pos":"부사","mean":"(take in의 일부)"},{"w":"more","pos":"형용사","mean":"더 많은"},{"w":"heat","pos":"명사","mean":"열"}],"memo":null},{"no":"15","en":"Having clear fur and black skin keeps polar bears warm.","ko":"투명한 털과 검은색 피부를 가지고 있는 것은 북극곰을 따뜻하게 유지해 준다.","pattern":"5형식","pt":"SVOC","chunks":[{"t":"Having clear fur and black skin","role":"S","kind":"동명사구","who":"동명사","k":"투명한 털과 검은색 피부를 가지고 있는 것은","sub":[{"t":"Having","role":"V","k":"가지고 있는 것은"},{"t":"clear fur and black skin","role":"O","who":"명사","k":"투명한 털과 검은색 피부를"}],"subpt":"SVO"},{"t":"keeps","role":"V","k":"유지해 준다"},{"t":"polar bears","role":"O","who":"명사","k":"북극곰을"},{"t":"warm.","role":"OC","who":"형용사","k":"따뜻하게"}],"words":[{"w":"Having","pos":"동사","mean":"가지다"},{"w":"clear","pos":"형용사","mean":"투명한"},{"w":"fur","pos":"명사","mean":"털"},{"w":"and","pos":"접속사","mean":"그리고"},{"w":"black","pos":"형용사","mean":"검은색의"},{"w":"skin","pos":"명사","mean":"피부"},{"w":"keeps","pos":"동사","mean":"유지하다"},{"w":"polar","pos":"형용사","mean":"북극의"},{"w":"bears","pos":"명사","mean":"곰"},{"w":"warm","pos":"형용사","mean":"따뜻한"}],"memo":null},{"no":"16","en":"Arctic foxes have dark skin and fur, too.","ko":"북극여우도 어두운 피부와 털을 가지고 있다.","pattern":"3형식","pt":"SVO","chunks":[{"t":"Arctic foxes","role":"S","who":"명사","k":"북극여우는"},{"t":"have","role":"V","k":"가지고 있다"},{"t":"dark skin and fur,","role":"O","who":"명사","k":"어두운 피부와 털을"},{"t":"too.","role":"M","kind":"부사","to":1,"k":"또한"}],"words":[{"w":"Arctic","pos":"형용사","mean":"북극의"},{"w":"foxes","pos":"명사","mean":"여우"},{"w":"have","pos":"동사","mean":"가지다"},{"w":"dark","pos":"형용사","mean":"어두운"},{"w":"skin","pos":"명사","mean":"피부"},{"w":"and","pos":"접속사","mean":"그리고"},{"w":"fur","pos":"명사","mean":"털"},{"w":"too","pos":"부사","mean":"또한"}],"memo":null},{"no":"17","en":"They also use their big tails to keep themselves warm.","ko":"그들은 또한 자신들을 따뜻하게 유지하기 위해 큰 꼬리를 이용한다.","pattern":"3형식","pt":"SVO","chunks":[{"t":"They","role":"S","who":"대명사","k":"그들은"},{"t":"also","role":"M","kind":"부사","to":2,"k":"또한"},{"t":"use","role":"V","k":"이용한다"},{"t":"their big tails","role":"O","who":"명사","k":"그들의 큰 꼬리를"},{"t":"to keep themselves warm.","role":"M","kind":"to부정사(부사적 용법: 목적)","to":2,"k":"자신들을 따뜻하게 유지하기 위해","sub":[{"t":"to keep","role":"V","k":"유지하기 위해"},{"t":"themselves","role":"O","who":"대명사","k":"자신들을"},{"t":"warm.","role":"OC","who":"형용사","k":"따뜻하게"}],"subpt":"SVOC"}],"words":[{"w":"They","pos":"대명사","mean":"그들"},{"w":"also","pos":"부사","mean":"또한"},{"w":"use","pos":"동사","mean":"이용하다, 사용하다"},{"w":"their","pos":"대명사","mean":"그들의"},{"w":"big","pos":"형용사","mean":"큰"},{"w":"tails","pos":"명사","mean":"꼬리"},{"w":"to","pos":"to(부정사)","mean":"~하기 위해"},{"w":"keep","pos":"동사","mean":"유지하다"},{"w":"themselves","pos":"대명사","mean":"자신들"},{"w":"warm","pos":"형용사","mean":"따뜻한"}],"memo":null},{"no":"18","en":"When they sleep, they wrap their tails around their bodies like blankets!","ko":"그들은 잠을 잘 때, 담요처럼 꼬리를 몸 주위에 감싼다!","pattern":"3형식","pt":"SVO","chunks":[{"t":"When they sleep,","role":"M","kind":"부사절","to":2,"k":"그들이 잠을 잘 때","sub":[{"t":"When","role":"CJ","k":"~할 때"},{"t":"they","role":"S","who":"대명사","k":"그들이"},{"t":"sleep,","role":"V","k":"잠을 잔다"}],"subpt":"SV"},{"t":"they","role":"S","who":"대명사","k":"그들은"},{"t":"wrap","role":"V","k":"감싼다"},{"t":"their tails","role":"O","who":"명사","k":"그들의 꼬리를"},{"t":"around their bodies","role":"M","kind":"부사구","to":2,"k":"몸 주위에"},{"t":"like blankets!","role":"M","kind":"부사구","to":2,"k":"담요처럼"}],"words":[{"w":"When","pos":"접속사","mean":"~할 때"},{"w":"they","pos":"대명사","mean":"그들"},{"w":"sleep","pos":"동사","mean":"자다"},{"w":"they","pos":"대명사","mean":"그들"},{"w":"wrap","pos":"동사","mean":"감싸다"},{"w":"their","pos":"대명사","mean":"그들의"},{"w":"tails","pos":"명사","mean":"꼬리"},{"w":"around","pos":"전치사","mean":"~주위에"},{"w":"their","pos":"대명사","mean":"그들의"},{"w":"bodies","pos":"명사","mean":"몸"},{"w":"like","pos":"전치사","mean":"~처럼"},{"w":"blankets","pos":"명사","mean":"담요"}],"memo":null},{"no":"19","en":"However, they may lose body heat through their ears in the cold air.","ko":"하지만 그들은 차가운 공기 속에서 귀를 통해 체온을 잃을 수도 있다.","pattern":"3형식","pt":"SVO","chunks":[{"t":"However,","role":"M","kind":"부사","to":-1,"k":"하지만"},{"t":"they","role":"S","who":"대명사","k":"그들은"},{"t":"may lose","role":"V","k":"잃을 수도 있다"},{"t":"body heat","role":"O","who":"명사","k":"체온을"},{"t":"through their ears","role":"M","kind":"부사구","to":2,"k":"귀를 통해"},{"t":"in the cold air.","role":"M","kind":"부사구","to":2,"k":"차가운 공기 속에서"}],"words":[{"w":"However","pos":"부사","mean":"하지만"},{"w":"they","pos":"대명사","mean":"그들"},{"w":"may","pos":"조동사","mean":"~일 수도 있다"},{"w":"lose","pos":"동사","mean":"잃다"},{"w":"body","pos":"명사","mean":"몸"},{"w":"heat","pos":"명사","mean":"열"},{"w":"through","pos":"전치사","mean":"~을 통해"},{"w":"their","pos":"대명사","mean":"그들의"},{"w":"ears","pos":"명사","mean":"귀"},{"w":"in","pos":"전치사","mean":"~에서"},{"w":"the","pos":"관사","mean":"그"},{"w":"cold","pos":"형용사","mean":"차가운"},{"w":"air","pos":"명사","mean":"공기"}],"memo":null},{"no":"20","en":"Unlike other foxes in warm places, arctic foxes have small ears.","ko":"따뜻한 곳에 사는 다른 여우들과 달리, 북극여우는 작은 귀를 가지고 있다.","pattern":"3형식","pt":"SVO","chunks":[{"t":"Unlike other foxes in warm places,","role":"M","kind":"부사구","to":2,"k":"따뜻한 곳에 사는 다른 여우들과 달리"},{"t":"arctic foxes","role":"S","who":"명사","k":"북극여우는"},{"t":"have","role":"V","k":"가지고 있다"},{"t":"small ears.","role":"O","who":"명사","k":"작은 귀를"}],"words":[{"w":"Unlike","pos":"전치사","mean":"~와 달리"},{"w":"other","pos":"형용사","mean":"다른"},{"w":"foxes","pos":"명사","mean":"여우"},{"w":"in","pos":"전치사","mean":"~에서"},{"w":"warm","pos":"형용사","mean":"따뜻한"},{"w":"places","pos":"명사","mean":"장소, 곳"},{"w":"arctic","pos":"형용사","mean":"북극의"},{"w":"foxes","pos":"명사","mean":"여우"},{"w":"have","pos":"동사","mean":"가지다"},{"w":"small","pos":"형용사","mean":"작은"},{"w":"ears","pos":"명사","mean":"귀"}],"memo":null},{"no":"21","en":"Their ears are so small that they can help the foxes lose less heat.","ko":"그들의 귀는 너무 작아서 여우들이 열을 덜 잃도록 도울 수 있다.","pattern":"2형식","pt":"SVC","chunks":[{"t":"Their ears","role":"S","who":"명사","k":"그들의 귀는"},{"t":"are","role":"V","k":"~이다"},{"t":"so","role":"M","kind":"부사","to":3,"k":"너무"},{"t":"small","role":"C","who":"형용사","k":"작은"},{"t":"that they can help the foxes lose less heat.","role":"M","kind":"부사절(so ~ that 결과)","to":3,"k":"그래서 여우들이 열을 덜 잃도록 도울 수 있다","sub":[{"t":"that","role":"CJ","k":"그래서"},{"t":"they","role":"S","who":"대명사","k":"그것들이"},{"t":"can help","role":"V","k":"도울 수 있다"},{"t":"the foxes","role":"O","who":"명사","k":"여우들이"},{"t":"lose less heat.","role":"OC","who":"동사원형","k":"열을 덜 잃도록"}],"subpt":"SVOC"}],"words":[{"w":"Their","pos":"대명사","mean":"그들의"},{"w":"ears","pos":"명사","mean":"귀"},{"w":"are","pos":"동사","mean":"~이다"},{"w":"so","pos":"부사","mean":"너무"},{"w":"small","pos":"형용사","mean":"작은"},{"w":"that","pos":"접속사","mean":"그래서 ~하다 (so ~ that 구문)"},{"w":"they","pos":"대명사","mean":"그것들(귀)"},{"w":"can","pos":"조동사","mean":"~할 수 있다"},{"w":"help","pos":"동사","mean":"돕다"},{"w":"the","pos":"관사","mean":"그"},{"w":"foxes","pos":"명사","mean":"여우"},{"w":"lose","pos":"동사","mean":"잃다"},{"w":"less","pos":"형용사","mean":"더 적은"},{"w":"heat","pos":"명사","mean":"열"}],"memo":null},{"no":"22","en":"Now, what about animals without fur?","ko":"이제, 털이 없는 동물들은 어떨까?","pattern":"형식 없음(What about ~?)","pt":null,"chunks":[{"t":"Now,","role":"M","kind":"부사","to":-1,"k":"이제"},{"t":"what about animals without fur?","role":"M","kind":"관용 표현","to":-1,"k":"털이 없는 동물들은 어떨까?"}],"words":[{"w":"Now","pos":"부사","mean":"이제"},{"w":"what","pos":"의문사","mean":"~은 어때 (what about 전체 뜻)"},{"w":"about","pos":"전치사","mean":"(what about의 일부)"},{"w":"animals","pos":"명사","mean":"동물"},{"w":"without","pos":"전치사","mean":"~이 없는"},{"w":"fur","pos":"명사","mean":"털"}],"memo":{"basis":"기준: What about ~?는 동사 없는 관용 표현이라 한 덩어리 수식어로 처리","text":"How about ~?과 같은 방식으로 뼈대(S V O)를 나누지 않음"}},{"no":"23","en":"How do whales live in icy water?","ko":"고래들은 얼음처럼 차가운 물속에서 어떻게 살까?","pattern":"1형식(의문문)","pt":"SV","chunks":[{"t":"How","role":"M","kind":"부사","to":3,"k":"어떻게"},{"t":"do","role":"V","k":"(의문을 만드는 do)"},{"t":"whales","role":"S","who":"명사","k":"고래들은"},{"t":"live","role":"V","k":"살까"},{"t":"in icy water?","role":"M","kind":"부사구","to":3,"k":"얼음처럼 차가운 물속에서"}],"words":[{"w":"How","pos":"의문사","mean":"어떻게"},{"w":"do","pos":"조동사","mean":"(의문을 만드는 do)"},{"w":"whales","pos":"명사","mean":"고래"},{"w":"live","pos":"동사","mean":"살다"},{"w":"in","pos":"전치사","mean":"~에서"},{"w":"icy","pos":"형용사","mean":"얼음처럼 차가운"},{"w":"water","pos":"명사","mean":"물"}],"memo":{"basis":"기준: 거의 필수에 가까운 부사구는 수식어로 처리","text":"live 뒤 in icy water는 장소를 나타내는 말이라 거의 필수에 가깝지만 엄밀히 수식어로 봄"}},{"no":"24","en":"The winter sea is so cold that you cannot swim there, even for a second.","ko":"겨울 바다는 너무 차가워서 여러분은 거기에서 단 1초도 수영할 수 없다.","pattern":"2형식","pt":"SVC","chunks":[{"t":"The winter sea","role":"S","who":"명사","k":"겨울 바다는"},{"t":"is","role":"V","k":"~이다"},{"t":"so","role":"M","kind":"부사","to":3,"k":"너무"},{"t":"cold","role":"C","who":"형용사","k":"차가운"},{"t":"that you cannot swim there, even for a second.","role":"M","kind":"부사절(so ~ that 결과)","to":3,"k":"그래서 여러분은 거기에서 단 1초도 수영할 수 없다","sub":[{"t":"that","role":"CJ","k":"그래서"},{"t":"you","role":"S","who":"대명사","k":"여러분은"},{"t":"cannot swim","role":"V","k":"수영할 수 없다"},{"t":"there,","role":"M","kind":"부사","to":2,"k":"거기에서"},{"t":"even for a second.","role":"M","kind":"부사구","to":2,"k":"단 1초도"}],"subpt":"SV"}],"words":[{"w":"The","pos":"관사","mean":"그"},{"w":"winter","pos":"명사","mean":"겨울"},{"w":"sea","pos":"명사","mean":"바다"},{"w":"is","pos":"동사","mean":"~이다"},{"w":"so","pos":"부사","mean":"너무"},{"w":"cold","pos":"형용사","mean":"차가운"},{"w":"that","pos":"접속사","mean":"그래서 ~하다 (so ~ that 구문)"},{"w":"you","pos":"대명사","mean":"여러분"},{"w":"cannot","pos":"조동사","mean":"~할 수 없다"},{"w":"swim","pos":"동사","mean":"수영하다"},{"w":"there","pos":"부사","mean":"거기에서"},{"w":"even","pos":"부사","mean":"~조차"},{"w":"for","pos":"전치사","mean":"~동안"},{"w":"a","pos":"관사","mean":"하나의"},{"w":"second","pos":"명사","mean":"초"}],"memo":null},{"no":"25","en":"However, whales have a special way to stay warm in icy water.","ko":"하지만 고래들은 차가운 물속에서 따뜻하게 지내는 특별한 방법을 가지고 있다.","pattern":"3형식","pt":"SVO","chunks":[{"t":"However,","role":"M","kind":"부사","to":-1,"k":"하지만"},{"t":"whales","role":"S","who":"명사","k":"고래들은"},{"t":"have","role":"V","k":"가지고 있다"},{"t":"a special way","role":"O","who":"명사","k":"특별한 방법을"},{"t":"to stay warm in icy water.","role":"M","kind":"to부정사(형용사적 용법)","to":3,"k":"얼음처럼 차가운 물속에서 따뜻하게 지내는","sub":[{"t":"to stay","role":"V","k":"지내는"},{"t":"warm","role":"C","who":"형용사","k":"따뜻하게"},{"t":"in icy water.","role":"M","kind":"부사구","to":0,"k":"얼음처럼 차가운 물속에서"}],"subpt":"SVC"}],"words":[{"w":"However","pos":"부사","mean":"하지만"},{"w":"whales","pos":"명사","mean":"고래"},{"w":"have","pos":"동사","mean":"가지다"},{"w":"a","pos":"관사","mean":"하나의"},{"w":"special","pos":"형용사","mean":"특별한"},{"w":"way","pos":"명사","mean":"방법"},{"w":"to","pos":"to(부정사)","mean":"~하는"},{"w":"stay","pos":"동사","mean":"지내다, 머물다"},{"w":"warm","pos":"형용사","mean":"따뜻한"},{"w":"in","pos":"전치사","mean":"~에서"},{"w":"icy","pos":"형용사","mean":"얼음처럼 차가운"},{"w":"water","pos":"명사","mean":"물"}],"memo":null},{"no":"26","en":"They have thick fat under their skin.","ko":"그들은 피부 아래에 두꺼운 지방을 가지고 있다.","pattern":"3형식","pt":"SVO","chunks":[{"t":"They","role":"S","who":"대명사","k":"그들은"},{"t":"have","role":"V","k":"가지고 있다"},{"t":"thick fat","role":"O","who":"명사","k":"두꺼운 지방을"},{"t":"under their skin.","role":"M","kind":"형용사구","to":2,"k":"피부 아래에"}],"words":[{"w":"They","pos":"대명사","mean":"그들"},{"w":"have","pos":"동사","mean":"가지다"},{"w":"thick","pos":"형용사","mean":"두꺼운"},{"w":"fat","pos":"명사","mean":"지방"},{"w":"under","pos":"전치사","mean":"~아래에"},{"w":"their","pos":"대명사","mean":"그들의"},{"w":"skin","pos":"명사","mean":"피부"}],"memo":null},{"no":"27","en":"The fat can be more than 40 cm thick.","ko":"그 지방은 두께가 40센티미터 이상이 될 수 있다.","pattern":"2형식","pt":"SVC","chunks":[{"t":"The fat","role":"S","who":"명사","k":"그 지방은"},{"t":"can be","role":"V","k":"~일 수 있다"},{"t":"more than 40 cm","role":"M","kind":"부사구","to":3,"k":"40센티미터 이상"},{"t":"thick.","role":"C","who":"형용사","k":"두꺼운"}],"words":[{"w":"The","pos":"관사","mean":"그"},{"w":"fat","pos":"명사","mean":"지방"},{"w":"can","pos":"조동사","mean":"~할 수 있다"},{"w":"be","pos":"동사","mean":"~이다"},{"w":"more","pos":"부사","mean":"~이상 (more than 전체 뜻)"},{"w":"than","pos":"전치사","mean":"(more than의 일부)"},{"w":"40","pos":"명사","mean":"40"},{"w":"cm","pos":"명사","mean":"센티미터"},{"w":"thick","pos":"형용사","mean":"두꺼운"}],"memo":{"basis":"기준: more than 40 cm은 thick을 꾸미는 수식어로 처리","text":"40 cm은 thick의 정도를 나타내는 말이라 보어 자리가 아님"}},{"no":"28","en":"It covers their bodies and keeps them warm.","ko":"그것(=지방)은 그들의 몸을 덮어 주고 따뜻하게 유지해 준다.","pattern":"3형식 + 5형식","pt":null,"chunks":[{"t":"It","role":"S","who":"대명사","k":"그것은"},{"t":"covers","role":"V","k":"덮는다"},{"t":"their bodies","role":"O","who":"명사","k":"그들의 몸을"},{"t":"and","role":"M","kind":"접속사","k":"그리고"},{"t":"keeps","role":"V","k":"유지해 준다"},{"t":"them","role":"O","who":"대명사","k":"그들을"},{"t":"warm.","role":"OC","who":"형용사","k":"따뜻하게"}],"words":[{"w":"It","pos":"대명사","mean":"그것(지방)"},{"w":"covers","pos":"동사","mean":"덮다"},{"w":"their","pos":"대명사","mean":"그들의"},{"w":"bodies","pos":"명사","mean":"몸"},{"w":"and","pos":"접속사","mean":"그리고"},{"w":"keeps","pos":"동사","mean":"유지하다"},{"w":"them","pos":"대명사","mean":"그들"},{"w":"warm","pos":"형용사","mean":"따뜻한"}],"memo":null},{"no":"29","en":"The fat also gives whales energy when they cannot find food for a long time.","ko":"그 지방은 또한 고래가 오랫동안 먹이를 찾지 못할 때 에너지를 공급해 준다.","pattern":"4형식","pt":"SVOO","chunks":[{"t":"The fat","role":"S","who":"명사","k":"그 지방은"},{"t":"also","role":"M","kind":"부사","to":2,"k":"또한"},{"t":"gives","role":"V","k":"준다"},{"t":"whales","role":"IO","who":"명사","k":"고래에게"},{"t":"energy","role":"DO","who":"명사","k":"에너지를"},{"t":"when they cannot find food for a long time.","role":"M","kind":"부사절","to":2,"k":"그들이 오랫동안 먹이를 찾지 못할 때","sub":[{"t":"when","role":"CJ","k":"~할 때"},{"t":"they","role":"S","who":"대명사","k":"그들이"},{"t":"cannot find","role":"V","k":"찾지 못한다"},{"t":"food","role":"O","who":"명사","k":"먹이를"},{"t":"for a long time.","role":"M","kind":"부사구","to":2,"k":"오랫동안"}],"subpt":"SVO"}],"words":[{"w":"The","pos":"관사","mean":"그"},{"w":"fat","pos":"명사","mean":"지방"},{"w":"also","pos":"부사","mean":"또한"},{"w":"gives","pos":"동사","mean":"주다"},{"w":"whales","pos":"명사","mean":"고래"},{"w":"energy","pos":"명사","mean":"에너지"},{"w":"when","pos":"접속사","mean":"~할 때"},{"w":"they","pos":"대명사","mean":"그들"},{"w":"cannot","pos":"조동사","mean":"~할 수 없다"},{"w":"find","pos":"동사","mean":"찾다"},{"w":"food","pos":"명사","mean":"먹이"},{"w":"for","pos":"전치사","mean":"~동안"},{"w":"a","pos":"관사","mean":"하나의"},{"w":"long","pos":"형용사","mean":"긴"},{"w":"time","pos":"명사","mean":"시간"}],"memo":null},{"no":"30","en":"Lastly, in Alaska, winters can be too cold for wood frogs.","ko":"마지막으로, 알래스카에서는 겨울이 송장개구리에게 너무 추울 수 있다.","pattern":"2형식","pt":"SVC","chunks":[{"t":"Lastly,","role":"M","kind":"부사","to":-1,"k":"마지막으로"},{"t":"in Alaska,","role":"M","kind":"부사구","to":3,"k":"알래스카에서는"},{"t":"winters","role":"S","who":"명사","k":"겨울이"},{"t":"can be","role":"V","k":"~일 수 있다"},{"t":"too","role":"M","kind":"부사","to":5,"k":"너무"},{"t":"cold","role":"C","who":"형용사","k":"추운"},{"t":"for wood frogs.","role":"M","kind":"부사구","to":5,"k":"송장개구리에게"}],"words":[{"w":"Lastly","pos":"부사","mean":"마지막으로"},{"w":"in","pos":"전치사","mean":"~에서"},{"w":"Alaska","pos":"명사","mean":"알래스카(미국의 주)"},{"w":"winters","pos":"명사","mean":"겨울"},{"w":"can","pos":"조동사","mean":"~할 수 있다"},{"w":"be","pos":"동사","mean":"~이다"},{"w":"too","pos":"부사","mean":"너무"},{"w":"cold","pos":"형용사","mean":"추운"},{"w":"for","pos":"전치사","mean":"~에게"},{"w":"wood","pos":"명사","mean":"송장개구리 (wood frog 전체 뜻)"},{"w":"frogs","pos":"명사","mean":"(wood frog의 일부)"}],"memo":null},{"no":"31","en":"What do they do to survive the freezing weather?","ko":"그들은 얼어붙을 듯이 추운 날씨에서 살아남기 위해 무엇을 할까?","pattern":"3형식(의문문)","pt":"SVO","chunks":[{"t":"What","role":"O","who":"대명사","k":"무엇을"},{"t":"do","role":"V","k":"(의문을 만드는 do)"},{"t":"they","role":"S","who":"대명사","k":"그들은"},{"t":"do","role":"V","k":"할까"},{"t":"to survive the freezing weather?","role":"M","kind":"to부정사(부사적 용법: 목적)","to":3,"k":"얼어붙을 듯이 추운 날씨에서 살아남기 위해","sub":[{"t":"to survive","role":"V","k":"살아남기 위해"},{"t":"the freezing weather?","role":"O","who":"명사","k":"얼어붙을 듯이 추운 날씨를"}],"subpt":"SVO"}],"words":[{"w":"What","pos":"의문사","mean":"무엇"},{"w":"do","pos":"조동사","mean":"(의문을 만드는 do)"},{"w":"they","pos":"대명사","mean":"그들"},{"w":"do","pos":"동사","mean":"하다"},{"w":"to","pos":"to(부정사)","mean":"~하기 위해"},{"w":"survive","pos":"동사","mean":"살아남다"},{"w":"the","pos":"관사","mean":"그"},{"w":"freezing","pos":"형용사","mean":"몹시 추운"},{"w":"weather","pos":"명사","mean":"날씨"}],"memo":null},{"no":"32","en":"These frogs freeze themselves!","ko":"이 개구리들은 스스로를 얼려 버린다!","pattern":"3형식","pt":"SVO","chunks":[{"t":"These frogs","role":"S","who":"명사","k":"이 개구리들은"},{"t":"freeze","role":"V","k":"얼린다"},{"t":"themselves!","role":"O","who":"대명사","k":"스스로를"}],"words":[{"w":"These","pos":"형용사","mean":"이"},{"w":"frogs","pos":"명사","mean":"개구리"},{"w":"freeze","pos":"동사","mean":"얼리다"},{"w":"themselves","pos":"대명사","mean":"자신들"}],"memo":null},{"no":"33","en":"Up to 60 percent of their bodies freeze.","ko":"그들 몸의 60퍼센트까지 언다.","pattern":"1형식","pt":"SV","chunks":[{"t":"Up to 60 percent of their bodies","role":"S","who":"명사","k":"그들 몸의 60퍼센트까지가"},{"t":"freeze.","role":"V","k":"언다"}],"words":[{"w":"Up","pos":"부사","mean":"~까지 (up to 전체 뜻)"},{"w":"to","pos":"전치사","mean":"(up to의 일부)"},{"w":"60","pos":"명사","mean":"60"},{"w":"percent","pos":"명사","mean":"퍼센트"},{"w":"of","pos":"전치사","mean":"~의"},{"w":"their","pos":"대명사","mean":"그들의"},{"w":"bodies","pos":"명사","mean":"몸"},{"w":"freeze","pos":"동사","mean":"얼다"}],"memo":null},{"no":"34","en":"They stop breathing, and their heart stops beating.","ko":"그들은 숨쉬기를 멈추고, 심장은 뛰는 것을 멈춘다.","pattern":"3형식 + 3형식","pt":null,"chunks":[{"t":"They","role":"S","who":"대명사","k":"그들은"},{"t":"stop","role":"V","k":"멈춘다"},{"t":"breathing,","role":"O","kind":"동명사","who":"동명사","k":"숨쉬기를"},{"t":"and","role":"M","kind":"접속사","k":"그리고"},{"t":"their heart","role":"S","who":"명사","k":"그들의 심장은"},{"t":"stops","role":"V","k":"멈춘다"},{"t":"beating.","role":"O","kind":"동명사","who":"동명사","k":"뛰는 것을"}],"words":[{"w":"They","pos":"대명사","mean":"그들"},{"w":"stop","pos":"동사","mean":"멈추다"},{"w":"breathing","pos":"동사","mean":"숨 쉬다"},{"w":"and","pos":"접속사","mean":"그리고"},{"w":"their","pos":"대명사","mean":"그들의"},{"w":"heart","pos":"명사","mean":"심장"},{"w":"stops","pos":"동사","mean":"멈추다"},{"w":"beating","pos":"동사","mean":"뛰다"}],"memo":null},{"no":"35","en":"But don’t worry.","ko":"하지만 걱정하지 마라.","pattern":"1형식(명령문)","pt":"SV","chunks":[{"t":"But","role":"M","kind":"접속사","k":"하지만"},{"t":"don’t worry.","role":"V","k":"걱정하지 마라"}],"words":[{"w":"But","pos":"접속사","mean":"하지만"},{"w":"don’t","pos":"조동사","mean":"~하지 마라 (do not의 줄임말)"},{"w":"worry","pos":"동사","mean":"걱정하다"}],"memo":null},{"no":"36","en":"When spring comes, they come back to life.","ko":"봄이 오면, 그들은 다시 살아난다.","pattern":"1형식","pt":"SV","chunks":[{"t":"When spring comes,","role":"M","kind":"부사절","to":2,"k":"봄이 오면","sub":[{"t":"When","role":"CJ","k":"~하면"},{"t":"spring","role":"S","who":"명사","k":"봄이"},{"t":"comes,","role":"V","k":"온다"}],"subpt":"SV"},{"t":"they","role":"S","who":"대명사","k":"그들은"},{"t":"come back","role":"V","k":"돌아온다"},{"t":"to life.","role":"M","kind":"부사구","to":2,"k":"생명으로"}],"words":[{"w":"When","pos":"접속사","mean":"~하면"},{"w":"spring","pos":"명사","mean":"봄"},{"w":"comes","pos":"동사","mean":"오다"},{"w":"they","pos":"대명사","mean":"그들"},{"w":"come","pos":"동사","mean":"돌아오다 (come back 전체 뜻)"},{"w":"back","pos":"부사","mean":"(come back의 일부)"},{"w":"to","pos":"전치사","mean":"~으로"},{"w":"life","pos":"명사","mean":"생명, 삶"}],"memo":null},{"no":"37","en":"Nature is so amazing.","ko":"자연은 정말 놀랍다.","pattern":"2형식","pt":"SVC","chunks":[{"t":"Nature","role":"S","who":"명사","k":"자연은"},{"t":"is","role":"V","k":"~이다"},{"t":"so","role":"M","kind":"부사","to":3,"k":"정말"},{"t":"amazing.","role":"C","who":"형용사","k":"놀라운"}],"words":[{"w":"Nature","pos":"명사","mean":"자연"},{"w":"is","pos":"동사","mean":"~이다"},{"w":"so","pos":"부사","mean":"정말"},{"w":"amazing","pos":"형용사","mean":"놀라운"}],"memo":null}]}]};
+const app=document.getElementById('app');
+const LEVEL={gibon:0,baljeon:1,simhwa:2,gogyo:2};
+LEVEL[DATA.sets[0].id]=1;
+const NAME={S:'주어',V:'동사',O:'목적어',IO:'간접목적어',DO:'직접목적어',C:'보어',OC:'목적격보어',M:'수식어',CJ:'접속사'};
+const BN={S:'주어',V:'동사',O:'목적어',C:'보어',M:'수식어',CJ:'접속사'};
+const ANCH={SV:['SV','1형식',[['Birds','S'],['fly','V']]],SVC:['SVC','2형식',[['She','S'],['is','V'],['happy','C']]],SVO:['SVO','3형식',[['I','S'],['like','V'],['apples','O']]],SVOO:['SVOO','4형식',[['She','S'],['gave','V'],['me','O'],['a book','O']]],SVOC:['SVOC','5형식',[['They','S'],['call','V'],['him','O'],['Tom','C']]]};
+const WHO=['명사','대명사','형용사','동명사','to부정사','동사원형','절'];
+const WHYWHO={'명사':'이름(사람·사물·장소)을 나타내는 말','대명사':'이름을 대신해 쓰는 말','형용사':'상태를 설명하는 말','동명사':'동사+ing 모양이 명사 역할을 함','to부정사':'to+동사원형 모양이 명사 역할을 함','동사원형':'to 없이 동사 그대로의 모양','절':'주어+동사가 들어 있는 덩어리'};
+const ROLEOPT=[['S','주어'],['V','동사'],['O','목적어'],['C','보어'],['M','수식어'],['CJ','접속사']];
+const BASE={S:'S',V:'V',O:'O',IO:'O',DO:'O',C:'C',OC:'C',M:'M',CJ:'CJ'};
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function en(s){return '<span lang="en" translate="no">'+esc(s)+'</span>'}
+function B(c){if(c.role==='CJ'||(c.role==='M'&&c.kind==='접속사'))return 'CJ';return BASE[c.role]}
+function ck(c){const b=B(c);if(b==='M')return /형용사/.test(c.kind||'')?'MA':'MB';return b}
+function sp(c,i){return (i>0&&!/^['’.,?!;:]/.test(c.t))?' ':''}
+function barCol(c){const b=B(c);if(b==='S')return '#ffc83d';if(b==='O')return '#a9e6a4';if(b==='C')return '#9fd3f2';return /형용사/.test(c.kind||'')?'#c9a6f5':'#f2b36b'}
+function cands(it){return it.chunks.concat(it.extra||[])}
+function toName(c,it){return c.to===-1?'문장 전체':c.to===-2?'꾸밈 없음':cands(it)[c.to].t}
+function eul(w){const ch=String(w).charCodeAt(String(w).length-1);return (ch>=0xAC00&&ch<=0xD7A3&&(ch-0xAC00)%28!==0)?'을':'를'}
+function isAdj(c){return /형용사/.test(c.kind||'')}
+function rel(c,it){
+  if(c.to===-2)return '유도부사 = 문장을 여는 말, 꾸미는 대상 없음';
+  if(c.to===-1)return '부사가 문장 전체를 꾸밈';
+  const t=cands(it)[c.to],tb=B(t);
+  if(/비교/.test(c.kind||''))return '비교하는 대상을 나타냄';
+  if(isAdj(c)){if(tb==='V')return '';const n=(t.who==='대명사'?'대명사':'명사');return '형용사가 '+n+eul(n)+' 꾸밈'}
+  if(tb==='CJ')return '부사가 접속사를 꾸밈';
+  if(tb==='V')return '부사가 동사를 꾸밈';
+  if(tb==='M')return '부사가 '+(isAdj(t)?'형용사':'부사')+'를 꾸밈';
+  if(t.who==='형용사')return '부사가 형용사를 꾸밈';
+  return '수식어가 '+(t.who&&t.who!=='절'?t.who+eul(t.who):'앞의 말을')+' 꾸밈';
+}
+function head(c){
+  let det=[c.kind,c.info].filter(Boolean).join(', ').split(/\s*,\s*/).filter(Boolean);
+  const seen=[];det.forEach(d=>{const dd=d.replace(/\(.*\)/,'').trim();if(dd&&!seen.some(x=>x.indexOf(dd)>=0||dd.indexOf(x)>=0)){seen.push(d)}});
+  det=seen;let h=c.who||'';
+  det=det.filter(d=>d!==h);
+  if(det.length&&h&&det[0].indexOf(h)===0){h=det.shift()}
+  return esc(h)+det.map(d=>' · '+esc(d)).join('');
+}
+function ansText(c,it){
+  const b=B(c);
+  if(b==='V')return '동사';
+  if(b==='CJ')return '접속사';
+  if(b==='M'){if(c.to===-2)return '수식어 ('+esc(c.kind||'')+') · 꾸밈 없음<br><small>'+esc(rel(c,it))+'</small>';return '수식어 ('+esc(c.kind||'')+(c.info?' · '+esc(c.info):'')+') → '+(c.to>=0?en(toName(c,it)):esc(toName(c,it)))+' 꾸밈'+(rel(c,it)?'<br><small>'+esc(rel(c,it))+'</small>':'')}
+  return NAME[c.role]+' ('+head(c)+')';
+}
+const BEV=['is','am','are','was','were','be','been','being'];
+function mainV(c,it){
+  const ch=it.chunks,k=ch.indexOf(c);let a=0,z=ch.length;
+  for(let j=k-1;j>=0;j--)if(B(ch[j])==='CJ'){a=j+1;break}
+  for(let j=k+1;j<ch.length;j++)if(B(ch[j])==='CJ'){z=j;break}
+  const vs=ch.slice(a,z).filter(x=>x.role==='V');
+  return vs.length?vs[vs.length-1]:(ch.filter(x=>x.role==='V')[0]||{t:'동사'});
+}
+function whyRole(c,it){
+  const b=B(c),vc=mainV(c,it),v=vc.t,be=BEV.indexOf(v.toLowerCase().split(' ').pop())>=0;
+  if(b==='S')return c.t+(be?' = 설명의 대상이 되는 쪽':' = '+v+' 하는 쪽');
+  if(b==='V')return c.t+' = 동작·상태를 말하는 말';
+  if(b==='O')return c.t+' = '+v+' 의 대상 (~을/를)';
+  if(b==='C')return c.t+' = 앞의 말을 설명하는 말';
+  if(b==='CJ')return c.t+' = 말과 말을 이어 주는 말';
+  if(c.to===-2)return c.t+' = 문장을 여는 말 (뒤에 진짜 주어가 옴)';
+  return c.t+' = 빼도 문장이 성립하는 꾸미는 말';
+}
+let cur=null,round=0,cust=null,retried=false,conf={};
+function bump(k){conf[k]=(conf[k]||0)+1}
+function home(){rounds(DATA.sets[0].id)}
+function nr(){return Math.ceil(cur.items.length/10)}
+function recKey(){return 'bc_rec_'+cur.id}
+function recGet(){try{return JSON.parse(localStorage.getItem(recKey())||'{}')}catch(e){return {}}}
+function recSet(r,wrong){try{const o=recGet();const d=new Date();o[r]={w:wrong,d:d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)};localStorage.setItem(recKey(),JSON.stringify(o))}catch(e){}}
+function rounds(id){
+  cur=DATA.sets[0];cust=null;
+  const rec=recGet();
+  let h='<h1>문장 성분 연습</h1><h2>'+esc(cur.label)+'</h2><div class="wm">10문장씩 골라서 풀기 · 앞에서부터</div>';
+  for(let r=0;r<nr();r++){
+    if(r%10===0){const e=Math.min(cur.items.length,(r+10)*10);h+=(r?'</div>':'')+'<div class="sec">'+cur.items[r*10].no+' – '+cur.items[e-1].no+'</div><div class="bgrid">'}
+    const a=cur.items[r*10].no,b=cur.items[Math.min(cur.items.length,(r+1)*10)-1].no;
+    h+='<button class="blk'+(rec[r]?' dn':'')+'" style="--c:'+cur.color+'" data-r="'+r+'"'+(rec[r]?' title="'+esc(rec[r].d)+'"':'')+'>'+a.slice(-4)+'–'+b.slice(-4)+(rec[r]?'<i>✓</i>':'')+'</button>';
+  }
+  app.innerHTML=h+'</div><button class="back" id="bcx">목록으로</button>';
+  document.getElementById('bcx').onclick=()=>{location.href='won.html'};
+  app.querySelectorAll('.blk').forEach(b=>b.onclick=()=>startQ(+b.dataset.r));
+  window.scrollTo(0,0);
+}
+function items(){return cust||cur.items.slice(round*10,round*10+10)}
+function seen(){try{return localStorage.getItem('bc_concept')==='1'}catch(e){return false}}
+function mark(){try{localStorage.setItem('bc_concept','1')}catch(e){}}
+function conceptHTML(){
+  return '<div class="cc"><div class="cch">역할과 모양은 다름</div><div class="ccl"><b>문장성분</b> = 문장 안에서 하는 역할 <span class="wm">주어 · 동사 · 목적어 · 보어</span></div><div class="ccl"><b>누가 들어갔나</b> = 그 자리에 들어간 말의 모양 <span class="wm">명사 · 대명사 · 형용사 · 동명사 · to부정사 · 동사원형 · 절</span></div><div class="ccx"><span lang="en" translate="no"><span class="x k-S">Apples</span> <span class="x k-V">are</span> red.</span><span class="wm">주어 · 들어간 말은 명사</span></div><div class="ccx"><span lang="en" translate="no"><span class="x k-S">I</span> <span class="x k-V">like</span> <span class="x k-O">apples</span>.</span><span class="wm">목적어 · 들어간 말은 명사</span></div><div class="ccl">같은 단어, 다른 역할</div></div>';
+}
+function concept(next){
+  app.innerHTML='<div class="card">'+conceptHTML()+'</div><div class="btnrow"><button class="pri" id="cgo">시작</button></div><button class="back" id="lst">목록으로</button>';
+  document.getElementById('cgo').onclick=()=>{mark();next()};document.getElementById('lst').onclick=()=>rounds(cur.id);window.scrollTo(0,0);
+}
+function showConcept(){
+  const d=document.createElement('div');d.className='ov';d.innerHTML='<div class="card">'+conceptHTML()+'<button class="back" id="cx">닫기</button></div>';
+  document.body.appendChild(d);d.querySelector('#cx').onclick=()=>d.remove();
+}
+function startQ(r){round=r;cust=null;retried=false;conf={};if(seen())quiz(0,0,[]);else concept(()=>quiz(0,0,[]))}
+/* ---------- copy view ---------- */
+function label(c,it){
+  const b=B(c);let sm='';
+  if(c.who)sm=head(c);else if(b==='M'&&c.kind)sm=esc(c.kind);
+  let tg='';
+  if(b==='M'){if(c.to===-1)tg=' → 문장 전체 꾸밈';else if(c.to>=0)tg=' → '+en(cands(it)[c.to].t)+' 꾸밈'}
+  return (c.k?'<span class="g">'+esc(c.k)+'</span>':'')+'<span class="r">'+(b==='CJ'?'접속사':NAME[c.role])+(sm?' <small>('+sm+')</small>':'')+tg+'</span>';
+}
+function chunkSpans(it){
+  return it.chunks.map((c,i)=>sp(c,i)+'<span class="ch"><span class="t k-'+ck(c)+'">'+esc(c.t)+'</span><span class="l">'+label(c,it)+'</span></span>').join('');
+}
+function subHTML(chs){
+  return chs.map(c=>{
+    const b=B(c);let extra='';
+    if(b==='M'&&c.to>=0&&chs[c.to])extra=' → '+en(chs[c.to].t)+' 꾸밈';
+    return '<div class="sub"><b>'+(b==='CJ'?'접속사':NAME[c.role])+'</b> '+en(c.t)+(c.who?' <span class="wm">'+head(c)+'</span>':(c.kind?' <span class="wm">'+esc(c.kind)+'</span>':''))+extra+'</div>';
+  }).join('');
+}
+function anchHTML(code){
+  const a=ANCH[code];
+  return '<div class="anc"><b>'+a[0]+'</b>'+a[2].map(e=>'<span class="x k-'+e[1]+'" lang="en" translate="no">'+esc(e[0])+'</span>').join('')+'<span>와 같은 구조</span></div>';
+}
+function copyView(wl,wrong){
+  const its=items();
+  let h='<h1>틀린 문장 색칠</h1><div class="legend"><span class="k-S">주어</span><span class="k-V">동사</span><span class="k-O">목적어</span><span class="k-C">보어</span><span class="k-MA">형용사 수식어</span><span class="k-MB">그 밖의 수식어</span></div>';
+  wl.forEach(i=>{
+    const it=its[i];
+    const wm=it.words.filter(w=>w.pos!=='관사').map(w=>en(w.w)+' '+esc(w.mean)).join(' · ');
+    const subs=it.chunks.filter(c=>c.sub).map(c=>subHTML(c.sub)).join('');
+    h+='<div class="card"><div class="no">'+esc(it.no)+(it.pt?'':' · '+esc(it.pattern))+'</div><div class="sent" lang="en" translate="no">'+chunkSpans(it)+'</div>'+(it.pt?anchHTML(it.pt):'')+subs+'<div class="ko">'+esc(it.ko)+'</div><div class="wm">'+wm+'</div>'+(it.memo?'<div class="note"><b>'+esc(it.memo.basis)+'</b> '+esc(it.memo.text||'')+'</div>':'')+'</div>';
+  });
+  h+='<div class="btnrow"><button class="pri" id="go">다 칠했음</button></div><button class="back" id="lst">목록으로</button>';
+  app.innerHTML=h;
+  document.getElementById('lst').onclick=()=>rounds(cur.id);
+  const go=document.getElementById('go');
+  go.onclick=()=>{if(!go.classList.contains('warn')){go.classList.add('warn');go.textContent='한 번 더 누르면 끝남';return}afterCopy(wl,wrong)};
+  window.scrollTo(0,0);
+}
+function afterCopy(wl,wrong){
+  if(!retried&&wl.length>=5){const its=items();cust=wl.map(i=>its[i]);retried=true;quiz(0,wrong,[])}else done(wrong)
+}
+function confHTML(){
+  const a=Object.keys(conf).map(k=>[k,conf[k]]).sort((x,y)=>y[1]-x[1]).slice(0,3);
+  if(!a.length)return '';
+  return '<div class="confl"><b>많이 헷갈린 것</b>'+a.map(e=>'<div>'+esc(e[0])+' · '+e[1]+'번</div>').join('')+'</div>';
+}
+function done(wrong){
+  cust=null;const its=items();recSet(round,wrong);
+  app.innerHTML='<h1>'+its[0].no+' – '+its[its.length-1].no+' 완료</h1><div class="card sum">오답 '+wrong+'번'+confHTML()+'</div><button class="pri" id="bk">목록으로</button>';
+  document.getElementById('bk').onclick=()=>rounds(cur.id);window.scrollTo(0,0);
+}
+/* ---------- one floor ---------- */
+function mount(it,host,floor,cls,done,opt){
+  opt=opt||{};
+  host.innerHTML='<div class="card"><div class="ftag"></div><div class="sent" lang="en" translate="no" id="sent'+floor+'">'+it.chunks.map((c,k)=>sp(c,k)+'<span class="t" data-k="'+k+'">'+esc(c.t)+'</span>').join('')+'</div><div class="rows"></div></div><div class="btnrow"><button class="pri" disabled>제출</button></div>';
+  host.className=cls;
+  host.querySelector('.ftag').textContent=opt.tag||(floor+'층');
+  const rows=host.querySelector('.rows'),sub=host.querySelector('.pri');
+  const st=it.chunks.map(()=>({role:opt.fixedM?'M':null,who:null,to:undefined}));let pat=null;
+  const cd=cands(it),noneOK=true,cjOK=cd.some(x=>x.role==='M'&&B(x)!=='CJ'&&x.to>=0&&B(cd[x.to])==='CJ');
+  function complete(){
+    for(let k=0;k<it.chunks.length;k++){const s=st[k];if(!s.role)return false;
+      if((s.role==='S'||s.role==='O'||s.role==='C')&&!s.who)return false;
+      if(s.role==='M'&&s.to===undefined)return false}
+    if(it.pt&&!pat)return false;return true;
+  }
+  function refresh(){sub.disabled=!complete()}
+  const rowEls=[];
+  it.chunks.forEach((c,k)=>{
+    const r=document.createElement('div');r.className='qr';
+    r.innerHTML='<span class="t" lang="en" translate="no">'+esc(c.t)+'</span>'+(c.k?'<span class="g">'+esc(c.k)+'</span>':'')+(opt.fixedM?'':'<div class="cap">문장성분</div><span class="opt"></span>')+'<div class="pbox"></div>';
+    const o=r.querySelector('.opt'),pb=r.querySelector('.pbox');
+    function drawSub(){
+      pb.innerHTML='';const s=st[k];
+      if(s.role==='S'||s.role==='O'||s.role==='C'){
+        const line=document.createElement('div');line.className='popt';
+        line.innerHTML='<span class="cap2">누가 들어갔나?</span>';
+        WHO.forEach((w,wi)=>{if(wi===3){const br=document.createElement('span');br.style.cssText='flex:0 0 100%;height:0';line.appendChild(br)}const b=document.createElement('button');b.textContent=w;if(s.who===w)b.className='sel';b.onclick=()=>{s.who=w;drawSub();refresh()};line.appendChild(b)});
+        pb.appendChild(line);
+      }else if(s.role==='M'){
+        const line=document.createElement('div');line.className='popt';
+        line.innerHTML='<span class="cap2">누구를 꾸미나?</span>';
+        cd.forEach((x,j)=>{if(j===k||(B(x)==='CJ'&&!cjOK))return;const b=document.createElement('button');const same=cd.filter(y=>y.t===x.t&&!(B(y)==='CJ'&&!cjOK));const ord=same.length>1?' '+'①②③④⑤'[same.indexOf(x)]:'';b.textContent=x.t+ord;b.dataset.j=j;b.setAttribute('lang','en');if(s.to===j)b.className='sel';b.onclick=()=>{s.to=j;drawSub();refresh()};line.appendChild(b)});
+        const b=document.createElement('button');b.textContent='문장 전체';if(s.to===-1)b.className='sel';b.onclick=()=>{s.to=-1;drawSub();refresh()};line.appendChild(b);
+        if(noneOK){const b2=document.createElement('button');b2.textContent='꾸밈 없음';if(s.to===-2)b2.className='sel';b2.onclick=()=>{s.to=-2;drawSub();refresh()};line.appendChild(b2)}
+        pb.appendChild(line);
+      }
+    }
+    if(o)ROLEOPT.forEach(([key,nm])=>{
+      const b=document.createElement('button');b.textContent=nm;
+      b.onclick=()=>{st[k].role=key;st[k].who=null;st[k].to=undefined;o.querySelectorAll('button').forEach(x=>x.className=x===b?'sel':'');drawSub();refresh()};
+      o.appendChild(b)});
+    if(opt.fixedM)drawSub();
+    rows.appendChild(r);rowEls.push(r);
+  });
+  let pr=null;
+  if(it.pt){
+    pr=document.createElement('div');pr.className='qr';
+    pr.innerHTML='<span class="t" style="background:transparent;padding-left:0">문형</span><span class="opt"></span>';
+    const o=pr.querySelector('.opt');
+    Object.keys(ANCH).forEach(code=>{
+      const b=document.createElement('button');b.textContent=code;
+      b.onclick=()=>{pat=code;o.querySelectorAll('button').forEach(x=>x.className=x===b?'sel':'');refresh()};
+      o.appendChild(b)});
+    rows.appendChild(pr);
+  }
+  sub.onclick=()=>{
+    if(!complete())return;
+    sub.style.display='none';let bad=0;
+    it.chunks.forEach((c,k)=>{
+      const s=st[k],r=rowEls[k],b=B(c);
+      let ok=s.role===b,kind='role';
+      if(ok&&(b==='S'||b==='O'||b==='C')){ok=s.who===c.who;kind='who'}
+      if(ok&&b==='M'){ok=s.to===c.to;kind='to'}
+      const cls2='k-'+ck(c);r.querySelector('.t').classList.add(cls2);host.querySelector('.sent .t[data-k="'+k+'"]').classList.add(cls2);
+      const oo=r.querySelector('.opt');if(oo)oo.remove();r.querySelector('.pbox').remove();
+      const cp=r.querySelector('.cap');if(cp)cp.remove();
+      if(ok){r.insertAdjacentHTML('beforeend','<span class="mk mko">O</span><span class="ok">'+ansText(c,it)+'</span>')}
+      else{bad++;r.classList.add('wr');
+        let why;
+        if(kind==='role'){why=whyRole(c,it);bump((BN[s.role]||'')+' → '+BN[b])}
+        else if(kind==='to'){why=c.to===-2?c.t+' = 문장을 여는 말, 꾸미는 대상이 없음':c.t+' 는 '+toName(c,it)+' 를 꾸미는 말';bump('꾸미는 대상')}
+        else{why=c.t+' = '+WHYWHO[c.who];bump(s.who+' → '+c.who)}
+        const mine=(BN[s.role]||'')+(s.who?' ('+s.who+')':'')+(s.role==='M'&&s.to!==undefined?' → '+(s.to===-1?'문장 전체':s.to===-2?'꾸밈 없음':cd[s.to].t):'');
+        r.insertAdjacentHTML('beforeend','<span class="mk mkx">X</span><span class="mine">내 답: '+esc(mine)+'</span><span class="ok">정답: '+ansText(c,it)+'</span><div class="why" lang="ko">'+esc(why)+'</div>')}
+    });
+    if(it.pt){
+      const ok=pat===it.pt;pr.querySelector('.opt').remove();
+      if(ok)pr.insertAdjacentHTML('beforeend','<span class="mk mko">O</span><span class="ok">'+it.pt+' · '+ANCH[it.pt][1]+'</span>');
+      else{bad++;bump('문형');pr.classList.add('wr');pr.insertAdjacentHTML('beforeend','<span class="mk mkx">X</span><span class="mine">내 답: '+pat+'</span><span class="ok">정답: '+it.pt+' · '+ANCH[it.pt][1]+'</span>')}
+      const sk=it.chunks.filter(c=>B(c)!=='M'&&B(c)!=='CJ').map(c=>'<span class="x k-'+ck(c)+'" lang="en" translate="no">'+esc(c.t)+'</span>').join('');
+      const an=ANCH[it.pt][2].map(e=>'<span class="x k-'+e[1]+'" lang="en" translate="no">'+esc(e[0])+'</span>').join('');
+      rows.insertAdjacentHTML('afterend','<div class="wrap"><div class="wh">'+it.pt+' · '+ANCH[it.pt][1]+'</div><div class="wl"><span class="wn">이 문장</span>'+sk+'</div><div class="wl"><span class="wn">기본 예문</span>'+an+'</div></div>');
+    }
+    rows.insertAdjacentHTML('beforebegin','<div class="res '+(bad?'resx':'reso')+'">'+(bad?'틀린 곳 '+bad+'개':'모두 맞음')+'</div>');
+    if(floor===1)window.scrollTo(0,0);else host.scrollIntoView({block:'start'});
+    done(bad);
+  };
+}
+/* ---------- closing card with arrows ---------- */
+function ilab(x){
+  const d=(x.kind||'')+(x.info||'');
+  if(B(x)==='S'&&/가주어/.test(d))return '가주어';
+  if(B(x)==='S'&&/진주어/.test(d))return '진주어';
+  if(B(x)==='CJ')return '접속사';
+  return NAME[x.role]||'';
+}
+function rowHTML(chunks,extra,label,cls,bar){
+  const all=chunks.concat(extra||[]);
+  const pairs=[];
+  all.forEach((c,i)=>{if(c.role==='M'&&B(c)!=='CJ'&&c.to!==undefined&&c.to>-2)pairs.push([i,c.to,isAdj(c)?'#6f3fc2':'#c9680f'])});
+  const gi=chunks.findIndex(x=>B(x)==='S'&&/가주어/.test((x.kind||'')+(x.info||'')));
+  const ji=chunks.findIndex(x=>B(x)==='S'&&/진주어/.test((x.kind||'')+(x.info||'')));
+  if(gi>=0&&ji>=0)pairs.push([gi,ji,'#8a7a2a','d']);
+  return '<div class="grp'+(cls||'')+'"'+(bar?' style="border-left-color:'+bar+'"':'')+'><div class="n">'+label+'</div><div class="rw" data-pairs=\''+JSON.stringify(pairs)+'\'><svg class="ar"></svg><div class="cl">'+all.map(x=>'<span class="cb"><i>'+ilab(x)+'</i><span class="x k-'+ck(x)+'" lang="en" translate="no">'+esc(x.t)+'</span></span>').join('')+'</div></div></div>';
+}
+function draw(){
+  document.querySelectorAll('.rw').forEach(rw=>{
+    const pairs=JSON.parse(rw.getAttribute('data-pairs')||'[]');
+    rw.classList.toggle('has',pairs.length>0);
+    const svg=rw.querySelector('svg'),R=rw.getBoundingClientRect(),cbs=[].slice.call(rw.querySelectorAll('.cb'));let out='';
+    function box(i){const b=cbs[i].getBoundingClientRect();return {x:b.left-R.left+b.width/2,top:b.top-R.top,bot:b.bottom-R.top,l:b.left-R.left,r:b.right-R.left}}
+    pairs.forEach(p=>{
+      const a=box(p[0]),col=p[2];
+      if(p[1]===-1){
+        const first=box(0),last=box(cbs.length-1),y=10;
+        out+='<path d="M'+a.x+' '+(a.top-2)+' V'+y+' M'+first.l+' '+(y+7)+' V'+y+' H'+last.r+' V'+(y+7)+'" fill="none" stroke="'+col+'" stroke-width="2.2" stroke-linecap="round"/><text x="'+((first.l+last.r)/2)+'" y="'+(y-3)+'" font-size="11" font-weight="700" fill="'+col+'" text-anchor="middle">문장 전체</text>';
+        return;
+      }
+      const b=box(p[1]);
+      if(p[3]==='d'){
+        const d=Math.abs(a.x-b.x),h=Math.min(22,10+d/12),y0=a.top-2;
+        out+='<path d="M'+a.x+' '+y0+' C'+a.x+' '+(y0-h*1.3)+' '+b.x+' '+(y0-h*1.3)+' '+b.x+' '+y0+'" fill="none" stroke="'+col+'" stroke-width="2" stroke-dasharray="2 4" stroke-linecap="round"/>';
+        return;
+      }
+      if(Math.abs(a.top-b.top)>10){const dn=a.top>b.top,x1=a.x,y1=dn?a.top-1:a.bot+1,x2=b.x,y2=dn?b.bot+2:b.top-2,sg=dn?1:-1;out+='<path d="M'+x1+' '+y1+' C'+x1+' '+(y1-sg*8)+' '+x2+' '+(y2+sg*8)+' '+x2+' '+y2+'" fill="none" stroke="'+col+'" stroke-width="2.2" stroke-linecap="round"/><path d="M'+(x2-5)+' '+(y2+sg*6)+' L'+x2+' '+y2+' L'+(x2+5)+' '+(y2+sg*6)+'" fill="none" stroke="'+col+'" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>';return}
+      const d=Math.abs(a.x-b.x),h=Math.min(24,12+d/12),y0=a.top-2,y1=a.top-3;
+      out+='<path d="M'+a.x+' '+y0+' C'+a.x+' '+(y0-h*1.3)+' '+b.x+' '+(y0-h*1.3)+' '+b.x+' '+(y1-1)+'" fill="none" stroke="'+col+'" stroke-width="2.2" stroke-linecap="round"/><path d="M'+(b.x-5)+' '+(y1-7)+' L'+b.x+' '+y1+' L'+(b.x+5)+' '+(y1-7)+'" fill="none" stroke="'+col+'" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>';
+    });
+    svg.innerHTML=out;
+  });
+}
+window.addEventListener('resize',draw);
+function plab(it){return it.pt?it.pt+' ('+ANCH[it.pt][1]+')':esc(it.pattern)}
+function closing(it,floors){
+  let h='<div class="clos"><div class="wh">구조 정리</div>'+rowHTML(it.chunks,null,'1층 · '+plab(it),'',null);
+  const zs=[];
+  floors.forEach(f=>{
+    const c=f.c,sit=f.sit;
+    if(c.sub){
+      h+=rowHTML(c.sub,null,'2층 · '+(c.subpt?c.subpt+' ('+ANCH[c.subpt][1]+')':''),' l2',barCol(c));
+      let z=B(c)==='M'?(en(toName(c,it))+' 를 꾸미는 덩어리 = '+c.subpt+' 구조'):(NAME[c.role]+' 자리에 '+c.subpt+' 구조가 통째로 들어간 모양');
+      const tg=c.sub.filter(x=>x.role==='M'&&x.to>=0&&B(x)!=='CJ');
+      if(tg.length)z+='<br>2층 '+en(tg[0].t)+' → '+en(c.sub[tg[0].to].t)+' 꾸밈';
+      zs.push(z);
+    }else if(c.chain){
+      h+=rowHTML(c.chain.chunks,c.chain.extra,'꾸밈 사슬',' l2',barCol(c));
+      zs.push(en(c.chain.chunks.map(x=>x.t).concat(c.chain.extra.map(x=>x.t)).join(' → '))+' 순서로 꾸밈이 이어지는 구조');
+    }
+  });
+  it.chunks.forEach(c=>{
+    if(c.role==='M'&&c.to===-1)zs.push(en(c.t)+' = 문장 전체를 꾸미는 말 (뺄 수 있음)');
+    if(c.role==='M'&&c.to===-2){const s=it.chunks.filter(x=>B(x)==='S')[0];zs.push(en(c.t)+' = 문장을 여는 유도부사'+(s?' · 뒤의 '+en(s.t)+' 가 진짜 주어 (도치)':''))}
+  });
+  const g=it.chunks.filter(x=>ilab(x)==='가주어')[0],j=it.chunks.filter(x=>ilab(x)==='진주어')[0];
+  if(g&&j)zs.push(en(g.t)+' = 가주어 · '+en(j.t)+' = 진주어 (점선으로 연결)');
+  if(zs.length)h+='<div class="clz">'+zs.join('<br>')+'</div>';
+  return h+'</div>';
+}
+function floorsOf(it){return it.chunks.filter(c=>c.sub||c.chain)}
+/* ---------- quiz ---------- */
+function quiz(i,wrong,wl){
+  const its=items();
+  if(i>=its.length){if(wl.length)copyView(wl,wrong);else done(wrong);return}
+  const it=its[i],lv=LEVEL[cur.id];
+  app.innerHTML='<div class="prog">'+(retried?'다시 · ':'')+(i+1)+' / '+its.length+' <button class="lk" id="cc">개념</button></div><div id="f1"></div><div id="f2"></div><div id="nxt"></div><button class="back" id="lst">목록으로</button>';
+  document.getElementById('cc').onclick=showConcept;document.getElementById('lst').onclick=()=>rounds(cur.id);
+  const f2=document.getElementById('f2'),nxt=document.getElementById('nxt');
+  let bad=0;
+  function finish(opened){
+    nxt.innerHTML=closing(it,opened)+(it.memo?'<div class="postit"><b>'+esc(it.memo.basis)+'</b>'+(it.memo.text?'<br>'+esc(it.memo.text):'')+'</div>':'')+'<button class="pri" style="width:100%;margin-top:12px">'+(i+1<its.length?'다음 문장':'끝')+'</button>';
+    nxt.lastChild.onclick=()=>{if(bad){wrong+=bad;if(wl.indexOf(i)<0)wl.push(i)}quiz(i+1,wrong,wl)};
+    draw();setTimeout(draw,250);setTimeout(draw,800);
+  }
+  function run(list,n,opened){
+    if(n>=list.length){finish(opened);return}
+    const c=list[n],sit=c.sub?{chunks:c.sub,pt:c.subpt}:{chunks:c.chain.chunks,extra:c.chain.extra};
+    const host=document.createElement('div');f2.appendChild(host);
+    mount(sit,host,2,'inner',b=>{bad+=b;opened.push({c:c,sit:sit});run(list,n+1,opened)},c.chain?{fixedM:true,tag:'꾸밈 사슬'}:{});
+    host.style.borderLeftColor=barCol(c);
+  }
+  mount(it,document.getElementById('f1'),1,'',b1=>{
+    bad+=b1;
+    const fl=lv===0?[]:floorsOf(it);
+    if(!fl.length){finish([]);return}
+    if(lv===2){run(fl,0,[]);return}
+    f2.innerHTML='<button class="sm" id="op">속 문장 열기</button><button class="sm" id="sk">건너뛰기</button>';
+    document.getElementById('op').onclick=()=>{f2.innerHTML='';run(fl,0,[])};
+    document.getElementById('sk').onclick=()=>{f2.innerHTML='';finish([])};
+  });
+  window.scrollTo(0,0);
+}
+home();
+</script>
+</body>
+</html>
