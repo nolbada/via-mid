@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="ko" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>7과 문장 성분 연습</title>
+<style>
+:root{--bg:#f1efe9;--panel:#fff;--ink:#1f1d1a;--mute:#5d584f;--soft:#8a847a;--line:#e0dbd0;--accent:#2f4858;--bad:#c0392b;--good:#2e7d32;
+--S:#ffc83d;--V:#ff8f87;--O:#a9e6a4;--C:#9fd3f2;--MA:#d5bbff;--MB:#ffdcae;--CJ:#dcdcdc;--font:'Noto Sans KR',system-ui,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif}
+*{box-sizing:border-box}html,body{overflow-x:hidden;max-width:100%}html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.55;padding:18px max(16px,env(safe-area-inset-right)) 60px max(16px,env(safe-area-inset-left))}
+button{font:inherit;color:inherit;cursor:pointer}
+.shell{min-width:0;max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+h1{font-size:26px;font-weight:900;margin:0}h2{font-size:15px;font-weight:800;margin:6px 0 0;color:var(--mute)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.big{background:var(--panel);border:0;border-radius:14px;padding:18px 14px;text-align:left;font-weight:800;font-size:17px;border-left:6px solid var(--c,#888)}
+.big small{display:block;font-weight:500;font-size:12px;color:var(--soft);margin-top:2px}
+.wide{grid-column:1/-1}
+.card{background:var(--panel);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.no{font-size:12px;font-weight:800;color:var(--soft)}
+.sent{font-size:19px;line-height:1.5;font-weight:600;overflow-wrap:anywhere}
+#sent{background:#e6f1ff;border:2px solid #2b6cb0;border-radius:12px;padding:12px 12px 4px;color:#0f3459;font-size:20px}
+#sent .t{background:#c9dffa}
+.ch{display:inline-block;margin:0 3px 8px 0;text-align:center;vertical-align:top;max-width:100%}
+.ch .t{display:inline-block;padding:2px 6px;border-radius:4px;background:#ecebe6}
+.ch .l{display:block;margin-top:2px;line-height:1.25}
+.ch .g{display:block;font-size:13.5px;font-weight:600;color:var(--ink)}
+.ch .r{display:block;font-size:11.5px;color:var(--mute)}
+.ch .r small{font-size:10px;color:var(--soft);opacity:.8}
+.k-S{background:var(--S)!important}.k-V{background:var(--V)!important}.k-O{background:var(--O)!important}.k-C{background:var(--C)!important}.k-MA{background:var(--MA)!important}.k-MB{background:var(--MB)!important}.k-CJ{background:var(--CJ)!important}
+.ko{color:var(--mute);font-size:14px}
+.wm{font-size:12.5px;color:var(--soft)}
+.note,.postit{font-size:13px;background:#fff1a8;border-radius:3px;padding:9px 11px;box-shadow:1px 2px 4px rgba(0,0,0,.14);line-height:1.5;margin-top:8px}
+.qr .g{flex-basis:100%;font-size:13.5px;font-weight:600;color:#333}
+.sub{font-size:13px;color:var(--mute);border-left:3px solid var(--line);padding-left:8px}
+.anc{font-size:13px;color:var(--mute);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.anc b{font-weight:800;color:var(--ink)}
+.anc .x{padding:1px 6px;border-radius:4px;color:#2a2a2a}
+.legend{display:flex;gap:6px;flex-wrap:wrap}.legend span{font-size:12px;font-weight:700;padding:2px 8px;border-radius:5px;color:#2a2a2a}
+.nav,.btnrow{display:flex;gap:10px}
+.pri{flex:1;border:0;border-radius:999px;padding:14px;font-weight:800;background:var(--accent);color:#fff;font-size:15px}
+.pri.warn{background:#b3541e}
+.back{border:0;background:var(--panel);border-radius:999px;padding:14px;font-weight:800;font-size:15px;width:100%}
+.rows{display:flex;flex-direction:column}
+.qr{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:9px 0;border-top:1px solid var(--line)}
+.qr:first-child{border-top:0}
+.qr .t{font-size:18px;font-weight:600;background:#ecebe6;border-radius:4px;padding:2px 8px}
+.opt{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.opt button{border:2px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-weight:700;font-size:14px}
+.opt button.sel,.popt button.sel{background:#2f4858;border-color:#2f4858;color:#fff}
+.popt{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:6px;width:100%}
+.popt button{border:2px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-weight:700;font-size:14px}
+.pbox{width:100%}.pbox:empty{display:none}
+.mk{display:inline-block;width:24px;height:24px;border-radius:50%;text-align:center;font-weight:900;color:#fff;font-size:14px;line-height:24px}
+.mko{background:var(--good)}.mkx{background:var(--bad)}
+.qr.wr{background:#fff1ef;border-radius:8px;padding-left:8px;padding-right:8px}
+.mine{color:var(--bad);font-weight:700;font-size:14px;text-decoration:line-through}
+.res{font-weight:800;font-size:15px;padding:4px 0}.resx{color:var(--bad)}.reso{color:var(--good)}
+.cap{flex-basis:100%;font-size:11.5px;font-weight:800;color:#2f4858;margin-bottom:-4px}
+.cap2{flex-basis:100%;font-size:11.5px;font-weight:700;color:#8a847a}
+.pbox{margin-top:2px;padding-top:6px;border-top:1px dashed #d8d3c8}
+.popt button{background:#f4f2ee;border:1.5px dashed #cfc9bc;color:#6f6a60;font-weight:600;font-size:13px;padding:5px 11px}
+.popt button.sel{background:#9a948a;border:1.5px solid #9a948a;color:#fff}
+.wrap{min-width:0;max-width:100%;background:#ffe3ea;border-radius:10px;padding:12px 14px;margin-top:10px;display:flex;flex-direction:column;gap:8px}
+.wh{font-weight:900;font-size:15px;color:#7a2a45}
+.wl{display:flex;gap:8px;align-items:flex-start;min-width:0}.wc{display:flex;flex-wrap:wrap;gap:6px;flex:1;min-width:0}
+.wn{flex:0 0 58px;padding-top:5px;font-size:12px;font-weight:800;color:#7a2a45}
+.wl .x{flex:0 1 auto;overflow-wrap:anywhere;min-width:0;padding:3px 8px;border-radius:5px;font-size:15px;font-weight:600}
+.lk{border:0;background:none;color:#2b6cb0;font-weight:800;font-size:13px;margin-left:8px;text-decoration:underline;padding:0}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}
+.ov .card{max-width:520px;width:100%}
+.cc{display:flex;flex-direction:column;gap:10px}.cch{font-weight:900;font-size:16px}
+.ccl{font-size:15px}.ccx{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:17px}
+.ccx .x{padding:3px 8px;border-radius:5px;font-weight:600}
+.why{flex-basis:100%;font-size:13px;color:#5d584f;font-weight:600;padding-left:32px}
+.confl{margin-top:10px;font-size:14px;line-height:1.7}
+.pri:disabled{opacity:.35}
+@keyframes sh{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px)}40%{transform:translateX(5px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+.opt button.sh{animation:sh .35s}
+.opt button.bad{border-color:var(--bad);color:var(--bad)}
+.ok{color:var(--good);font-weight:800;font-size:14px}
+.prog{font-size:13px;font-weight:800;color:var(--soft)}
+.sum{font-size:15px}
+.inner{margin:12px 0 4px 2px;padding:10px 6px 10px 10px;border-left:6px solid var(--O);border-radius:0 10px 10px 0;background:#faf9f5}
+.inner.m{border-left-color:var(--MA)}
+.ftag{font-size:12px;font-weight:800;color:var(--soft)}
+.inner .ftag{color:#5a5448}
+.sm{border:2px solid var(--line);background:#fff;border-radius:999px;padding:9px 16px;font-weight:800;font-size:14px;margin:8px 8px 0 0}
+.tg{font-size:12px;color:#7b4fc0;font-weight:700}
+
+.wl{flex-wrap:wrap}.wl .x{flex:0 0 auto!important;max-width:100%;overflow-wrap:break-word!important}
+.inner .card{padding:10px 8px}
+@media(max-width:480px){
+body{padding-left:10px;padding-right:10px}
+.opt,.popt{gap:4px}
+.opt button,.popt button{padding:5px 8px;font-size:13px;border-width:1.5px}
+.popt button{font-size:12.5px;padding:4px 7px}
+.card{padding:12px 12px}
+.inner{padding:8px 4px 8px 6px;border-left-width:5px}
+.qr{gap:6px;padding:8px 0}
+}
+#sent1,#sent2{background:#e6f1ff;border:2px solid #2b6cb0;border-radius:12px;padding:12px 12px 4px;color:#0f3459;font-size:20px}
+#sent1 .t,#sent2 .t{background:#c9dffa}
+.clos{background:#fff6c2;border:1px solid #ecd978;border-radius:6px 6px 16px 6px;box-shadow:2px 3px 0 rgba(0,0,0,.09);padding:14px 14px 14px;margin-top:14px;display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden}
+.clos::after{content:"";position:absolute;right:0;bottom:0;width:24px;height:24px;background:linear-gradient(135deg,#fff6c2 50%,#ead66c 50%)}
+.clos .wh{font-size:15px;color:#5b4a08}
+.rw{position:relative;padding-top:0}.rw.has{padding-top:40px}.grp .n{font-size:11.5px;font-weight:800;color:#6b5a10;margin-bottom:2px}.grp.l2{margin-left:6px;padding-left:10px;border-left:4px solid #a9e6a4}.grp.l2.m{border-left-color:#d5bbff}.clos{padding-right:30px}
+.rw svg.ar{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.cl{display:flex;flex-wrap:wrap;gap:6px 6px;align-items:flex-end}
+.cl .n{flex:0 0 100%;font-size:11.5px;font-weight:800;color:#6b5a10}
+.cb{display:flex;flex-direction:column;gap:1px}
+.cb i{font-style:normal;font-size:10.5px;font-weight:700;color:#7a6a20}
+.cb .x{padding:3px 8px;border-radius:5px;font-size:15px;font-weight:600;overflow-wrap:break-word;max-width:100%}
+.clz{font-size:13.5px;font-weight:700;color:#4d4210;line-height:1.55;border-top:1px dashed #d9c55a;padding-top:8px}
+.tgb{font-size:13px}
+
+.rw.has .cl{row-gap:30px}
+.sec{font-size:13px;font-weight:800;color:var(--soft);margin-top:8px}
+.bgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.blk{position:relative;background:var(--panel);border:0;border-left:5px solid var(--c,#888);border-radius:10px;padding:11px 4px 11px 8px;font-weight:800;font-size:13px;text-align:left;white-space:nowrap}
+.blk.dn{background:#f6f4ee;color:#6d675c}
+.blk i{font-style:normal;position:absolute;right:3px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--good)}
+</style>
+</head>
+<body>
+<div class="shell" id="app"></div>
+<script>
+const DATA={"sets":[{"id":"gc7","label":"금천중2 · 7과","color":"#0f766e","items":[{"no":"1","en":"The following story is from Follow the Moon Home, which is a non-fiction book written by Philippe Cousteau and Deborah Hopkinson.","ko":"다음 이야기는 Philippe Cousteau와 Deborah Hopkinson이 쓴 실화 기반의 책 <Follow the Moon Home>에서 가져온 것이다.","pattern":"1형식","pt":"SV","chunks":[{"t":"The following story","role":"S","k":"다음 이야기는","who":"명사"},{"t":"is","role":"V","k":"이다"},{"t":"from Follow the Moon Home,","role":"M","k":"Follow the Moon Home에서 온","kind":"부사구","to":1},{"t":"which is a non-fiction book written by Philippe Cousteau and Deborah Hopkinson","role":"M","k":"그것은 Philippe Cousteau와 Deborah Hopkinson에 의해 쓰인 논픽션 책인","kind":"형용사절","to":2,"subpt":"SVC","sub":[{"t":"which","role":"S","k":"그것은","who":"대명사"},{"t":"is","role":"V","k":"이다"},{"t":"a non-fiction book","role":"C","k":"논픽션 책","who":"명사"},{"t":"written by Philippe Cousteau and Deborah Hopkinson","role":"M","k":"Philippe Cousteau와 Deborah Hopkinson에 의해 쓰인","kind":"형용사구","to":2}]}],"words":[{"w":"The","pos":"관사","mean":"그"},{"w":"following","pos":"동사","mean":"뒤따르다"},{"w":"story","pos":"명사","mean":"이야기"},{"w":"is","pos":"동사","mean":"~이다"},{"w":"from","pos":"전치사","mean":"~에서"},{"w":"Follow","pos":"동사","mean":"따라가다 (책 제목)"},{"w":"the","pos":"관사","mean":"그"},{"w":"Moon","pos":"명사","mean":"달"},{"w":"Home","pos":"부사","mean":"집으로"},{"w":"which","pos":"관계대명사","mean":"그것은"},{"w":"is","pos":"동사","mean":"~이다"},{"w":"a","pos":"관사","mean":"하나의"},{"w":"non-fiction","pos":"형용사","mean":"논픽션의"},{"w":"book","pos":"명사","mean":"책"},{"w":"written","pos":"동사","mean":"쓰다"},{"w":"by","pos":"전치사","mean":"~에 의해"},{"w":"Philippe","pos":"명사","mean":"(사람 이름)"},{"w":"Cousteau","pos":"명사","mean":"(사람 이름)"},{"w":"and","pos":"접속사","mean":"그리고"},{"w":"Deborah","pos":"명사","mean":"(사람 이름)"},{"w":"Hopkinson","pos":"명사","mean":"(사람 이름)"}],"memo":{"basis":"기준: 거의 필수에 가까운 부사구는 수식어로 처리","text":"is from을 be + 부사구로 봄. 이 경우 from 이하는 필수 성분이 아닌 수식어"}},{"no":"2","en":"The book is based on a true story of a group of children who started a campaign to help baby turtles.","ko":"이 책은 아기 거북들을 돕기 위해 캠페인을 시작한 아이들의 실제 이야기를 바탕으로 하고 있다.","pattern":"1형식(수동태)","pt":"SV","chunks":[{"t":"The book","role":"S","k":"그 책은","who":"명사"},{"t":"is based","role":"V","k":"바탕을 둔다"},{"t":"on a true story","role":"M","k":"실제 이야기에","kind":"부사구","to":1},{"t":"of a group of children","role":"M","k":"한 무리의 아이들의","kind":"형용사구","to":2},{"t":"who started a campaign to help baby turtles","role":"M","k":"아기 거북들을 돕기 위해 캠페인을 시작한","kind":"형용사절","to":3,"subpt":"SVO","sub":[{"t":"who","role":"S","k":"그 아이들이","who":"대명사"},{"t":"started","role":"V","k":"시작한"},{"t":"a campaign","role":"O","k":"캠페인을","who":"명사"},{"t":"to help baby turtles","role":"M","k":"아기 거북들을 돕기 위해","kind":"to부정사(부사적 용법)","to":1}]}],"words":[{"w":"The","pos":"관사","mean":"그"},{"w":"book","pos":"명사","mean":"책"},{"w":"is","pos":"동사","mean":"~이다"},{"w":"based","pos":"동사","mean":"바탕을 두다"},{"w":"on","pos":"전치사","mean":"~에"},{"w":"a","pos":"관사","mean":"하나의"},{"w":"true","pos":"형용사","mean":"실제의"},{"w":"story","pos":"명사","mean":"이야기"},{"w":"of","pos":"전치사","mean":"~의"},{"w":"a","pos":"관사","mean":"하나의"},{"w":"group","pos":"명사","mean":"무리"},{"w":"of","pos":"전치사","mean":"~의"},{"w":"children","pos":"명사","mean":"아이들"},{"w":"who","pos":"관계대명사","mean":"~하는 (사람들)"},{"w":"started","pos":"동사","mean":"시작하다"},{"w":"a","pos":"관사","mean":"하나의"},{"w":"campaign","pos":"명사","mean":"캠페인"},{"w":"to","pos":"to(부정사)","mean":"~하기 위해"},{"w":"help","pos":"동사","mean":"돕다"},{"w":"baby","pos":"명사","mean":"아기"},{"w":"turtles","pos":"명사","mean":"거북"}],"memo":{"basis":"기준: 목적(~하기 위해)을 나타내는 to부정사는 부사적 용법","text":"to help baby turtles는 캠페인을 시작한 목적이라 동사 started를 꾸밈(책 해석도 '돕기 위해 시작한'). 명사 campaign을 꾸미는 형용사적 용법으로 보는 기준도 있음"}},{"no":"3","en":"My name is Vivian.","ko":"내 이름은 Vivian이다.","pattern":"2형식","pt":"SVC","chunks":[{"t":"My name","role":"S","k":"내 이름은","who":"명사"},{"t":"is","role":"V","k":"이다"},{"t":"Vivian","role":"C","k":"Vivian","who":"명사"}],"words":[{"w":"My","pos":"대명사","mean":"나의"},{"w":"name","pos":"명사","mean":"이름"},{"w":"is","pos":"동사","mean":"~이다"},{"w":"Vivian","pos":"명사","mean":"(사람 이름)"}],"memo":null},{"no":"4","en":"I just moved to a town by the sea.","ko":"나는 얼마 전 바닷가 근처 마을로 이사 왔다.","pattern":"1형식","pt":"SV","chunks":[{"t":"I","role":"S","k":"나는","who":"대명사"},{"t":"just","role":"M","k":"얼마 전에","kind":"부사","to":2},{"t":"moved","role":"V","k":"이사했다"},{"t":"to a town","role":"M","k":"마을로","kind":"부사구","to":2},{"t":"by the sea.","role":"M","k":"바닷가 옆","kind":"형용사구","to":3}],"words":[{"w":"I","pos":"대명사","mean":"나"},{"w":"just","pos":"부사","mean":"방금"},{"w":"moved","pos":"동사","mean":"이사하다"},{"w":"to","pos":"전치사","mean":"~로"},{"w":"a","pos":"관사","mean":"하나의"},{"w":"town","pos":"명사","mean":"마을"},{"w":"by","pos":"전치사","mean":"~옆에"},{"w":"the","pos":"관사","mean":"그"},{"w":"sea","pos":"명사","mean":"바다"}],"memo":{"basis":"기준: 거의 필수에 가까운 부사구는 수식어로 처리","text":"moved to a town에서 to a town은 이사한 곳을 알려 주지만 문장 형식에는 들어가지 않는 수식어"}},{"no":"5","en":"One Saturday night, I went to the sea with my mother and we took a walk around the beach.","ko":"어느 토요일 밤, 나는 엄마와 함께 바다에 가서 해변을 산책했다.","pattern":"1형식 + 1형식","pt":null,"chunks":[{"t":"One Saturday night,","role":"M","k":"어느 토요일 밤","kind":"부사구","to":2},{"t":"I","role":"S","k":"나는","who":"대명사"},{"t":"went","role":"V","k":"갔다"},{"t":"to the sea","role":"M","k":"바다에","kind":"부사구","to":2},{"t":"with my mother","role":"M","k":"엄마와 함께","kind":"부사구","to":2},{"t":"and","role":"M","k":"그리고","kind":"접속사"},{"t":"we","role":"S","k":"우리는","who":"대명사"},{"t":"took a walk","role":"V","k":"산책했다"},{"t":"around the beach.","role":"M","k":"해변 주위를","kind":"부사구","to":7}],"words":[{"w":"One","pos":"형용사","mean":"어느"},{"w":"Saturday","pos":"명사","mean":"토요일"},{"w":"night","pos":"명사","mean":"밤"},{"w":"I","pos":"대명사","mean":"나"},{"w":"went","pos":"동사","mean":"가다"},{"w":"to","pos":"전치사","mean":"~에"},{"w":"the","pos":"관사","mean":"그"},{"w":"sea","pos":"명사","mean":"바다"},{"w":"with","pos":"전치사","mean":"~와 함께"},{"w":"my","pos":"대명사","mean":"나의"},{"w":"mother","pos":"명사","mean":"엄마"},{"w":"and","pos":"접속사","mean":"그리고"},{"w":"we","pos":"대명사","mean":"우리"},{"w":"took","pos":"동사","mean":"산책하다 (take a walk 전체 뜻)"},{"w":"a","pos":"관사","mean":"(take a walk의 일부)"},{"w":"walk","pos":"명사","mean":"(take a walk의 일부)"},{"w":"around","pos":"전치사","mean":"~주위를"},{"w":"the","pos":"관사","mean":"그"},{"w":"beach","pos":"명사","mean":"해변"}],"memo":{"basis":"기준: take a walk = 한 덩어리 동사(산책하다)","text":"took a walk를 동사 한 덩어리로 보아 1형식. a walk를 목적어로 보는 기준도 있음"}},{"no":"6","en":"There, many baby turtles were crawling out of their nests built in the sand.","ko":"그곳에서는 많은 아기 거북들이 모래 속에 지어진 둥지에서 기어 나오고 있었다.","pattern":"1형식","pt":"SV","chunks":[{"t":"There,","role":"M","k":"그곳에서","kind":"부사","to":2},{"t":"many baby turtles","role":"S","k":"많은 아기 거북들이","who":"명사"},{"t":"were crawling","role":"V","k":"기어 나오고 있었다"},{"t":"out of their nests","role":"M","k":"자기들의 둥지에서","kind":"부사구","to":2},{"t":"built in the sand.","role":"M","k":"모래 속에 지어진","kind":"형용사구","to":3}],"words":[{"w":"There","pos":"부사","mean":"그곳에서"},{"w":"many","pos":"형용사","mean":"많은"},{"w":"baby","pos":"명사","mean":"아기"},{"w":"turtles","pos":"명사","mean":"거북"},{"w":"were","pos":"조동사","mean":"~하고 있었다 (과거진행의 be)"},{"w":"crawling","pos":"동사","mean":"기어가다"},{"w":"out","pos":"부사","mean":"~밖으로 (out of 전체 뜻)"},{"w":"of","pos":"전치사","mean":"(out of의 일부)"},{"w":"their","pos":"대명사","mean":"그들의"},{"w":"nests","pos":"명사","mean":"둥지"},{"w":"built","pos":"동사","mean":"짓다"},{"w":"in","pos":"전치사","mean":"~에"},{"w":"the","pos":"관사","mean":"그"},{"w":"sand","pos":"명사","mean":"모래"}],"memo":{"basis":"기준: 쉼표 뒤 There는 '그곳에서'라는 장소 부사로 처리","text":"유도부사(There is 구문)가 아니라 장소를 가리키는 부사라 수식어"}},{"no":"7","en":"I asked my mom, “Are those cute baby turtles trying to find their way to the sea?","ko":"나는 엄마에게 물었다. “저 귀여운 아기 거북들이 바다로 가는 길을 찾고 있는 거예요?","pattern":"4형식","pt":"SVOO","chunks":[{"t":"I","role":"S","k":"나는","who":"대명사"},{"t":"asked","role":"V","k":"물었다"},{"t":"my mom,","role":"IO","k":"엄마에게","who":"명사"},{"t":"“Are those cute baby turtles trying to find their way to the sea?","role":"DO","k":"“저 귀여운 아기 거북들이 바다로 가는 길을 찾으려고 애쓰고 있는 거예요?","who":"절","kind":"명사절","info":"직접화법 인용절","subpt":"SVO","sub":[{"t":"Are","role":"V","k":"~고 있나요"},{"t":"those cute baby turtles","role":"S","k":"저 귀여운 아기 거북들이","who":"명사"},{"t":"trying","role":"V","k":"애쓰고"},{"t":"to find their way to the sea?","role":"O","k":"바다로 가는 길을 찾으려고","who":"to부정사","kind":"to부정사(명사적 용법)"}]}],"words":[{"w":"I","pos":"대명사","mean":"나"},{"w":"asked","pos":"동사","mean":"묻다"},{"w":"my","pos":"대명사","mean":"나의"},{"w":"mom","pos":"명사","mean":"엄마"},{"w":"Are","pos":"조동사","mean":"~하고 있다 (진행의 be)"},{"w":"those","pos":"형용사","mean":"저"},{"w":"cute","pos":"형용사","mean":"귀여운"},{"w":"baby","pos":"명사","mean":"아기"},{"w":"turtles","pos":"명사","mean":"거북"},{"w":"trying","pos":"동사","mean":"애쓰다"},{"w":"to","pos":"to(부정사)","mean":"~하려고"},{"w":"find","pos":"동사","mean":"찾다"},{"w":"their","pos":"대명사","mean":"그들의"},{"w":"way","pos":"명사","mean":"길"},{"w":"to","pos":"전치사","mean":"~로"},{"w":"the","pos":"관사","mean":"그"},{"w":"sea","pos":"명사","mean":"바다"}],"memo":{"basis":"기준: 직접화법 인용문은 목적어(절)로 처리","text":"asked 뒤의 my mom은 간접목적어(IO), 인용문은 직접목적어(DO)로 봄"}},{"no":"8","en":"But they seem confused and lost.”","ko":"그런데 그들은 혼란스럽고 길을 잃은 것같이 보여요.”","pattern":"2형식","pt":"SVC","chunks":[{"t":"But","role":"M","k":"그런데","kind":"접속사"},{"t":"they","role":"S","k":"그들은","who":"대명사"},{"t":"seem","role":"V","k":"보여요"},{"t":"confused and lost.”","role":"C","k":"혼란스럽고 길을 잃은 것같이","who":"형용사"}],"words":[{"w":"But","pos":"접속사","mean":"그러나"},{"w":"they","pos":"대명사","mean":"그들"},{"w":"seem","pos":"동사","mean":"~처럼 보이다"},{"w":"confused","pos":"형용사","mean":"혼란스러운"},{"w":"and","pos":"접속사","mean":"그리고"},{"w":"lost","pos":"형용사","mean":"길을 잃은"}],"memo":null},{"no":"9","en":"My mom answered, “Baby turtles follow the moonlight to go to the sea.","ko":"엄마가 대답했다. “아기 거북들은 달빛을 따라 바다로 간단다.","pattern":"3형식","pt":"SVO","chunks":[{"t":"My mom","role":"S","k":"엄마가","who":"명사"},{"t":"answered,","role":"V","k":"대답했다"},{"t":"“Baby turtles follow the moonlight to go to the sea.","role":"O","k":"“아기 거북들은 달빛을 따라 바다로 간단다.","who":"절","kind":"명사절","info":"직접화법 인용절","subpt":"SVO","sub":[{"t":"Baby turtles","role":"S","k":"아기 거북들은","who":"명사"},{"t":"follow","role":"V","k":"따라간단다"},{"t":"the moonlight","role":"O","k":"달빛을","who":"명사"},{"t":"to go to the sea.","role":"M","k":"바다로 가기 위해","kind":"to부정사(부사적 용법)","to":1}]}],"words":[{"w":"My","pos":"대명사","mean":"나의"},{"w":"mom","pos":"명사","mean":"엄마"},{"w":"answered","pos":"동사","mean":"대답하다"},{"w":"Baby","pos":"명사","mean":"아기"},{"w":"turtles","pos":"명사","mean":"거북"},{"w":"follow","pos":"동사","mean":"따라가다"},{"w":"the","pos":"관사","mean":"그"},{"w":"moonlight","pos":"명사","mean":"달빛"},{"w":"to","pos":"to(부정사)","mean":"~하기 위해"},{"w":"go","pos":"동사","mean":"가다"},{"w":"to","pos":"전치사","mean":"~로"},{"w":"the","pos":"관사","mean":"그"},{"w":"sea","pos":"명사","mean":"바다"}],"memo":{"basis":"기준: 직접화법 인용문은 목적어(절)로 처리","text":"인용문 속 to go to the sea는 목적(~하기 위해)이라 동사 follow를 꾸미는 부사적 용법"}},{"no":"10","en":"But they are going the wrong way because of the bright lights from the beach houses.","ko":"그런데 그들은 해변가 집들의 밝은 불빛 때문에 잘못된 길로 가고 있어.","pattern":"1형식","pt":"SV","chunks":[{"t":"But","role":"M","k":"그런데","kind":"접속사"},{"t":"they","role":"S","k":"그들은","who":"대명사"},{"t":"are going","role":"V","k":"가고 있어"},{"t":"the wrong way","role":"M","k":"잘못된 길로","kind":"부사구","to":2},{"t":"because of the bright lights","role":"M","k":"밝은 불빛들 때문에","kind":"부사구","to":2},{"t":"from the beach houses.","role":"M","k":"해변가 집들에서 나오는","kind":"형용사구","to":4}],"words":[{"w":"But","pos":"접속사","mean":"그러나"},{"w":"they","pos":"대명사","mean":"그들"},{"w":"are","pos":"조동사","mean":"~하고 있다 (진행의 be)"},{"w":"going","pos":"동사","mean":"가다"},{"w":"the","pos":"관사","mean":"그"},{"w":"wrong","pos":"형용사","mean":"잘못된"},{"w":"way","pos":"명사","mean":"길"},{"w":"because","pos":"전치사","mean":"~때문에 (because of 전체 뜻)"},{"w":"of","pos":"전치사","mean":"(because of의 일부)"},{"w":"the","pos":"관사","mean":"그"},{"w":"bright","pos":"형용사","mean":"밝은"},{"w":"lights","pos":"명사","mean":"불빛"},{"w":"from","pos":"전치사","mean":"~에서"},{"w":"the","pos":"관사","mean":"그"},{"w":"beach","pos":"명사","mean":"해변"},{"w":"houses","pos":"명사","mean":"집"}],"memo":{"basis":"기준: the wrong way는 방향을 나타내는 부사적 명사구로 보아 수식어로 처리","text":"go the wrong way는 '잘못된 길로 가다'라서 the wrong way는 가는 방향을 알려 주는 수식어. 목적어로 보지 않음"}},{"no":"11","en":"When they cannot find their way to the sea, they die.”","ko":"그들은 바다로 가는 길을 찾지 못하면 죽게 되지.”","pattern":"1형식","pt":"SV","chunks":[{"t":"When they cannot find their way to the sea,","role":"M","k":"그들이 바다로 가는 길을 찾지 못하면","kind":"부사절","to":2,"subpt":"SVO","sub":[{"t":"When","role":"CJ","k":"~하면"},{"t":"they","role":"S","k":"그들이","who":"대명사"},{"t":"cannot find","role":"V","k":"찾지 못한다"},{"t":"their way","role":"O","k":"길을","who":"명사"},{"t":"to the sea,","role":"M","k":"바다로 가는","kind":"형용사구","to":3}]},{"t":"they","role":"S","k":"그들은","who":"대명사"},{"t":"die.”","role":"V","k":"죽게 되지"}],"words":[{"w":"When","pos":"접속사","mean":"~하면"},{"w":"they","pos":"대명사","mean":"그들"},{"w":"cannot","pos":"조동사","mean":"~할 수 없다"},{"w":"find","pos":"동사","mean":"찾다"},{"w":"their","pos":"대명사","mean":"그들의"},{"w":"way","pos":"명사","mean":"길"},{"w":"to","pos":"전치사","mean":"~로"},{"w":"the","pos":"관사","mean":"그"},{"w":"sea","pos":"명사","mean":"바다"},{"w":"they","pos":"대명사","mean":"그들"},{"w":"die","pos":"동사","mean":"죽다"}],"memo":null},{"no":"12","en":"I felt so sad.","ko":"나는 너무 슬펐다.","pattern":"2형식","pt":"SVC","chunks":[{"t":"I","role":"S","k":"나는","who":"대명사"},{"t":"felt","role":"V","k":"느꼈다"},{"t":"so sad.","role":"C","k":"너무 슬프게","who":"형용사"}],"words":[{"w":"I","pos":"대명사","mean":"나"},{"w":"felt","pos":"동사","mean":"느끼다"},{"w":"so","pos":"부사","mean":"너무"},{"w":"sad","pos":"형용사","mean":"슬픈"}],"memo":null},{"no":"13","en":"I wanted to help the turtles.","ko":"나는 그 거북들을 돕고 싶었다.","pattern":"3형식","pt":"SVO","chunks":[{"t":"I","role":"S","k":"나는","who":"대명사"},{"t":"wanted","role":"V","k":"원했다"},{"t":"to help the turtles.","role":"O","k":"그 거북들을 돕는 것을","who":"to부정사","kind":"to부정사(명사적 용법)","subpt":"SVO","sub":[{"t":"to help","role":"V","k":"돕는 것을"},{"t":"the turtles.","role":"O","k":"그 거북들을","who":"명사"}]}],"words":[{"w":"I","pos":"대명사","mean":"나"},{"w":"wanted","pos":"동사","mean":"원하다"},{"w":"to","pos":"to(부정사)","mean":"~하는 것"},{"w":"help","pos":"동사","mean":"돕다"},{"w":"the","pos":"관사","mean":"그"},{"w":"turtles","pos":"명사","mean":"거북"}],"memo":null},{"no":"14","en":"Next Monday at school, I told the class about the poor turtles.","ko":"다음 주 월요일 학교에서 나는 가엾은 거북들의 이야기를 반 친구들에게 들려줬다.","pattern":"3형식","pt":"SVO","chunks":[{"t":"Next Monday","role":"M","k":"다음 주 월요일","kind":"부사구","to":3},{"t":"at school,","role":"M","k":"학교에서","kind":"부사구","to":3},{"t":"I","role":"S","k":"나는","who":"대명사"},{"t":"told","role":"V","k":"이야기했다"},{"t":"the class","role":"O","k":"반 친구들에게","who":"명사"},{"t":"about the poor turtles.","role":"M","k":"그 가엾은 거북들에 대해","kind":"부사구","to":3}],"words":[{"w":"Next","pos":"형용사","mean":"다음의"},{"w":"Monday","pos":"명사","mean":"월요일"},{"w":"at","pos":"전치사","mean":"~에서"},{"w":"school","pos":"명사","mean":"학교"},{"w":"I","pos":"대명사","mean":"나"},{"w":"told","pos":"동사","mean":"말해 주다"},{"w":"the","pos":"관사","mean":"그"},{"w":"class","pos":"명사","mean":"반"},{"w":"about","pos":"전치사","mean":"~에 대해"},{"w":"the","pos":"관사","mean":"그"},{"w":"poor","pos":"형용사","mean":"가엾은"},{"w":"turtles","pos":"명사","mean":"거북"}],"memo":null},{"no":"15","en":"My classmates all felt sorry for them.","ko":"친구들은 모두 그들을 안쓰럽게 느꼈다.","pattern":"2형식","pt":"SVC","chunks":[{"t":"My classmates","role":"S","k":"내 반 친구들은","who":"명사"},{"t":"all","role":"M","k":"모두","kind":"형용사","to":0},{"t":"felt","role":"V","k":"느꼈다"},{"t":"sorry","role":"C","k":"안쓰럽게","who":"형용사"},{"t":"for them.","role":"M","k":"그들에 대해","kind":"부사구","to":3}],"words":[{"w":"My","pos":"대명사","mean":"나의"},{"w":"classmates","pos":"명사","mean":"반 친구"},{"w":"all","pos":"형용사","mean":"모두"},{"w":"felt","pos":"동사","mean":"느끼다"},{"w":"sorry","pos":"형용사","mean":"안쓰러운"},{"w":"for","pos":"전치사","mean":"~에 대해"},{"w":"them","pos":"대명사","mean":"그들"}],"memo":{"basis":"기준: feel sorry for = feel(V) + sorry(C) + for 전치사구(M)","text":"felt sorry for를 한 덩어리 동사로 보지 않고 2형식으로 처리"}},{"no":"16","en":"We made a “Save the Turtle Campaign” group.","ko":"우리는 “거북이 구하기 캠페인” 모임을 만들었다.","pattern":"3형식","pt":"SVO","chunks":[{"t":"We","role":"S","k":"우리는","who":"대명사"},{"t":"made","role":"V","k":"만들었다"},{"t":"a “Save the Turtle Campaign” group.","role":"O","k":"“거북이 구하기 캠페인” 모임을","who":"명사"}],"words":[{"w":"We","pos":"대명사","mean":"우리"},{"w":"made","pos":"동사","mean":"만들다"},{"w":"a","pos":"관사","mean":"하나의"},{"w":"Save","pos":"동사","mean":"구하다"},{"w":"the","pos":"관사","mean":"그"},{"w":"Turtle","pos":"명사","mean":"거북"},{"w":"Campaign","pos":"명사","mean":"캠페인"},{"w":"group","pos":"명사","mean":"모임"}],"memo":null},{"no":"17","en":"Our group was not certain about what to do, so we brainstormed solutions.","ko":"우리 모임은 무엇을 해야 할지 확신이 없어서, 함께 해결책을 떠올려 보았다.","pattern":"2형식 + 3형식","pt":null,"chunks":[{"t":"Our group","role":"S","k":"우리 모임은","who":"명사"},{"t":"was not","role":"V","k":"~이지 않았다"},{"t":"certain","role":"C","k":"확신하는","who":"형용사"},{"t":"about what to do,","role":"M","k":"무엇을 해야 할지에 대해","kind":"부사구","to":2},{"t":"so","role":"M","k":"그래서","kind":"접속사"},{"t":"we","role":"S","k":"우리는","who":"대명사"},{"t":"brainstormed","role":"V","k":"자유롭게 떠올려 보았다"},{"t":"solutions.","role":"O","k":"해결책들을","who":"명사"}],"words":[{"w":"Our","pos":"대명사","mean":"우리의"},{"w":"group","pos":"명사","mean":"모임"},{"w":"was","pos":"동사","mean":"~이다"},{"w":"not","pos":"부사","mean":"~않다"},{"w":"certain","pos":"형용사","mean":"확신하는"},{"w":"about","pos":"전치사","mean":"~에 대해"},{"w":"what","pos":"의문사","mean":"무엇"},{"w":"to","pos":"to(부정사)","mean":"~해야 할"},{"w":"do","pos":"동사","mean":"하다"},{"w":"so","pos":"접속사","mean":"그래서"},{"w":"we","pos":"대명사","mean":"우리"},{"w":"brainstormed","pos":"동사","mean":"자유롭게 떠올리다"},{"w":"solutions","pos":"명사","mean":"해결책"}],"memo":null},{"no":"18","en":"“People should know about the problem,” I said.","ko":"“사람들이 이 문제를 알아야 해.” 내가 말했다.","pattern":"3형식","pt":"SVO","chunks":[{"t":"“People should know about the problem,”","role":"O","k":"“사람들이 그 문제에 대해 알아야 해,”","who":"절","kind":"명사절","info":"직접화법 인용절","subpt":"SV","sub":[{"t":"People","role":"S","k":"사람들이","who":"명사"},{"t":"should know","role":"V","k":"알아야 해"},{"t":"about the problem,”","role":"M","k":"그 문제에 대해","kind":"부사구","to":1}]},{"t":"I","role":"S","k":"내가","who":"대명사"},{"t":"said.","role":"V","k":"말했다"}],"words":[{"w":"People","pos":"명사","mean":"사람들"},{"w":"should","pos":"조동사","mean":"~해야 한다"},{"w":"know","pos":"동사","mean":"알다"},{"w":"about","pos":"전치사","mean":"~에 대해"},{"w":"the","pos":"관사","mean":"그"},{"w":"problem","pos":"명사","mean":"문제"},{"w":"I","pos":"대명사","mean":"나"},{"w":"said","pos":"동사","mean":"말하다"}],"memo":{"basis":"기준: 직접화법 인용문은 목적어(절)로 처리","text":"인용문이 said 앞에 있어 순서는 O, S, V이지만 역할은 그대로 표시"}},{"no":"19","en":"Samson suggested, “Why don’t we invite neighbors to a town meeting?”","ko":"Samson이 제안했다. “이웃들을 마을 회의에 초대하는 게 어때?”","pattern":"3형식","pt":"SVO","chunks":[{"t":"Samson","role":"S","k":"Samson이","who":"명사"},{"t":"suggested,","role":"V","k":"제안했다"},{"t":"“Why don’t we invite neighbors to a town meeting?”","role":"O","k":"“이웃들을 마을 회의에 초대하는 게 어때?”","who":"절","kind":"명사절","info":"직접화법 인용절","subpt":"SVO","sub":[{"t":"Why","role":"M","k":"왜","kind":"부사","to":3},{"t":"don’t","role":"V","k":"~하지 않을까"},{"t":"we","role":"S","k":"우리가","who":"대명사"},{"t":"invite","role":"V","k":"초대해"},{"t":"neighbors","role":"O","k":"이웃들을","who":"명사"},{"t":"to a town meeting?”","role":"M","k":"마을 회의에","kind":"부사구","to":3}]}],"words":[{"w":"Samson","pos":"명사","mean":"(사람 이름)"},{"w":"suggested","pos":"동사","mean":"제안하다"},{"w":"Why","pos":"의문사","mean":"왜"},{"w":"do","pos":"조동사","mean":"(해석 안 함)"},{"w":"n’t","pos":"부사","mean":"~않다"},{"w":"we","pos":"대명사","mean":"우리"},{"w":"invite","pos":"동사","mean":"초대하다"},{"w":"neighbors","pos":"명사","mean":"이웃"},{"w":"to","pos":"전치사","mean":"~에"},{"w":"a","pos":"관사","mean":"하나의"},{"w":"town","pos":"명사","mean":"마을"},{"w":"meeting","pos":"명사","mean":"회의"}],"memo":{"basis":"기준: 직접화법 인용문은 목적어(절)로 처리","text":"인용문 속 Why don’t we ~?는 '~하는 게 어때?'라는 제안 표현이고 Why는 부사로 처리"}},{"no":"20","en":"Rebecca agreed, “That’s a good idea!”","ko":"Rebecca가 동의했다. “좋은 생각이야!”","pattern":"3형식","pt":"SVO","chunks":[{"t":"Rebecca","role":"S","k":"Rebecca가","who":"명사"},{"t":"agreed,","role":"V","k":"동의했다"},{"t":"“That’s a good idea!”","role":"O","k":"“좋은 생각이야!”","who":"절","kind":"명사절","info":"직접화법 인용절","subpt":"SVC","sub":[{"t":"“That","role":"S","k":"그것은","who":"대명사"},{"t":"’s","role":"V","k":"이야"},{"t":"a good idea!”","role":"C","k":"좋은 생각","who":"명사"}]}],"words":[{"w":"Rebecca","pos":"명사","mean":"(사람 이름)"},{"w":"agreed","pos":"동사","mean":"동의하다"},{"w":"That","pos":"대명사","mean":"그것"},{"w":"’s","pos":"동사","mean":"~이다"},{"w":"a","pos":"관사","mean":"하나의"},{"w":"good","pos":"형용사","mean":"좋은"},{"w":"idea","pos":"명사","mean":"생각"}],"memo":{"basis":"기준: 직접화법 인용문은 목적어(절)로 처리","text":"agree 뒤에 동의한 내용을 직접 말하는 인용문이 와서 목적어(절)로 처리"}},{"no":"21","en":"All in the group did their part in preparing for the meeting.","ko":"모임에 속한 모두는 회의를 준비하면서 각자 맡은 일을 했다.","pattern":"3형식","pt":"SVO","chunks":[{"t":"All","role":"S","k":"모두가","who":"대명사"},{"t":"in the group","role":"M","k":"모임의","kind":"형용사구","to":0},{"t":"did","role":"V","k":"했다"},{"t":"their part","role":"O","k":"각자 맡은 일을","who":"명사"},{"t":"in preparing for the meeting.","role":"M","k":"회의를 준비하는 데","kind":"부사구","to":2}],"words":[{"w":"All","pos":"대명사","mean":"모두"},{"w":"in","pos":"전치사","mean":"~에"},{"w":"the","pos":"관사","mean":"그"},{"w":"group","pos":"명사","mean":"모임"},{"w":"did","pos":"동사","mean":"하다"},{"w":"their","pos":"대명사","mean":"그들의"},{"w":"part","pos":"명사","mean":"맡은 일"},{"w":"in","pos":"전치사","mean":"~에"},{"w":"preparing","pos":"동사","mean":"준비하다"},{"w":"for","pos":"전치사","mean":"~을 위해"},{"w":"the","pos":"관사","mean":"그"},{"w":"meeting","pos":"명사","mean":"회의"}],"memo":null},{"no":"22","en":"Rebecca made posters and Samson put them up in the neighborhood.","ko":"Rebecca는 포스터를 만들고, Samson은 그것을 동네에 붙였다.","pattern":"3형식 + 3형식","pt":null,"chunks":[{"t":"Rebecca","role":"S","k":"Rebecca는","who":"명사"},{"t":"made","role":"V","k":"만들었다"},{"t":"posters","role":"O","k":"포스터를","who":"명사"},{"t":"and","role":"M","k":"그리고","kind":"접속사"},{"t":"Samson","role":"S","k":"Samson은","who":"명사"},{"t":"put","role":"V","k":"붙였다"},{"t":"them","role":"O","k":"그것들을","who":"대명사"},{"t":"up","role":"V","k":"(붙였다의 일부)"},{"t":"in the neighborhood.","role":"M","k":"동네에","kind":"부사구","to":5}],"words":[{"w":"Rebecca","pos":"명사","mean":"(사람 이름)"},{"w":"made","pos":"동사","mean":"만들다"},{"w":"posters","pos":"명사","mean":"포스터"},{"w":"and","pos":"접속사","mean":"그리고"},{"w":"Samson","pos":"명사","mean":"(사람 이름)"},{"w":"put","pos":"동사","mean":"붙이다 (put up 전체 뜻)"},{"w":"them","pos":"대명사","mean":"그들"},{"w":"up","pos":"부사","mean":"(put up의 일부)"},{"w":"in","pos":"전치사","mean":"~에"},{"w":"the","pos":"관사","mean":"그"},{"w":"neighborhood","pos":"명사","mean":"동네"}],"memo":{"basis":"기준: put them up은 구동사 put up(V)이 목적어 them을 사이에 두고 나뉜 형태","text":"put과 up을 둘 다 V로 표시. up은 put up 전체 뜻(붙이다)의 일부"}},{"no":"23","en":"Max spread the word on the Internet.","ko":"Max는 인터넷에 소식을 알렸다.","pattern":"3형식","pt":"SVO","chunks":[{"t":"Max","role":"S","k":"Max는","who":"명사"},{"t":"spread","role":"V","k":"알렸다"},{"t":"the word","role":"O","k":"소식을","who":"명사"},{"t":"on the Internet.","role":"M","k":"인터넷에","kind":"부사구","to":1}],"words":[{"w":"Max","pos":"명사","mean":"(사람 이름)"},{"w":"spread","pos":"동사","mean":"퍼뜨리다"},{"w":"the","pos":"관사","mean":"그"},{"w":"word","pos":"명사","mean":"소식"},{"w":"on","pos":"전치사","mean":"~에"},{"w":"the","pos":"관사","mean":"그"},{"w":"Internet","pos":"명사","mean":"인터넷"}],"memo":null},{"no":"24","en":"I wrote about the town meeting in the local newspaper.","ko":"나는 지역 신문에 마을 회의에 관한 글을 썼다.","pattern":"1형식","pt":"SV","chunks":[{"t":"I","role":"S","k":"나는","who":"대명사"},{"t":"wrote","role":"V","k":"썼다"},{"t":"about the town meeting","role":"M","k":"마을 회의에 관해","kind":"부사구","to":1},{"t":"in the local newspaper.","role":"M","k":"지역 신문에","kind":"부사구","to":1}],"words":[{"w":"I","pos":"대명사","mean":"나"},{"w":"wrote","pos":"동사","mean":"쓰다"},{"w":"about","pos":"전치사","mean":"~에 대해"},{"w":"the","pos":"관사","mean":"그"},{"w":"town","pos":"명사","mean":"마을"},{"w":"meeting","pos":"명사","mean":"회의"},{"w":"in","pos":"전치사","mean":"~에"},{"w":"the","pos":"관사","mean":"그"},{"w":"local","pos":"형용사","mean":"지역의"},{"w":"newspaper","pos":"명사","mean":"신문"}],"memo":null},{"no":"25","en":"On the meeting day, the town hall was full of neighbors.","ko":"회의가 있던 날, 마을 회관은 이웃들로 가득 찼다.","pattern":"2형식","pt":"SVC","chunks":[{"t":"On the meeting day,","role":"M","k":"회의가 있던 날","kind":"부사구","to":2},{"t":"the town hall","role":"S","k":"마을 회관은","who":"명사"},{"t":"was","role":"V","k":"~였다"},{"t":"full of neighbors.","role":"C","k":"이웃들로 가득 찬","who":"형용사"}],"words":[{"w":"On","pos":"전치사","mean":"~에"},{"w":"the","pos":"관사","mean":"그"},{"w":"meeting","pos":"명사","mean":"회의"},{"w":"day","pos":"명사","mean":"날"},{"w":"the","pos":"관사","mean":"그"},{"w":"town","pos":"명사","mean":"마을"},{"w":"hall","pos":"명사","mean":"회관"},{"w":"was","pos":"동사","mean":"~이다"},{"w":"full","pos":"형용사","mean":"~로 가득 찬 (full of 전체 뜻)"},{"w":"of","pos":"전치사","mean":"(full of의 일부)"},{"w":"neighbors","pos":"명사","mean":"이웃"}],"memo":null},{"no":"26","en":"Our group explained to them that the baby turtles lose their way because of the bright lights from the houses.","ko":"우리 모임은 아기 거북들이 집들에서 나오는 밝은 불빛 때문에 길을 잃는다고 그들에게 설명했다.","pattern":"3형식","pt":"SVO","chunks":[{"t":"Our group","role":"S","k":"우리 모임은","who":"명사"},{"t":"explained","role":"V","k":"설명했다"},{"t":"to them","role":"M","k":"그들에게","kind":"부사구","to":1},{"t":"that the baby turtles lose their way because of the bright lights from the houses.","role":"O","k":"아기 거북들이 집들에서 나오는 밝은 불빛 때문에 길을 잃는다는 것을","who":"절","kind":"명사절","info":"명사절, that절","subpt":"SVO","sub":[{"t":"that","role":"CJ","k":"~라는 것을"},{"t":"the baby turtles","role":"S","k":"아기 거북들이","who":"명사"},{"t":"lose","role":"V","k":"잃는다"},{"t":"their way","role":"O","k":"길을","who":"명사"},{"t":"because of the bright lights","role":"M","k":"밝은 불빛들 때문에","kind":"부사구","to":2},{"t":"from the houses.","role":"M","k":"집들에서 나오는","kind":"형용사구","to":4}]}],"words":[{"w":"Our","pos":"대명사","mean":"우리의"},{"w":"group","pos":"명사","mean":"모임"},{"w":"explained","pos":"동사","mean":"설명하다"},{"w":"to","pos":"전치사","mean":"~에게"},{"w":"them","pos":"대명사","mean":"그들"},{"w":"that","pos":"접속사","mean":"~라는 것"},{"w":"the","pos":"관사","mean":"그"},{"w":"baby","pos":"명사","mean":"아기"},{"w":"turtles","pos":"명사","mean":"거북"},{"w":"lose","pos":"동사","mean":"잃다"},{"w":"their","pos":"대명사","mean":"그들의"},{"w":"way","pos":"명사","mean":"길"},{"w":"because","pos":"전치사","mean":"~때문에 (because of 전체 뜻)"},{"w":"of","pos":"전치사","mean":"(because of의 일부)"},{"w":"the","pos":"관사","mean":"그"},{"w":"bright","pos":"형용사","mean":"밝은"},{"w":"lights","pos":"명사","mean":"불빛"},{"w":"from","pos":"전치사","mean":"~에서"},{"w":"the","pos":"관사","mean":"그"},{"w":"houses","pos":"명사","mean":"집"}],"memo":null},{"no":"27","en":"They all talked about how to save baby turtles.","ko":"그들은 모두 아기 거북들을 구하는 방법에 관해 이야기했다.","pattern":"1형식","pt":"SV","chunks":[{"t":"They","role":"S","k":"그들은","who":"대명사"},{"t":"all","role":"M","k":"모두","kind":"형용사","to":0},{"t":"talked","role":"V","k":"이야기했다"},{"t":"about how to save baby turtles.","role":"M","k":"아기 거북들을 구하는 방법에 대해","kind":"부사구","to":2}],"words":[{"w":"They","pos":"대명사","mean":"그들"},{"w":"all","pos":"형용사","mean":"모두"},{"w":"talked","pos":"동사","mean":"이야기하다"},{"w":"about","pos":"전치사","mean":"~에 대해"},{"w":"how","pos":"의문사","mean":"어떻게"},{"w":"to","pos":"to(부정사)","mean":"~할"},{"w":"save","pos":"동사","mean":"구하다"},{"w":"baby","pos":"명사","mean":"아기"},{"w":"turtles","pos":"명사","mean":"거북"}],"memo":null},{"no":"28","en":"Many volunteered for starting a campaign to turn off lights at night.","ko":"많은 사람들이 밤에 불을 끄는 캠페인을 시작하는 데 자원했다.","pattern":"1형식","pt":"SV","chunks":[{"t":"Many","role":"S","k":"많은 사람들이","who":"대명사"},{"t":"volunteered","role":"V","k":"자원했다"},{"t":"for starting a campaign","role":"M","k":"캠페인을 시작하는 것에","kind":"부사구","to":1},{"t":"to turn off lights at night.","role":"M","k":"밤에 불을 끄는","kind":"to부정사(형용사적 용법)","to":2,"subpt":"SVO","sub":[{"t":"to turn off","role":"V","k":"끄는"},{"t":"lights","role":"O","k":"불을","who":"명사"},{"t":"at night.","role":"M","k":"밤에","kind":"부사구","to":0}]}],"words":[{"w":"Many","pos":"대명사","mean":"많은 사람들"},{"w":"volunteered","pos":"동사","mean":"자원하다"},{"w":"for","pos":"전치사","mean":"~에"},{"w":"starting","pos":"동사","mean":"시작하다"},{"w":"a","pos":"관사","mean":"하나의"},{"w":"campaign","pos":"명사","mean":"캠페인"},{"w":"to","pos":"to(부정사)","mean":"~하는"},{"w":"turn","pos":"동사","mean":"끄다 (turn off 전체 뜻)"},{"w":"off","pos":"부사","mean":"(turn off의 일부)"},{"w":"lights","pos":"명사","mean":"불"},{"w":"at","pos":"전치사","mean":"~에서"},{"w":"night","pos":"명사","mean":"밤"}],"memo":null},{"no":"29","en":"Others agreed to patrol the beach together and protect the nests.","ko":"다른 이웃들은 함께 해변을 순찰하며 둥지를 지키는 데 동의했다.","pattern":"3형식","pt":"SVO","chunks":[{"t":"Others","role":"S","k":"다른 사람들은","who":"대명사"},{"t":"agreed","role":"V","k":"동의했다"},{"t":"to patrol the beach together and protect the nests.","role":"O","k":"함께 해변을 순찰하며 둥지를 지키는 것에","who":"to부정사","kind":"to부정사(명사적 용법)","subpt":"SVO","sub":[{"t":"to patrol","role":"V","k":"순찰하는"},{"t":"the beach","role":"O","k":"해변을","who":"명사"},{"t":"together","role":"M","k":"함께","kind":"부사","to":0},{"t":"and","role":"M","k":"그리고","kind":"접속사"},{"t":"protect","role":"V","k":"지키는"},{"t":"the nests.","role":"O","k":"둥지를","who":"명사"}]}],"words":[{"w":"Others","pos":"대명사","mean":"다른 사람들"},{"w":"agreed","pos":"동사","mean":"동의하다"},{"w":"to","pos":"to(부정사)","mean":"~하는 것"},{"w":"patrol","pos":"동사","mean":"순찰하다"},{"w":"the","pos":"관사","mean":"그"},{"w":"beach","pos":"명사","mean":"해변"},{"w":"together","pos":"부사","mean":"함께"},{"w":"and","pos":"접속사","mean":"그리고"},{"w":"protect","pos":"동사","mean":"지키다"},{"w":"the","pos":"관사","mean":"그"},{"w":"nests","pos":"명사","mean":"둥지"}],"memo":null},{"no":"30","en":"I went on a turtle patrol with my classmates and volunteers.","ko":"나는 반 친구들, 자원봉사자들과 함께 거북을 위한 순찰에 나섰다.","pattern":"1형식","pt":"SV","chunks":[{"t":"I","role":"S","k":"나는","who":"대명사"},{"t":"went","role":"V","k":"나섰다"},{"t":"on a turtle patrol","role":"M","k":"거북 순찰에","kind":"부사구","to":1},{"t":"with my classmates and volunteers.","role":"M","k":"반 친구들, 자원봉사자들과 함께","kind":"부사구","to":1}],"words":[{"w":"I","pos":"대명사","mean":"나"},{"w":"went","pos":"동사","mean":"가다"},{"w":"on","pos":"전치사","mean":"~에"},{"w":"a","pos":"관사","mean":"하나의"},{"w":"turtle","pos":"명사","mean":"거북"},{"w":"patrol","pos":"명사","mean":"순찰"},{"w":"with","pos":"전치사","mean":"~와 함께"},{"w":"my","pos":"대명사","mean":"나의"},{"w":"classmates","pos":"명사","mean":"반 친구"},{"w":"and","pos":"접속사","mean":"그리고"},{"w":"volunteers","pos":"명사","mean":"자원봉사자"}],"memo":{"basis":"기준: 거의 필수에 가까운 부사구는 수식어로 처리","text":"went on a turtle patrol에서 on a turtle patrol은 간 목적을 알려 주는 수식어"}},{"no":"31","en":"Everyone smiled because the lights along the beach went out one by one.","ko":"해변가의 불빛이 하나씩 꺼지자 모두 미소를 지었다.","pattern":"1형식","pt":"SV","chunks":[{"t":"Everyone","role":"S","k":"모두가","who":"대명사"},{"t":"smiled","role":"V","k":"미소 지었다"},{"t":"because the lights along the beach went out one by one.","role":"M","k":"해변을 따라 있는 불빛들이 하나씩 꺼졌기 때문에","kind":"부사절","to":1,"subpt":"SV","sub":[{"t":"because","role":"CJ","k":"~때문에"},{"t":"the lights","role":"S","k":"불빛들이","who":"명사"},{"t":"along the beach","role":"M","k":"해변을 따라 있는","kind":"형용사구","to":1},{"t":"went out","role":"V","k":"꺼졌다"},{"t":"one by one.","role":"M","k":"하나씩","kind":"부사구","to":3}]}],"words":[{"w":"Everyone","pos":"대명사","mean":"모두"},{"w":"smiled","pos":"동사","mean":"미소 짓다"},{"w":"because","pos":"접속사","mean":"~때문에"},{"w":"the","pos":"관사","mean":"그"},{"w":"lights","pos":"명사","mean":"불빛"},{"w":"along","pos":"전치사","mean":"~을 따라"},{"w":"the","pos":"관사","mean":"그"},{"w":"beach","pos":"명사","mean":"해변"},{"w":"went","pos":"동사","mean":"꺼지다 (go out 전체 뜻)"},{"w":"out","pos":"부사","mean":"(go out의 일부)"},{"w":"one","pos":"명사","mean":"하나씩 (one by one 전체 뜻)"},{"w":"by","pos":"전치사","mean":"(one by one의 일부)"},{"w":"one","pos":"명사","mean":"(one by one의 일부)"}],"memo":null},{"no":"32","en":"The shining moon was bright like silver.","ko":"빛나는 달은 은처럼 밝았다.","pattern":"2형식","pt":"SVC","chunks":[{"t":"The shining moon","role":"S","k":"빛나는 달은","who":"명사"},{"t":"was","role":"V","k":"~였다"},{"t":"bright","role":"C","k":"밝은","who":"형용사"},{"t":"like silver.","role":"M","k":"은처럼","kind":"부사구","to":2}],"words":[{"w":"The","pos":"관사","mean":"그"},{"w":"shining","pos":"동사","mean":"빛나다"},{"w":"moon","pos":"명사","mean":"달"},{"w":"was","pos":"동사","mean":"~이다"},{"w":"bright","pos":"형용사","mean":"밝은"},{"w":"like","pos":"전치사","mean":"~처럼"},{"w":"silver","pos":"명사","mean":"은"}],"memo":null},{"no":"33","en":"Soon, tiny turtles crawled out of the nests.","ko":"곧, 작은 거북들이 둥지에서 기어 나왔다.","pattern":"1형식","pt":"SV","chunks":[{"t":"Soon,","role":"M","k":"곧","kind":"부사","to":2},{"t":"tiny turtles","role":"S","k":"작은 거북들이","who":"명사"},{"t":"crawled","role":"V","k":"기어 나왔다"},{"t":"out of the nests.","role":"M","k":"둥지에서","kind":"부사구","to":2}],"words":[{"w":"Soon","pos":"부사","mean":"곧"},{"w":"tiny","pos":"형용사","mean":"아주 작은"},{"w":"turtles","pos":"명사","mean":"거북"},{"w":"crawled","pos":"동사","mean":"기어가다"},{"w":"out","pos":"부사","mean":"~밖으로 (out of 전체 뜻)"},{"w":"of","pos":"전치사","mean":"(out of의 일부)"},{"w":"the","pos":"관사","mean":"그"},{"w":"nests","pos":"명사","mean":"둥지"}],"memo":null},{"no":"34","en":"Then, the turtles moved slowly over the sand and disappeared into the sea.","ko":"그 후 거북들은 모래 위를 천천히 움직여 바다로 사라졌다.","pattern":"1형식 + 1형식","pt":null,"chunks":[{"t":"Then,","role":"M","k":"그 후","kind":"부사","to":-1},{"t":"the turtles","role":"S","k":"거북들은","who":"명사"},{"t":"moved","role":"V","k":"움직였다"},{"t":"slowly","role":"M","k":"천천히","kind":"부사","to":2},{"t":"over the sand","role":"M","k":"모래 위로","kind":"부사구","to":2},{"t":"and","role":"M","k":"그리고","kind":"접속사"},{"t":"disappeared","role":"V","k":"사라졌다"},{"t":"into the sea.","role":"M","k":"바다 속으로","kind":"부사구","to":6}],"words":[{"w":"Then","pos":"부사","mean":"그 후"},{"w":"the","pos":"관사","mean":"그"},{"w":"turtles","pos":"명사","mean":"거북"},{"w":"moved","pos":"동사","mean":"움직이다"},{"w":"slowly","pos":"부사","mean":"천천히"},{"w":"over","pos":"전치사","mean":"~위로"},{"w":"the","pos":"관사","mean":"그"},{"w":"sand","pos":"명사","mean":"모래"},{"w":"and","pos":"접속사","mean":"그리고"},{"w":"disappeared","pos":"동사","mean":"사라지다"},{"w":"into","pos":"전치사","mean":"~속으로"},{"w":"the","pos":"관사","mean":"그"},{"w":"sea","pos":"명사","mean":"바다"}],"memo":null},{"no":"35","en":"We remained silent with wonder and followed the moon home just like the turtles.","ko":"우리는 경이감 속에 침묵을 지키며 거북들처럼 달빛을 따라 집으로 돌아갔다.","pattern":"2형식 + 3형식","pt":null,"chunks":[{"t":"We","role":"S","k":"우리는","who":"대명사"},{"t":"remained","role":"V","k":"있었다"},{"t":"silent","role":"C","k":"조용한 채로","who":"형용사"},{"t":"with wonder","role":"M","k":"경이감에 차서","kind":"부사구","to":2},{"t":"and","role":"M","k":"그리고","kind":"접속사"},{"t":"followed","role":"V","k":"따라갔다"},{"t":"the moon","role":"O","k":"달을","who":"명사"},{"t":"home","role":"M","k":"집으로","kind":"부사","to":5},{"t":"just like the turtles.","role":"M","k":"꼭 그 거북들처럼","kind":"부사구","to":5}],"words":[{"w":"We","pos":"대명사","mean":"우리"},{"w":"remained","pos":"동사","mean":"(~한 채로) 있다"},{"w":"silent","pos":"형용사","mean":"조용한"},{"w":"with","pos":"전치사","mean":"~을 느끼며"},{"w":"wonder","pos":"명사","mean":"경이감"},{"w":"and","pos":"접속사","mean":"그리고"},{"w":"followed","pos":"동사","mean":"따라가다"},{"w":"the","pos":"관사","mean":"그"},{"w":"moon","pos":"명사","mean":"달"},{"w":"home","pos":"부사","mean":"집으로"},{"w":"just","pos":"부사","mean":"바로"},{"w":"like","pos":"전치사","mean":"~처럼"},{"w":"the","pos":"관사","mean":"그"},{"w":"turtles","pos":"명사","mean":"거북"}],"memo":null}]}]};
+const app=document.getElementById('app');
+const LEVEL={gibon:0,baljeon:1,simhwa:2,gogyo:2};
+LEVEL[DATA.sets[0].id]=1;
+const NAME={S:'주어',V:'동사',O:'목적어',IO:'간접목적어',DO:'직접목적어',C:'보어',OC:'목적격보어',M:'수식어',CJ:'접속사'};
+const BN={S:'주어',V:'동사',O:'목적어',C:'보어',M:'수식어',CJ:'접속사'};
+const ANCH={SV:['SV','1형식',[['Birds','S'],['fly','V']]],SVC:['SVC','2형식',[['She','S'],['is','V'],['happy','C']]],SVO:['SVO','3형식',[['I','S'],['like','V'],['apples','O']]],SVOO:['SVOO','4형식',[['She','S'],['gave','V'],['me','O'],['a book','O']]],SVOC:['SVOC','5형식',[['They','S'],['call','V'],['him','O'],['Tom','C']]]};
+const WHO=['명사','대명사','형용사','동명사','to부정사','동사원형','절'];
+const WHYWHO={'명사':'이름(사람·사물·장소)을 나타내는 말','대명사':'이름을 대신해 쓰는 말','형용사':'상태를 설명하는 말','동명사':'동사+ing 모양이 명사 역할을 함','to부정사':'to+동사원형 모양이 명사 역할을 함','동사원형':'to 없이 동사 그대로의 모양','절':'주어+동사가 들어 있는 덩어리'};
+const ROLEOPT=[['S','주어'],['V','동사'],['O','목적어'],['C','보어'],['M','수식어'],['CJ','접속사']];
+const BASE={S:'S',V:'V',O:'O',IO:'O',DO:'O',C:'C',OC:'C',M:'M',CJ:'CJ'};
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function en(s){return '<span lang="en" translate="no">'+esc(s)+'</span>'}
+function B(c){if(c.role==='CJ'||(c.role==='M'&&c.kind==='접속사'))return 'CJ';return BASE[c.role]}
+function ck(c){const b=B(c);if(b==='M')return /형용사/.test(c.kind||'')?'MA':'MB';return b}
+function sp(c,i){return (i>0&&!/^['’.,?!;:]/.test(c.t))?' ':''}
+function barCol(c){const b=B(c);if(b==='S')return '#ffc83d';if(b==='O')return '#a9e6a4';if(b==='C')return '#9fd3f2';return /형용사/.test(c.kind||'')?'#c9a6f5':'#f2b36b'}
+function cands(it){return it.chunks.concat(it.extra||[])}
+function toName(c,it){return c.to===-1?'문장 전체':c.to===-2?'꾸밈 없음':cands(it)[c.to].t}
+function eul(w){const ch=String(w).charCodeAt(String(w).length-1);return (ch>=0xAC00&&ch<=0xD7A3&&(ch-0xAC00)%28!==0)?'을':'를'}
+function isAdj(c){return /형용사/.test(c.kind||'')}
+function rel(c,it){
+  if(c.to===-2)return '유도부사 = 문장을 여는 말, 꾸미는 대상 없음';
+  if(c.to===-1)return '부사가 문장 전체를 꾸밈';
+  const t=cands(it)[c.to],tb=B(t);
+  if(/비교/.test(c.kind||''))return '비교하는 대상을 나타냄';
+  if(isAdj(c)){if(tb==='V')return '';const n=(t.who==='대명사'?'대명사':'명사');return '형용사가 '+n+eul(n)+' 꾸밈'}
+  if(tb==='CJ')return '부사가 접속사를 꾸밈';
+  if(tb==='V')return '부사가 동사를 꾸밈';
+  if(tb==='M')return '부사가 '+(isAdj(t)?'형용사':'부사')+'를 꾸밈';
+  if(t.who==='형용사')return '부사가 형용사를 꾸밈';
+  return '수식어가 '+(t.who&&t.who!=='절'?t.who+eul(t.who):'앞의 말을')+' 꾸밈';
+}
+function head(c){
+  let det=[c.kind,c.info].filter(Boolean).join(', ').split(/\s*,\s*/).filter(Boolean);
+  const seen=[];det.forEach(d=>{const dd=d.replace(/\(.*\)/,'').trim();if(dd&&!seen.some(x=>x.indexOf(dd)>=0||dd.indexOf(x)>=0)){seen.push(d)}});
+  det=seen;let h=c.who||'';
+  det=det.filter(d=>d!==h);
+  if(det.length&&h&&det[0].indexOf(h)===0){h=det.shift()}
+  return esc(h)+det.map(d=>' · '+esc(d)).join('');
+}
+function ansText(c,it){
+  const b=B(c);
+  if(b==='V')return '동사';
+  if(b==='CJ')return '접속사';
+  if(b==='M'){if(c.to===-2)return '수식어 ('+esc(c.kind||'')+') · 꾸밈 없음<br><small>'+esc(rel(c,it))+'</small>';return '수식어 ('+esc(c.kind||'')+(c.info?' · '+esc(c.info):'')+') → '+(c.to>=0?en(toName(c,it)):esc(toName(c,it)))+' 꾸밈'+(rel(c,it)?'<br><small>'+esc(rel(c,it))+'</small>':'')}
+  return NAME[c.role]+' ('+head(c)+')';
+}
+const BEV=['is','am','are','was','were','be','been','being'];
+function mainV(c,it){
+  const ch=it.chunks,k=ch.indexOf(c);let a=0,z=ch.length;
+  for(let j=k-1;j>=0;j--)if(B(ch[j])==='CJ'){a=j+1;break}
+  for(let j=k+1;j<ch.length;j++)if(B(ch[j])==='CJ'){z=j;break}
+  const vs=ch.slice(a,z).filter(x=>x.role==='V');
+  return vs.length?vs[vs.length-1]:(ch.filter(x=>x.role==='V')[0]||{t:'동사'});
+}
+function whyRole(c,it){
+  const b=B(c),vc=mainV(c,it),v=vc.t,be=BEV.indexOf(v.toLowerCase().split(' ').pop())>=0;
+  if(b==='S')return c.t+(be?' = 설명의 대상이 되는 쪽':' = '+v+' 하는 쪽');
+  if(b==='V')return c.t+' = 동작·상태를 말하는 말';
+  if(b==='O')return c.t+' = '+v+' 의 대상 (~을/를)';
+  if(b==='C')return c.t+' = 앞의 말을 설명하는 말';
+  if(b==='CJ')return c.t+' = 말과 말을 이어 주는 말';
+  if(c.to===-2)return c.t+' = 문장을 여는 말 (뒤에 진짜 주어가 옴)';
+  return c.t+' = 빼도 문장이 성립하는 꾸미는 말';
+}
+let cur=null,round=0,cust=null,retried=false,conf={};
+function bump(k){conf[k]=(conf[k]||0)+1}
+function home(){rounds(DATA.sets[0].id)}
+function nr(){return Math.ceil(cur.items.length/10)}
+function recKey(){return 'bc_rec_'+cur.id}
+function recGet(){try{return JSON.parse(localStorage.getItem(recKey())||'{}')}catch(e){return {}}}
+function recSet(r,wrong){try{const o=recGet();const d=new Date();o[r]={w:wrong,d:d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)};localStorage.setItem(recKey(),JSON.stringify(o))}catch(e){}}
+function rounds(id){
+  cur=DATA.sets[0];cust=null;
+  const rec=recGet();
+  let h='<h1>문장 성분 연습</h1><h2>'+esc(cur.label)+'</h2><div class="wm">10문장씩 골라서 풀기 · 앞에서부터</div>';
+  for(let r=0;r<nr();r++){
+    if(r%10===0){const e=Math.min(cur.items.length,(r+10)*10);h+=(r?'</div>':'')+'<div class="sec">'+cur.items[r*10].no+' – '+cur.items[e-1].no+'</div><div class="bgrid">'}
+    const a=cur.items[r*10].no,b=cur.items[Math.min(cur.items.length,(r+1)*10)-1].no;
+    h+='<button class="blk'+(rec[r]?' dn':'')+'" style="--c:'+cur.color+'" data-r="'+r+'"'+(rec[r]?' title="'+esc(rec[r].d)+'"':'')+'>'+a.slice(-4)+'–'+b.slice(-4)+(rec[r]?'<i>✓</i>':'')+'</button>';
+  }
+  app.innerHTML=h+'</div><button class="back" id="bcx">목록으로</button>';
+  document.getElementById('bcx').onclick=()=>{location.href='won.html'};
+  app.querySelectorAll('.blk').forEach(b=>b.onclick=()=>startQ(+b.dataset.r));
+  window.scrollTo(0,0);
+}
+function items(){return cust||cur.items.slice(round*10,round*10+10)}
+function seen(){try{return localStorage.getItem('bc_concept')==='1'}catch(e){return false}}
+function mark(){try{localStorage.setItem('bc_concept','1')}catch(e){}}
+function conceptHTML(){
+  return '<div class="cc"><div class="cch">역할과 모양은 다름</div><div class="ccl"><b>문장성분</b> = 문장 안에서 하는 역할 <span class="wm">주어 · 동사 · 목적어 · 보어</span></div><div class="ccl"><b>누가 들어갔나</b> = 그 자리에 들어간 말의 모양 <span class="wm">명사 · 대명사 · 형용사 · 동명사 · to부정사 · 동사원형 · 절</span></div><div class="ccx"><span lang="en" translate="no"><span class="x k-S">Apples</span> <span class="x k-V">are</span> red.</span><span class="wm">주어 · 들어간 말은 명사</span></div><div class="ccx"><span lang="en" translate="no"><span class="x k-S">I</span> <span class="x k-V">like</span> <span class="x k-O">apples</span>.</span><span class="wm">목적어 · 들어간 말은 명사</span></div><div class="ccl">같은 단어, 다른 역할</div></div>';
+}
+function concept(next){
+  app.innerHTML='<div class="card">'+conceptHTML()+'</div><div class="btnrow"><button class="pri" id="cgo">시작</button></div><button class="back" id="lst">목록으로</button>';
+  document.getElementById('cgo').onclick=()=>{mark();next()};document.getElementById('lst').onclick=()=>rounds(cur.id);window.scrollTo(0,0);
+}
+function showConcept(){
+  const d=document.createElement('div');d.className='ov';d.innerHTML='<div class="card">'+conceptHTML()+'<button class="back" id="cx">닫기</button></div>';
+  document.body.appendChild(d);d.querySelector('#cx').onclick=()=>d.remove();
+}
+function startQ(r){round=r;cust=null;retried=false;conf={};if(seen())quiz(0,0,[]);else concept(()=>quiz(0,0,[]))}
+/* ---------- copy view ---------- */
+function label(c,it){
+  const b=B(c);let sm='';
+  if(c.who)sm=head(c);else if(b==='M'&&c.kind)sm=esc(c.kind);
+  let tg='';
+  if(b==='M'){if(c.to===-1)tg=' → 문장 전체 꾸밈';else if(c.to>=0)tg=' → '+en(cands(it)[c.to].t)+' 꾸밈'}
+  return (c.k?'<span class="g">'+esc(c.k)+'</span>':'')+'<span class="r">'+(b==='CJ'?'접속사':NAME[c.role])+(sm?' <small>('+sm+')</small>':'')+tg+'</span>';
+}
+function chunkSpans(it){
+  return it.chunks.map((c,i)=>sp(c,i)+'<span class="ch"><span class="t k-'+ck(c)+'">'+esc(c.t)+'</span><span class="l">'+label(c,it)+'</span></span>').join('');
+}
+function subHTML(chs){
+  return chs.map(c=>{
+    const b=B(c);let extra='';
+    if(b==='M'&&c.to>=0&&chs[c.to])extra=' → '+en(chs[c.to].t)+' 꾸밈';
+    return '<div class="sub"><b>'+(b==='CJ'?'접속사':NAME[c.role])+'</b> '+en(c.t)+(c.who?' <span class="wm">'+head(c)+'</span>':(c.kind?' <span class="wm">'+esc(c.kind)+'</span>':''))+extra+'</div>';
+  }).join('');
+}
+function anchHTML(code){
+  const a=ANCH[code];
+  return '<div class="anc"><b>'+a[0]+'</b>'+a[2].map(e=>'<span class="x k-'+e[1]+'" lang="en" translate="no">'+esc(e[0])+'</span>').join('')+'<span>와 같은 구조</span></div>';
+}
+function copyView(wl,wrong){
+  const its=items();
+  let h='<h1>틀린 문장 색칠</h1><div class="legend"><span class="k-S">주어</span><span class="k-V">동사</span><span class="k-O">목적어</span><span class="k-C">보어</span><span class="k-MA">형용사 수식어</span><span class="k-MB">그 밖의 수식어</span></div>';
+  wl.forEach(i=>{
+    const it=its[i];
+    const wm=it.words.filter(w=>w.pos!=='관사').map(w=>en(w.w)+' '+esc(w.mean)).join(' · ');
+    const subs=it.chunks.filter(c=>c.sub).map(c=>subHTML(c.sub)).join('');
+    h+='<div class="card"><div class="no">'+esc(it.no)+(it.pt?'':' · '+esc(it.pattern))+'</div><div class="sent" lang="en" translate="no">'+chunkSpans(it)+'</div>'+(it.pt?anchHTML(it.pt):'')+subs+'<div class="ko">'+esc(it.ko)+'</div><div class="wm">'+wm+'</div>'+(it.memo?'<div class="note"><b>'+esc(it.memo.basis)+'</b> '+esc(it.memo.text||'')+'</div>':'')+'</div>';
+  });
+  h+='<div class="btnrow"><button class="pri" id="go">다 칠했음</button></div><button class="back" id="lst">목록으로</button>';
+  app.innerHTML=h;
+  document.getElementById('lst').onclick=()=>rounds(cur.id);
+  const go=document.getElementById('go');
+  go.onclick=()=>{if(!go.classList.contains('warn')){go.classList.add('warn');go.textContent='한 번 더 누르면 끝남';return}afterCopy(wl,wrong)};
+  window.scrollTo(0,0);
+}
+function afterCopy(wl,wrong){
+  if(!retried&&wl.length>=5){const its=items();cust=wl.map(i=>its[i]);retried=true;quiz(0,wrong,[])}else done(wrong)
+}
+function confHTML(){
+  const a=Object.keys(conf).map(k=>[k,conf[k]]).sort((x,y)=>y[1]-x[1]).slice(0,3);
+  if(!a.length)return '';
+  return '<div class="confl"><b>많이 헷갈린 것</b>'+a.map(e=>'<div>'+esc(e[0])+' · '+e[1]+'번</div>').join('')+'</div>';
+}
+function done(wrong){
+  cust=null;const its=items();recSet(round,wrong);
+  app.innerHTML='<h1>'+its[0].no+' – '+its[its.length-1].no+' 완료</h1><div class="card sum">오답 '+wrong+'번'+confHTML()+'</div><button class="pri" id="bk">목록으로</button>';
+  document.getElementById('bk').onclick=()=>rounds(cur.id);window.scrollTo(0,0);
+}
+/* ---------- one floor ---------- */
+function mount(it,host,floor,cls,done,opt){
+  opt=opt||{};
+  host.innerHTML='<div class="card"><div class="ftag"></div><div class="sent" lang="en" translate="no" id="sent'+floor+'">'+it.chunks.map((c,k)=>sp(c,k)+'<span class="t" data-k="'+k+'">'+esc(c.t)+'</span>').join('')+'</div><div class="rows"></div></div><div class="btnrow"><button class="pri" disabled>제출</button></div>';
+  host.className=cls;
+  host.querySelector('.ftag').textContent=opt.tag||(floor+'층');
+  const rows=host.querySelector('.rows'),sub=host.querySelector('.pri');
+  const st=it.chunks.map(()=>({role:opt.fixedM?'M':null,who:null,to:undefined}));let pat=null;
+  const cd=cands(it),noneOK=true,cjOK=cd.some(x=>x.role==='M'&&B(x)!=='CJ'&&x.to>=0&&B(cd[x.to])==='CJ');
+  function complete(){
+    for(let k=0;k<it.chunks.length;k++){const s=st[k];if(!s.role)return false;
+      if((s.role==='S'||s.role==='O'||s.role==='C')&&!s.who)return false;
+      if(s.role==='M'&&s.to===undefined)return false}
+    if(it.pt&&!pat)return false;return true;
+  }
+  function refresh(){sub.disabled=!complete()}
+  const rowEls=[];
+  it.chunks.forEach((c,k)=>{
+    const r=document.createElement('div');r.className='qr';
+    r.innerHTML='<span class="t" lang="en" translate="no">'+esc(c.t)+'</span>'+(c.k?'<span class="g">'+esc(c.k)+'</span>':'')+(opt.fixedM?'':'<div class="cap">문장성분</div><span class="opt"></span>')+'<div class="pbox"></div>';
+    const o=r.querySelector('.opt'),pb=r.querySelector('.pbox');
+    function drawSub(){
+      pb.innerHTML='';const s=st[k];
+      if(s.role==='S'||s.role==='O'||s.role==='C'){
+        const line=document.createElement('div');line.className='popt';
+        line.innerHTML='<span class="cap2">누가 들어갔나?</span>';
+        WHO.forEach((w,wi)=>{if(wi===3){const br=document.createElement('span');br.style.cssText='flex:0 0 100%;height:0';line.appendChild(br)}const b=document.createElement('button');b.textContent=w;if(s.who===w)b.className='sel';b.onclick=()=>{s.who=w;drawSub();refresh()};line.appendChild(b)});
+        pb.appendChild(line);
+      }else if(s.role==='M'){
+        const line=document.createElement('div');line.className='popt';
+        line.innerHTML='<span class="cap2">누구를 꾸미나?</span>';
+        cd.forEach((x,j)=>{if(j===k||(B(x)==='CJ'&&!cjOK))return;const b=document.createElement('button');const same=cd.filter(y=>y.t===x.t&&!(B(y)==='CJ'&&!cjOK));const ord=same.length>1?' '+'①②③④⑤'[same.indexOf(x)]:'';b.textContent=x.t+ord;b.dataset.j=j;b.setAttribute('lang','en');if(s.to===j)b.className='sel';b.onclick=()=>{s.to=j;drawSub();refresh()};line.appendChild(b)});
+        const b=document.createElement('button');b.textContent='문장 전체';if(s.to===-1)b.className='sel';b.onclick=()=>{s.to=-1;drawSub();refresh()};line.appendChild(b);
+        if(noneOK){const b2=document.createElement('button');b2.textContent='꾸밈 없음';if(s.to===-2)b2.className='sel';b2.onclick=()=>{s.to=-2;drawSub();refresh()};line.appendChild(b2)}
+        pb.appendChild(line);
+      }
+    }
+    if(o)ROLEOPT.forEach(([key,nm])=>{
+      const b=document.createElement('button');b.textContent=nm;
+      b.onclick=()=>{st[k].role=key;st[k].who=null;st[k].to=undefined;o.querySelectorAll('button').forEach(x=>x.className=x===b?'sel':'');drawSub();refresh()};
+      o.appendChild(b)});
+    if(opt.fixedM)drawSub();
+    rows.appendChild(r);rowEls.push(r);
+  });
+  let pr=null;
+  if(it.pt){
+    pr=document.createElement('div');pr.className='qr';
+    pr.innerHTML='<span class="t" style="background:transparent;padding-left:0">문형</span><span class="opt"></span>';
+    const o=pr.querySelector('.opt');
+    Object.keys(ANCH).forEach(code=>{
+      const b=document.createElement('button');b.textContent=code;
+      b.onclick=()=>{pat=code;o.querySelectorAll('button').forEach(x=>x.className=x===b?'sel':'');refresh()};
+      o.appendChild(b)});
+    rows.appendChild(pr);
+  }
+  sub.onclick=()=>{
+    if(!complete())return;
+    sub.style.display='none';let bad=0;
+    it.chunks.forEach((c,k)=>{
+      const s=st[k],r=rowEls[k],b=B(c);
+      let ok=s.role===b,kind='role';
+      if(ok&&(b==='S'||b==='O'||b==='C')){ok=s.who===c.who;kind='who'}
+      if(ok&&b==='M'){ok=s.to===c.to;kind='to'}
+      const cls2='k-'+ck(c);r.querySelector('.t').classList.add(cls2);host.querySelector('.sent .t[data-k="'+k+'"]').classList.add(cls2);
+      const oo=r.querySelector('.opt');if(oo)oo.remove();r.querySelector('.pbox').remove();
+      const cp=r.querySelector('.cap');if(cp)cp.remove();
+      if(ok){r.insertAdjacentHTML('beforeend','<span class="mk mko">O</span><span class="ok">'+ansText(c,it)+'</span>')}
+      else{bad++;r.classList.add('wr');
+        let why;
+        if(kind==='role'){why=whyRole(c,it);bump((BN[s.role]||'')+' → '+BN[b])}
+        else if(kind==='to'){why=c.to===-2?c.t+' = 문장을 여는 말, 꾸미는 대상이 없음':c.t+' 는 '+toName(c,it)+' 를 꾸미는 말';bump('꾸미는 대상')}
+        else{why=c.t+' = '+WHYWHO[c.who];bump(s.who+' → '+c.who)}
+        const mine=(BN[s.role]||'')+(s.who?' ('+s.who+')':'')+(s.role==='M'&&s.to!==undefined?' → '+(s.to===-1?'문장 전체':s.to===-2?'꾸밈 없음':cd[s.to].t):'');
+        r.insertAdjacentHTML('beforeend','<span class="mk mkx">X</span><span class="mine">내 답: '+esc(mine)+'</span><span class="ok">정답: '+ansText(c,it)+'</span><div class="why" lang="ko">'+esc(why)+'</div>')}
+    });
+    if(it.pt){
+      const ok=pat===it.pt;pr.querySelector('.opt').remove();
+      if(ok)pr.insertAdjacentHTML('beforeend','<span class="mk mko">O</span><span class="ok">'+it.pt+' · '+ANCH[it.pt][1]+'</span>');
+      else{bad++;bump('문형');pr.classList.add('wr');pr.insertAdjacentHTML('beforeend','<span class="mk mkx">X</span><span class="mine">내 답: '+pat+'</span><span class="ok">정답: '+it.pt+' · '+ANCH[it.pt][1]+'</span>')}
+      const sk=it.chunks.filter(c=>B(c)!=='M'&&B(c)!=='CJ').map(c=>'<span class="x k-'+ck(c)+'" lang="en" translate="no">'+esc(c.t)+'</span>').join('');
+      const an=ANCH[it.pt][2].map(e=>'<span class="x k-'+e[1]+'" lang="en" translate="no">'+esc(e[0])+'</span>').join('');
+      rows.insertAdjacentHTML('afterend','<div class="wrap"><div class="wh">'+it.pt+' · '+ANCH[it.pt][1]+'</div><div class="wl"><span class="wn">이 문장</span>'+sk+'</div><div class="wl"><span class="wn">기본 예문</span>'+an+'</div></div>');
+    }
+    rows.insertAdjacentHTML('beforebegin','<div class="res '+(bad?'resx':'reso')+'">'+(bad?'틀린 곳 '+bad+'개':'모두 맞음')+'</div>');
+    if(floor===1)window.scrollTo(0,0);else host.scrollIntoView({block:'start'});
+    done(bad);
+  };
+}
+/* ---------- closing card with arrows ---------- */
+function ilab(x){
+  const d=(x.kind||'')+(x.info||'');
+  if(B(x)==='S'&&/가주어/.test(d))return '가주어';
+  if(B(x)==='S'&&/진주어/.test(d))return '진주어';
+  if(B(x)==='CJ')return '접속사';
+  return NAME[x.role]||'';
+}
+function rowHTML(chunks,extra,label,cls,bar){
+  const all=chunks.concat(extra||[]);
+  const pairs=[];
+  all.forEach((c,i)=>{if(c.role==='M'&&B(c)!=='CJ'&&c.to!==undefined&&c.to>-2)pairs.push([i,c.to,isAdj(c)?'#6f3fc2':'#c9680f'])});
+  const gi=chunks.findIndex(x=>B(x)==='S'&&/가주어/.test((x.kind||'')+(x.info||'')));
+  const ji=chunks.findIndex(x=>B(x)==='S'&&/진주어/.test((x.kind||'')+(x.info||'')));
+  if(gi>=0&&ji>=0)pairs.push([gi,ji,'#8a7a2a','d']);
+  return '<div class="grp'+(cls||'')+'"'+(bar?' style="border-left-color:'+bar+'"':'')+'><div class="n">'+label+'</div><div class="rw" data-pairs=\''+JSON.stringify(pairs)+'\'><svg class="ar"></svg><div class="cl">'+all.map(x=>'<span class="cb"><i>'+ilab(x)+'</i><span class="x k-'+ck(x)+'" lang="en" translate="no">'+esc(x.t)+'</span></span>').join('')+'</div></div></div>';
+}
+function draw(){
+  document.querySelectorAll('.rw').forEach(rw=>{
+    const pairs=JSON.parse(rw.getAttribute('data-pairs')||'[]');
+    rw.classList.toggle('has',pairs.length>0);
+    const svg=rw.querySelector('svg'),R=rw.getBoundingClientRect(),cbs=[].slice.call(rw.querySelectorAll('.cb'));let out='';
+    function box(i){const b=cbs[i].getBoundingClientRect();return {x:b.left-R.left+b.width/2,top:b.top-R.top,bot:b.bottom-R.top,l:b.left-R.left,r:b.right-R.left}}
+    pairs.forEach(p=>{
+      const a=box(p[0]),col=p[2];
+      if(p[1]===-1){
+        const first=box(0),last=box(cbs.length-1),y=10;
+        out+='<path d="M'+a.x+' '+(a.top-2)+' V'+y+' M'+first.l+' '+(y+7)+' V'+y+' H'+last.r+' V'+(y+7)+'" fill="none" stroke="'+col+'" stroke-width="2.2" stroke-linecap="round"/><text x="'+((first.l+last.r)/2)+'" y="'+(y-3)+'" font-size="11" font-weight="700" fill="'+col+'" text-anchor="middle">문장 전체</text>';
+        return;
+      }
+      const b=box(p[1]);
+      if(p[3]==='d'){
+        const d=Math.abs(a.x-b.x),h=Math.min(22,10+d/12),y0=a.top-2;
+        out+='<path d="M'+a.x+' '+y0+' C'+a.x+' '+(y0-h*1.3)+' '+b.x+' '+(y0-h*1.3)+' '+b.x+' '+y0+'" fill="none" stroke="'+col+'" stroke-width="2" stroke-dasharray="2 4" stroke-linecap="round"/>';
+        return;
+      }
+      if(Math.abs(a.top-b.top)>10){const dn=a.top>b.top,x1=a.x,y1=dn?a.top-1:a.bot+1,x2=b.x,y2=dn?b.bot+2:b.top-2,sg=dn?1:-1;out+='<path d="M'+x1+' '+y1+' C'+x1+' '+(y1-sg*8)+' '+x2+' '+(y2+sg*8)+' '+x2+' '+y2+'" fill="none" stroke="'+col+'" stroke-width="2.2" stroke-linecap="round"/><path d="M'+(x2-5)+' '+(y2+sg*6)+' L'+x2+' '+y2+' L'+(x2+5)+' '+(y2+sg*6)+'" fill="none" stroke="'+col+'" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>';return}
+      const d=Math.abs(a.x-b.x),h=Math.min(24,12+d/12),y0=a.top-2,y1=a.top-3;
+      out+='<path d="M'+a.x+' '+y0+' C'+a.x+' '+(y0-h*1.3)+' '+b.x+' '+(y0-h*1.3)+' '+b.x+' '+(y1-1)+'" fill="none" stroke="'+col+'" stroke-width="2.2" stroke-linecap="round"/><path d="M'+(b.x-5)+' '+(y1-7)+' L'+b.x+' '+y1+' L'+(b.x+5)+' '+(y1-7)+'" fill="none" stroke="'+col+'" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>';
+    });
+    svg.innerHTML=out;
+  });
+}
+window.addEventListener('resize',draw);
+function plab(it){return it.pt?it.pt+' ('+ANCH[it.pt][1]+')':esc(it.pattern)}
+function closing(it,floors){
+  let h='<div class="clos"><div class="wh">구조 정리</div>'+rowHTML(it.chunks,null,'1층 · '+plab(it),'',null);
+  const zs=[];
+  floors.forEach(f=>{
+    const c=f.c,sit=f.sit;
+    if(c.sub){
+      h+=rowHTML(c.sub,null,'2층 · '+(c.subpt?c.subpt+' ('+ANCH[c.subpt][1]+')':''),' l2',barCol(c));
+      let z=B(c)==='M'?(en(toName(c,it))+' 를 꾸미는 덩어리 = '+c.subpt+' 구조'):(NAME[c.role]+' 자리에 '+c.subpt+' 구조가 통째로 들어간 모양');
+      const tg=c.sub.filter(x=>x.role==='M'&&x.to>=0&&B(x)!=='CJ');
+      if(tg.length)z+='<br>2층 '+en(tg[0].t)+' → '+en(c.sub[tg[0].to].t)+' 꾸밈';
+      zs.push(z);
+    }else if(c.chain){
+      h+=rowHTML(c.chain.chunks,c.chain.extra,'꾸밈 사슬',' l2',barCol(c));
+      zs.push(en(c.chain.chunks.map(x=>x.t).concat(c.chain.extra.map(x=>x.t)).join(' → '))+' 순서로 꾸밈이 이어지는 구조');
+    }
+  });
+  it.chunks.forEach(c=>{
+    if(c.role==='M'&&c.to===-1)zs.push(en(c.t)+' = 문장 전체를 꾸미는 말 (뺄 수 있음)');
+    if(c.role==='M'&&c.to===-2){const s=it.chunks.filter(x=>B(x)==='S')[0];zs.push(en(c.t)+' = 문장을 여는 유도부사'+(s?' · 뒤의 '+en(s.t)+' 가 진짜 주어 (도치)':''))}
+  });
+  const g=it.chunks.filter(x=>ilab(x)==='가주어')[0],j=it.chunks.filter(x=>ilab(x)==='진주어')[0];
+  if(g&&j)zs.push(en(g.t)+' = 가주어 · '+en(j.t)+' = 진주어 (점선으로 연결)');
+  if(zs.length)h+='<div class="clz">'+zs.join('<br>')+'</div>';
+  return h+'</div>';
+}
+function floorsOf(it){return it.chunks.filter(c=>c.sub||c.chain)}
+/* ---------- quiz ---------- */
+function quiz(i,wrong,wl){
+  const its=items();
+  if(i>=its.length){if(wl.length)copyView(wl,wrong);else done(wrong);return}
+  const it=its[i],lv=LEVEL[cur.id];
+  app.innerHTML='<div class="prog">'+(retried?'다시 · ':'')+(i+1)+' / '+its.length+' <button class="lk" id="cc">개념</button></div><div id="f1"></div><div id="f2"></div><div id="nxt"></div><button class="back" id="lst">목록으로</button>';
+  document.getElementById('cc').onclick=showConcept;document.getElementById('lst').onclick=()=>rounds(cur.id);
+  const f2=document.getElementById('f2'),nxt=document.getElementById('nxt');
+  let bad=0;
+  function finish(opened){
+    nxt.innerHTML=closing(it,opened)+(it.memo?'<div class="postit"><b>'+esc(it.memo.basis)+'</b>'+(it.memo.text?'<br>'+esc(it.memo.text):'')+'</div>':'')+'<button class="pri" style="width:100%;margin-top:12px">'+(i+1<its.length?'다음 문장':'끝')+'</button>';
+    nxt.lastChild.onclick=()=>{if(bad){wrong+=bad;if(wl.indexOf(i)<0)wl.push(i)}quiz(i+1,wrong,wl)};
+    draw();setTimeout(draw,250);setTimeout(draw,800);
+  }
+  function run(list,n,opened){
+    if(n>=list.length){finish(opened);return}
+    const c=list[n],sit=c.sub?{chunks:c.sub,pt:c.subpt}:{chunks:c.chain.chunks,extra:c.chain.extra};
+    const host=document.createElement('div');f2.appendChild(host);
+    mount(sit,host,2,'inner',b=>{bad+=b;opened.push({c:c,sit:sit});run(list,n+1,opened)},c.chain?{fixedM:true,tag:'꾸밈 사슬'}:{});
+    host.style.borderLeftColor=barCol(c);
+  }
+  mount(it,document.getElementById('f1'),1,'',b1=>{
+    bad+=b1;
+    const fl=lv===0?[]:floorsOf(it);
+    if(!fl.length){finish([]);return}
+    if(lv===2){run(fl,0,[]);return}
+    f2.innerHTML='<button class="sm" id="op">속 문장 열기</button><button class="sm" id="sk">건너뛰기</button>';
+    document.getElementById('op').onclick=()=>{f2.innerHTML='';run(fl,0,[])};
+    document.getElementById('sk').onclick=()=>{f2.innerHTML='';finish([])};
+  });
+  window.scrollTo(0,0);
+}
+home();
+</script>
+</body>
+</html>
