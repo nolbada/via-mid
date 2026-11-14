@@ -17,7 +17,7 @@ function back(href,label){var d=el('div','top');var a=el('a','pill','‹ '+(labe
 function secRange(s){return s.sents[0].n+'~'+s.sents[s.sents.length-1].n+'번'}
 
 /* ---------- 목록 ---------- */
-var BC={8:40};
+var BC={7:37,8:40};
 function pageWon(){
  var h='';
  APP.lessons.forEach(function(L,i){
