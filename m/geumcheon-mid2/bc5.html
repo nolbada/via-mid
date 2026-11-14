@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="ko" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>5과 문장 성분 연습</title>
+<style>
+:root{--bg:#f1efe9;--panel:#fff;--ink:#1f1d1a;--mute:#5d584f;--soft:#8a847a;--line:#e0dbd0;--accent:#2f4858;--bad:#c0392b;--good:#2e7d32;
+--S:#ffc83d;--V:#ff8f87;--O:#a9e6a4;--C:#9fd3f2;--MA:#d5bbff;--MB:#ffdcae;--CJ:#dcdcdc;--font:'Noto Sans KR',system-ui,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif}
+*{box-sizing:border-box}html,body{overflow-x:hidden;max-width:100%}html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.55;padding:18px max(16px,env(safe-area-inset-right)) 60px max(16px,env(safe-area-inset-left))}
+button{font:inherit;color:inherit;cursor:pointer}
+.shell{min-width:0;max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+h1{font-size:26px;font-weight:900;margin:0}h2{font-size:15px;font-weight:800;margin:6px 0 0;color:var(--mute)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.big{background:var(--panel);border:0;border-radius:14px;padding:18px 14px;text-align:left;font-weight:800;font-size:17px;border-left:6px solid var(--c,#888)}
+.big small{display:block;font-weight:500;font-size:12px;color:var(--soft);margin-top:2px}
+.wide{grid-column:1/-1}
+.card{background:var(--panel);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.no{font-size:12px;font-weight:800;color:var(--soft)}
+.sent{font-size:19px;line-height:1.5;font-weight:600;overflow-wrap:anywhere}
+#sent{background:#e6f1ff;border:2px solid #2b6cb0;border-radius:12px;padding:12px 12px 4px;color:#0f3459;font-size:20px}
+#sent .t{background:#c9dffa}
+.ch{display:inline-block;margin:0 3px 8px 0;text-align:center;vertical-align:top;max-width:100%}
+.ch .t{display:inline-block;padding:2px 6px;border-radius:4px;background:#ecebe6}
+.ch .l{display:block;margin-top:2px;line-height:1.25}
+.ch .g{display:block;font-size:13.5px;font-weight:600;color:var(--ink)}
+.ch .r{display:block;font-size:11.5px;color:var(--mute)}
+.ch .r small{font-size:10px;color:var(--soft);opacity:.8}
+.k-S{background:var(--S)!important}.k-V{background:var(--V)!important}.k-O{background:var(--O)!important}.k-C{background:var(--C)!important}.k-MA{background:var(--MA)!important}.k-MB{background:var(--MB)!important}.k-CJ{background:var(--CJ)!important}
+.ko{color:var(--mute);font-size:14px}
+.wm{font-size:12.5px;color:var(--soft)}
+.note,.postit{font-size:13px;background:#fff1a8;border-radius:3px;padding:9px 11px;box-shadow:1px 2px 4px rgba(0,0,0,.14);line-height:1.5;margin-top:8px}
+.qr .g{flex-basis:100%;font-size:13.5px;font-weight:600;color:#333}
+.sub{font-size:13px;color:var(--mute);border-left:3px solid var(--line);padding-left:8px}
+.anc{font-size:13px;color:var(--mute);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.anc b{font-weight:800;color:var(--ink)}
+.anc .x{padding:1px 6px;border-radius:4px;color:#2a2a2a}
+.legend{display:flex;gap:6px;flex-wrap:wrap}.legend span{font-size:12px;font-weight:700;padding:2px 8px;border-radius:5px;color:#2a2a2a}
+.nav,.btnrow{display:flex;gap:10px}
+.pri{flex:1;border:0;border-radius:999px;padding:14px;font-weight:800;background:var(--accent);color:#fff;font-size:15px}
+.pri.warn{background:#b3541e}
+.back{border:0;background:var(--panel);border-radius:999px;padding:14px;font-weight:800;font-size:15px;width:100%}
+.rows{display:flex;flex-direction:column}
+.qr{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:9px 0;border-top:1px solid var(--line)}
+.qr:first-child{border-top:0}
+.qr .t{font-size:18px;font-weight:600;background:#ecebe6;border-radius:4px;padding:2px 8px}
+.opt{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.opt button{border:2px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-weight:700;font-size:14px}
+.opt button.sel,.popt button.sel{background:#2f4858;border-color:#2f4858;color:#fff}
+.popt{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:6px;width:100%}
+.popt button{border:2px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-weight:700;font-size:14px}
+.pbox{width:100%}.pbox:empty{display:none}
+.mk{display:inline-block;width:24px;height:24px;border-radius:50%;text-align:center;font-weight:900;color:#fff;font-size:14px;line-height:24px}
+.mko{background:var(--good)}.mkx{background:var(--bad)}
+.qr.wr{background:#fff1ef;border-radius:8px;padding-left:8px;padding-right:8px}
+.mine{color:var(--bad);font-weight:700;font-size:14px;text-decoration:line-through}
+.res{font-weight:800;font-size:15px;padding:4px 0}.resx{color:var(--bad)}.reso{color:var(--good)}
+.cap{flex-basis:100%;font-size:11.5px;font-weight:800;color:#2f4858;margin-bottom:-4px}
+.cap2{flex-basis:100%;font-size:11.5px;font-weight:700;color:#8a847a}
+.pbox{margin-top:2px;padding-top:6px;border-top:1px dashed #d8d3c8}
+.popt button{background:#f4f2ee;border:1.5px dashed #cfc9bc;color:#6f6a60;font-weight:600;font-size:13px;padding:5px 11px}
+.popt button.sel{background:#9a948a;border:1.5px solid #9a948a;color:#fff}
+.wrap{min-width:0;max-width:100%;background:#ffe3ea;border-radius:10px;padding:12px 14px;margin-top:10px;display:flex;flex-direction:column;gap:8px}
+.wh{font-weight:900;font-size:15px;color:#7a2a45}
+.wl{display:flex;gap:8px;align-items:flex-start;min-width:0}.wc{display:flex;flex-wrap:wrap;gap:6px;flex:1;min-width:0}
+.wn{flex:0 0 58px;padding-top:5px;font-size:12px;font-weight:800;color:#7a2a45}
+.wl .x{flex:0 1 auto;overflow-wrap:anywhere;min-width:0;padding:3px 8px;border-radius:5px;font-size:15px;font-weight:600}
+.lk{border:0;background:none;color:#2b6cb0;font-weight:800;font-size:13px;margin-left:8px;text-decoration:underline;padding:0}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}
+.ov .card{max-width:520px;width:100%}
+.cc{display:flex;flex-direction:column;gap:10px}.cch{font-weight:900;font-size:16px}
+.ccl{font-size:15px}.ccx{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:17px}
+.ccx .x{padding:3px 8px;border-radius:5px;font-weight:600}
+.why{flex-basis:100%;font-size:13px;color:#5d584f;font-weight:600;padding-left:32px}
+.confl{margin-top:10px;font-size:14px;line-height:1.7}
+.pri:disabled{opacity:.35}
+@keyframes sh{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px)}40%{transform:translateX(5px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+.opt button.sh{animation:sh .35s}
+.opt button.bad{border-color:var(--bad);color:var(--bad)}
+.ok{color:var(--good);font-weight:800;font-size:14px}
+.prog{font-size:13px;font-weight:800;color:var(--soft)}
+.sum{font-size:15px}
+.inner{margin:12px 0 4px 2px;padding:10px 6px 10px 10px;border-left:6px solid var(--O);border-radius:0 10px 10px 0;background:#faf9f5}
+.inner.m{border-left-color:var(--MA)}
+.ftag{font-size:12px;font-weight:800;color:var(--soft)}
+.inner .ftag{color:#5a5448}
+.sm{border:2px solid var(--line);background:#fff;border-radius:999px;padding:9px 16px;font-weight:800;font-size:14px;margin:8px 8px 0 0}
+.tg{font-size:12px;color:#7b4fc0;font-weight:700}
+
+.wl{flex-wrap:wrap}.wl .x{flex:0 0 auto!important;max-width:100%;overflow-wrap:break-word!important}
+.inner .card{padding:10px 8px}
+@media(max-width:480px){
+body{padding-left:10px;padding-right:10px}
+.opt,.popt{gap:4px}
+.opt button,.popt button{padding:5px 8px;font-size:13px;border-width:1.5px}
+.popt button{font-size:12.5px;padding:4px 7px}
+.card{padding:12px 12px}
+.inner{padding:8px 4px 8px 6px;border-left-width:5px}
+.qr{gap:6px;padding:8px 0}
+}
+#sent1,#sent2{background:#e6f1ff;border:2px solid #2b6cb0;border-radius:12px;padding:12px 12px 4px;color:#0f3459;font-size:20px}
+#sent1 .t,#sent2 .t{background:#c9dffa}
+.clos{background:#fff6c2;border:1px solid #ecd978;border-radius:6px 6px 16px 6px;box-shadow:2px 3px 0 rgba(0,0,0,.09);padding:14px 14px 14px;margin-top:14px;display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden}
+.clos::after{content:"";position:absolute;right:0;bottom:0;width:24px;height:24px;background:linear-gradient(135deg,#fff6c2 50%,#ead66c 50%)}
+.clos .wh{font-size:15px;color:#5b4a08}
+.rw{position:relative;padding-top:0}.rw.has{padding-top:40px}.grp .n{font-size:11.5px;font-weight:800;color:#6b5a10;margin-bottom:2px}.grp.l2{margin-left:6px;padding-left:10px;border-left:4px solid #a9e6a4}.grp.l2.m{border-left-color:#d5bbff}.clos{padding-right:30px}
+.rw svg.ar{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.cl{display:flex;flex-wrap:wrap;gap:6px 6px;align-items:flex-end}
+.cl .n{flex:0 0 100%;font-size:11.5px;font-weight:800;color:#6b5a10}
+.cb{display:flex;flex-direction:column;gap:1px}
+.cb i{font-style:normal;font-size:10.5px;font-weight:700;color:#7a6a20}
+.cb .x{padding:3px 8px;border-radius:5px;font-size:15px;font-weight:600;overflow-wrap:break-word;max-width:100%}
+.clz{font-size:13.5px;font-weight:700;color:#4d4210;line-height:1.55;border-top:1px dashed #d9c55a;padding-top:8px}
+.tgb{font-size:13px}
+
+.rw.has .cl{row-gap:30px}
+.sec{font-size:13px;font-weight:800;color:var(--soft);margin-top:8px}
+.bgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.blk{position:relative;background:var(--panel);border:0;border-left:5px solid var(--c,#888);border-radius:10px;padding:11px 4px 11px 8px;font-weight:800;font-size:13px;text-align:left;white-space:nowrap}
+.blk.dn{background:#f6f4ee;color:#6d675c}
+.blk i{font-style:normal;position:absolute;right:3px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--good)}
+</style>
+</head>
+<body>
+<div class="shell" id="app"></div>
+<script>
+const DATA={"sets":[{"id":"gc5","label":"금천중2 · 5과","color":"#0f766e","items":[{"no":"1","en":"Words have power.","ko":"말에는 힘이 있다.","pattern":"3형식","pt":"SVO","chunks":[{"t":"Words","role":"S","who":"명사","k":"말은"},{"t":"have","role":"V","k":"가지고 있다"},{"t":"power","role":"O","who":"명사","k":"힘을"}],"words":[{"w":"Words","pos":"명사","mean":"말"},{"w":"have","pos":"동사","mean":"가지다"},{"w":"power","pos":"명사","mean":"힘"}],"memo":null},{"no":"2","en":"They can make us feel good or bad.","ko":"말은 우리를 기분 좋거나 나쁘게 만들 수 있다.","pattern":"5형식","pt":"SVOC","chunks":[{"t":"They","role":"S","who":"대명사","k":"그것들은"},{"t":"can make","role":"V","k":"만들 수 있다"},{"t":"us","role":"O","who":"대명사","k":"우리를"},{"t":"feel good or bad","role":"OC","kind":"동사원형구","who":"동사원형","subpt":"SVC","sub":[{"t":"feel","role":"V","k":"느끼도록"},{"t":"good or bad","role":"C","who":"형용사","k":"좋거나 나쁘게"}],"k":"좋거나 나쁘게 느끼도록"}],"words":[{"w":"They","pos":"대명사","mean":"그것들"},{"w":"can","pos":"조동사","mean":"~할 수 있다"},{"w":"make","pos":"동사","mean":"~하게 하다"},{"w":"us","pos":"대명사","mean":"우리"},{"w":"feel","pos":"동사","mean":"느끼다"},{"w":"good","pos":"형용사","mean":"좋은"},{"w":"or","pos":"접속사","mean":"또는"},{"w":"bad","pos":"형용사","mean":"나쁜"}],"memo":null},{"no":"3","en":"The words which we choose can influence our thoughts, emotions, and friendships.","ko":"우리가 선택하는 말은 우리의 생각, 감정, 그리고 우정에 영향을 미칠 수 있다.","pattern":"3형식","pt":"SVO","chunks":[{"t":"The words","role":"S","who":"명사","k":"말은"},{"t":"which we choose","role":"M","kind":"형용사절","to":0,"subpt":"SVO","sub":[{"t":"which","role":"O","who":"대명사","k":"그것을"},{"t":"we","role":"S","who":"대명사","k":"우리가"},{"t":"choose","role":"V","k":"선택하는"}],"k":"우리가 선택하는"},{"t":"can influence","role":"V","k":"영향을 미칠 수 있다"},{"t":"our thoughts, emotions, and friendships","role":"O","who":"명사","k":"우리의 생각, 감정, 그리고 우정에"}],"words":[{"w":"The","pos":"관사","mean":"그"},{"w":"words","pos":"명사","mean":"말"},{"w":"which","pos":"관계대명사","mean":"~하는 (앞의 말을 꾸며 줌)"},{"w":"we","pos":"대명사","mean":"우리"},{"w":"choose","pos":"동사","mean":"선택하다"},{"w":"can","pos":"조동사","mean":"~할 수 있다"},{"w":"influence","pos":"동사","mean":"영향을 미치다"},{"w":"our","pos":"대명사","mean":"우리의"},{"w":"thoughts","pos":"명사","mean":"생각"},{"w":"emotions","pos":"명사","mean":"감정"},{"w":"and","pos":"접속사","mean":"그리고"},{"w":"friendships","pos":"명사","mean":"우정"}],"memo":null},{"no":"4","en":"Let’s explore some common problems that students usually face.","ko":"학생들이 흔히 겪는 일반적인 문제들을 함께 살펴보자.","pattern":"3형식(청유문)","pt":"SVO","chunks":[{"t":"Let’s explore","role":"V","k":"살펴보자"},{"t":"some common problems","role":"O","who":"명사","k":"몇몇 흔한 문제들을"},{"t":"that students usually face","role":"M","kind":"형용사절","to":1,"subpt":"SVO","sub":[{"t":"that","role":"O","who":"대명사","k":"그것을"},{"t":"students","role":"S","who":"명사","k":"학생들이"},{"t":"usually","role":"M","kind":"부사","to":3,"k":"흔히"},{"t":"face","role":"V","k":"마주하는"}],"k":"학생들이 흔히 마주하는"}],"words":[{"w":"Let’s","pos":"동사","mean":"~하자"},{"w":"explore","pos":"동사","mean":"살펴보다"},{"w":"some","pos":"형용사","mean":"몇몇의"},{"w":"common","pos":"형용사","mean":"흔한"},{"w":"problems","pos":"명사","mean":"문제"},{"w":"that","pos":"관계대명사","mean":"~하는 (앞의 말을 꾸며 줌)"},{"w":"students","pos":"명사","mean":"학생"},{"w":"usually","pos":"부사","mean":"보통, 흔히"},{"w":"face","pos":"동사","mean":"마주하다"}],"memo":{"basis":"기준: Let’s + 동사원형은 청유 표현이라 한 덩어리 동사로 처리","text":"Let’s는 let us의 줄임말이지만 뜻이 굳은 청유 표현이라 Let’s explore를 V 한 덩어리로 표시"}},{"no":"5","en":"You will understand the amazing power of words.","ko":"여러분은 말의 놀라운 힘을 이해하게 될 것이다.","pattern":"3형식","pt":"SVO","chunks":[{"t":"You","role":"S","who":"대명사","k":"여러분은"},{"t":"will understand","role":"V","k":"이해하게 될 것이다"},{"t":"the amazing power","role":"O","who":"명사","k":"놀라운 힘을"},{"t":"of words","role":"M","kind":"형용사구","to":2,"k":"말의"}],"words":[{"w":"You","pos":"대명사","mean":"여러분"},{"w":"will","pos":"조동사","mean":"~할 것이다"},{"w":"understand","pos":"동사","mean":"이해하다"},{"w":"the","pos":"관사","mean":"그"},{"w":"amazing","pos":"형용사","mean":"놀라운"},{"w":"power","pos":"명사","mean":"힘"},{"w":"of","pos":"전치사","mean":"~의"},{"w":"words","pos":"명사","mean":"말"}],"memo":null},{"no":"6","en":"“I didn’t do well during dance practice.","ko":"“나는 춤 연습을 잘 못했어.","pattern":"1형식","pt":"SV","chunks":[{"t":"“I","role":"S","who":"대명사","k":"나는"},{"t":"didn’t do","role":"V","k":"하지 못했다"},{"t":"well","role":"M","kind":"부사","to":1,"k":"잘"},{"t":"during dance practice","role":"M","kind":"부사구","to":1,"k":"춤 연습 동안"}],"words":[{"w":"I","pos":"대명사","mean":"나"},{"w":"didn’t","pos":"조동사","mean":"~하지 않았다"},{"w":"do","pos":"동사","mean":"하다"},{"w":"well","pos":"부사","mean":"잘"},{"w":"during","pos":"전치사","mean":"~동안"},{"w":"dance","pos":"명사","mean":"춤"},{"w":"practice","pos":"명사","mean":"연습"}],"memo":null},{"no":"7","en":"I always mess up.”","ko":"난 항상 망쳐.”","pattern":"1형식","pt":"SV","chunks":[{"t":"I","role":"S","who":"대명사","k":"나는"},{"t":"always","role":"M","kind":"부사","to":2,"k":"항상"},{"t":"mess up.”","role":"V","k":"망친다"}],"words":[{"w":"I","pos":"대명사","mean":"나"},{"w":"always","pos":"부사","mean":"항상"},{"w":"mess","pos":"동사","mean":"망치다 (mess up 전체 뜻)"},{"w":"up","pos":"부사","mean":"(mess up의 일부)"}],"memo":null},{"no":"8","en":"Negative words like “I always mess up” can make you feel down and want to stop trying.","ko":"“난 항상 망쳐”와 같은 부정적인 말은 기분을 우울하게 하고 시도하는 걸 멈추고 싶게 만들 수 있다.","pattern":"5형식","pt":"SVOC","chunks":[{"t":"Negative words","role":"S","who":"명사","k":"부정적인 말은"},{"t":"like “I always mess up”","role":"M","kind":"형용사구","to":0,"k":"“난 항상 망쳐” 같은"},{"t":"can make","role":"V","k":"만들 수 있다"},{"t":"you","role":"O","who":"대명사","k":"여러분을"},{"t":"feel down","role":"OC","kind":"동사원형구","who":"동사원형","subpt":"SVC","sub":[{"t":"feel","role":"V","k":"느끼도록"},{"t":"down","role":"C","who":"형용사","k":"우울한"}],"k":"우울하게 느끼도록"},{"t":"and","role":"M","kind":"접속사","k":"그리고"},{"t":"want to stop trying","role":"OC","kind":"동사원형구","who":"동사원형","subpt":"SVO","sub":[{"t":"want","role":"V","k":"원하도록"},{"t":"to stop trying","role":"O","who":"to부정사","k":"시도하는 것을 멈추기를"}],"k":"시도하는 것을 멈추고 싶어 하도록"}],"words":[{"w":"Negative","pos":"형용사","mean":"부정적인"},{"w":"words","pos":"명사","mean":"말"},{"w":"like","pos":"전치사","mean":"~같은"},{"w":"I","pos":"대명사","mean":"나"},{"w":"always","pos":"부사","mean":"항상"},{"w":"mess","pos":"동사","mean":"망치다 (mess up 전체 뜻)"},{"w":"up","pos":"부사","mean":"(mess up의 일부)"},{"w":"can","pos":"조동사","mean":"~할 수 있다"},{"w":"make","pos":"동사","mean":"~하게 하다"},{"w":"you","pos":"대명사","mean":"여러분"},{"w":"feel","pos":"동사","mean":"느끼다"},{"w":"down","pos":"형용사","mean":"우울한"},{"w":"and","pos":"접속사","mean":"그리고"},{"w":"want","pos":"동사","mean":"원하다"},{"w":"to","pos":"to(부정사)","mean":"~하기를"},{"w":"stop","pos":"동사","mean":"멈추다"},{"w":"trying","pos":"동사","mean":"시도하다"}],"memo":{"basis":"기준: make A 동사원형 and 동사원형은 두 개의 목적격보어로 처리","text":"and 앞뒤의 feel down, want to stop trying을 둘 다 you의 보어(OC)로 표시. trying은 stop의 목적어인 동명사(stop + -ing = ~하는 것을 멈추다)"}},{"no":"9","en":"Instead, encourage yourself with positive words.","ko":"대신 긍정적인 말로 자신을 격려해 보라.","pattern":"3형식(명령문)","pt":"SVO","chunks":[{"t":"Instead","role":"M","kind":"부사","to":-1,"k":"대신"},{"t":"encourage","role":"V","k":"격려해라"},{"t":"yourself","role":"O","who":"대명사","k":"자신을"},{"t":"with positive words","role":"M","kind":"부사구","to":1,"k":"긍정적인 말로"}],"words":[{"w":"Instead","pos":"부사","mean":"대신"},{"w":"encourage","pos":"동사","mean":"격려하다"},{"w":"yourself","pos":"대명사","mean":"너 자신"},{"w":"with","pos":"전치사","mean":"~로"},{"w":"positive","pos":"형용사","mean":"긍정적인"},{"w":"words","pos":"명사","mean":"말"}],"memo":null},{"no":"10","en":"When you think positively, you can learn from your mistakes and improve your skills.","ko":"긍정적으로 생각할 때, 실수에서 배우고 실력을 향상할 수 있다.","pattern":"1형식 + 3형식","pt":null,"chunks":[{"t":"When you think positively","role":"M","kind":"부사절","to":2,"subpt":"SV","sub":[{"t":"When","role":"CJ","k":"~할 때"},{"t":"you","role":"S","who":"대명사","k":"여러분이"},{"t":"think","role":"V","k":"생각하다"},{"t":"positively","role":"M","kind":"부사","to":2,"k":"긍정적으로"}],"k":"여러분이 긍정적으로 생각할 때"},{"t":"you","role":"S","who":"대명사","k":"여러분은"},{"t":"can learn","role":"V","k":"배울 수 있다"},{"t":"from your mistakes","role":"M","kind":"부사구","to":2,"k":"실수로부터"},{"t":"and","role":"M","kind":"접속사","k":"그리고"},{"t":"improve","role":"V","k":"향상시킬 수 있다"},{"t":"your skills","role":"O","who":"명사","k":"실력을"}],"words":[{"w":"When","pos":"접속사","mean":"~할 때"},{"w":"you","pos":"대명사","mean":"여러분"},{"w":"think","pos":"동사","mean":"생각하다"},{"w":"positively","pos":"부사","mean":"긍정적으로"},{"w":"you","pos":"대명사","mean":"여러분"},{"w":"can","pos":"조동사","mean":"~할 수 있다"},{"w":"learn","pos":"동사","mean":"배우다"},{"w":"from","pos":"전치사","mean":"~로부터"},{"w":"your","pos":"대명사","mean":"여러분의"},{"w":"mistakes","pos":"명사","mean":"실수"},{"w":"and","pos":"접속사","mean":"그리고"},{"w":"improve","pos":"동사","mean":"향상시키다"},{"w":"your","pos":"대명사","mean":"여러분의"},{"w":"skills","pos":"명사","mean":"실력"}],"memo":null},{"no":"11","en":"Say it!","ko":"말해 보라!","pattern":"3형식(명령문)","pt":"SVO","chunks":[{"t":"Say","role":"V","k":"말해라"},{"t":"it","role":"O","who":"대명사","k":"그것을"}],"words":[{"w":"Say","pos":"동사","mean":"말하다"},{"w":"it","pos":"대명사","mean":"그것"}],"memo":null},{"no":"12","en":"“I didn’t dance well this time, but I’ll keep practicing and get better.”","ko":"“이번에는 춤을 잘 못 췄지만, 계속 연습해서 더 잘할 거야.”","pattern":"1형식 + 3형식 + 2형식","pt":null,"chunks":[{"t":"“I","role":"S","who":"대명사","k":"나는"},{"t":"didn’t dance","role":"V","k":"추지 못했다"},{"t":"well","role":"M","kind":"부사","to":1,"k":"잘"},{"t":"this time","role":"M","kind":"부사구","to":1,"k":"이번에"},{"t":"but","role":"M","kind":"접속사","k":"하지만"},{"t":"I","role":"S","who":"대명사","k":"나는"},{"t":"’ll keep","role":"V","k":"계속할 것이다"},{"t":"practicing","role":"O","who":"동명사","k":"연습하기를"},{"t":"and","role":"M","kind":"접속사","k":"그리고"},{"t":"get","role":"V","k":"되다"},{"t":"better.”","role":"C","who":"형용사","k":"더 나은"}],"words":[{"w":"I","pos":"대명사","mean":"나"},{"w":"didn’t","pos":"조동사","mean":"~하지 않았다"},{"w":"dance","pos":"동사","mean":"춤추다"},{"w":"well","pos":"부사","mean":"잘"},{"w":"this","pos":"형용사","mean":"이"},{"w":"time","pos":"명사","mean":"이번"},{"w":"but","pos":"접속사","mean":"하지만"},{"w":"I","pos":"대명사","mean":"나"},{"w":"’ll","pos":"조동사","mean":"~할 것이다"},{"w":"keep","pos":"동사","mean":"계속하다"},{"w":"practicing","pos":"동사","mean":"연습하다"},{"w":"and","pos":"접속사","mean":"그리고"},{"w":"get","pos":"동사","mean":"되다"},{"w":"better","pos":"형용사","mean":"더 나은"}],"memo":null},{"no":"13","en":"“Seongjun won first place in the contest?","ko":"“성준이가 대회에서 1등을 했다고?","pattern":"3형식","pt":"SVO","chunks":[{"t":"“Seongjun","role":"S","who":"명사","k":"성준이가"},{"t":"won","role":"V","k":"차지했다"},{"t":"first place","role":"O","who":"명사","k":"1등을"},{"t":"in the contest","role":"M","kind":"부사구","to":1,"k":"대회에서"}],"words":[{"w":"Seongjun","pos":"명사","mean":"성준 (사람 이름)"},{"w":"won","pos":"동사","mean":"차지하다"},{"w":"first","pos":"형용사","mean":"첫째의"},{"w":"place","pos":"명사","mean":"1등"},{"w":"in","pos":"전치사","mean":"~에서"},{"w":"the","pos":"관사","mean":"그"},{"w":"contest","pos":"명사","mean":"대회"}],"memo":null},{"no":"14","en":"He’s just too lucky.”","ko":"그냥 운이 너무 좋네.”","pattern":"2형식","pt":"SVC","chunks":[{"t":"He","role":"S","who":"대명사","k":"그는"},{"t":"’s","role":"V","k":"~이다"},{"t":"just too","role":"M","kind":"부사구","to":3,"chain":{"chunks":[{"t":"just","role":"M","kind":"부사","k":"그냥","to":1},{"t":"too","role":"M","kind":"부사","k":"너무","to":2}],"extra":[{"t":"lucky.”","role":"C","who":"형용사","k":"운이 좋은"}]},"k":"그냥 너무"},{"t":"lucky.”","role":"C","who":"형용사","k":"운이 좋은"}],"words":[{"w":"He","pos":"대명사","mean":"그"},{"w":"’s","pos":"동사","mean":"~이다"},{"w":"just","pos":"부사","mean":"그냥, 그저"},{"w":"too","pos":"부사","mean":"너무"},{"w":"lucky","pos":"형용사","mean":"운이 좋은"}],"memo":null},{"no":"15","en":"We easily say negative things about others when we feel jealous.","ko":"우리는 질투를 느낄 때 다른 사람에 대해 부정적인 말을 쉽게 한다.","pattern":"3형식","pt":"SVO","chunks":[{"t":"We","role":"S","who":"대명사","k":"우리는"},{"t":"easily","role":"M","kind":"부사","to":2,"k":"쉽게"},{"t":"say","role":"V","k":"말한다"},{"t":"negative things","role":"O","who":"명사","k":"부정적인 것들을"},{"t":"about others","role":"M","kind":"형용사구","to":3,"k":"다른 사람들에 대해"},{"t":"when we feel jealous","role":"M","kind":"부사절","to":2,"subpt":"SVC","sub":[{"t":"when","role":"CJ","k":"~할 때"},{"t":"we","role":"S","who":"대명사","k":"우리가"},{"t":"feel","role":"V","k":"느낄"},{"t":"jealous","role":"C","who":"형용사","k":"질투하는"}],"k":"우리가 질투를 느낄 때"}],"words":[{"w":"We","pos":"대명사","mean":"우리"},{"w":"easily","pos":"부사","mean":"쉽게"},{"w":"say","pos":"동사","mean":"말하다"},{"w":"negative","pos":"형용사","mean":"부정적인"},{"w":"things","pos":"명사","mean":"것"},{"w":"about","pos":"전치사","mean":"~에 대해"},{"w":"others","pos":"대명사","mean":"다른 사람들"},{"w":"when","pos":"접속사","mean":"~할 때"},{"w":"we","pos":"대명사","mean":"우리"},{"w":"feel","pos":"동사","mean":"느끼다"},{"w":"jealous","pos":"형용사","mean":"질투하는"}],"memo":null},{"no":"16","en":"But using negative words like “He’s just too lucky” doesn’t let you grow.","ko":"그러나 “그냥 운이 너무 좋네”와 같은 부정적인 말을 하는 것은 여러분이 성장하지 못하게 한다.","pattern":"5형식","pt":"SVOC","chunks":[{"t":"But","role":"M","kind":"접속사","k":"그러나"},{"t":"using negative words like “He’s just too lucky”","role":"S","kind":"동명사구","who":"동명사","subpt":"SVO","sub":[{"t":"using","role":"V","k":"사용하는 것은"},{"t":"negative words","role":"O","who":"명사","k":"부정적인 말을"},{"t":"like “He’s just too lucky”","role":"M","kind":"형용사구","to":1,"k":"“그냥 운이 너무 좋네” 같은"}],"k":"“그냥 운이 너무 좋네” 같은 부정적인 말을 사용하는 것은"},{"t":"doesn’t let","role":"V","k":"~하게 두지 않는다"},{"t":"you","role":"O","who":"대명사","k":"여러분을"},{"t":"grow","role":"OC","who":"동사원형","k":"성장하도록"}],"words":[{"w":"But","pos":"접속사","mean":"그러나"},{"w":"using","pos":"동사","mean":"사용하다"},{"w":"negative","pos":"형용사","mean":"부정적인"},{"w":"words","pos":"명사","mean":"말"},{"w":"like","pos":"전치사","mean":"~같은"},{"w":"He","pos":"대명사","mean":"그"},{"w":"’s","pos":"동사","mean":"~이다"},{"w":"just","pos":"부사","mean":"그냥, 그저"},{"w":"too","pos":"부사","mean":"너무"},{"w":"lucky","pos":"형용사","mean":"운이 좋은"},{"w":"doesn’t","pos":"조동사","mean":"~하지 않는다"},{"w":"let","pos":"동사","mean":"~하게 두다"},{"w":"you","pos":"대명사","mean":"여러분"},{"w":"grow","pos":"동사","mean":"성장하다"}],"memo":null},{"no":"17","en":"Instead, try to be happy for others and respect their efforts.","ko":"대신 다른 사람을 위해 기뻐하고 그들의 노력을 존중해 보라.","pattern":"3형식(명령문) + 3형식(명령문)","pt":"SVO","chunks":[{"t":"Instead","role":"M","kind":"부사","to":-1,"k":"대신"},{"t":"try","role":"V","k":"노력해라"},{"t":"to be happy for others","role":"O","kind":"to부정사(명사적 용법)","who":"to부정사","subpt":"SVC","sub":[{"t":"to be","role":"V","k":"~이기를"},{"t":"happy","role":"C","who":"형용사","k":"기쁜"},{"t":"for others","role":"M","kind":"부사구","to":1,"k":"다른 사람들을 위해"}],"k":"다른 사람을 위해 기뻐하기를"},{"t":"and","role":"M","kind":"접속사","k":"그리고"},{"t":"respect","role":"V","k":"존중해라"},{"t":"their efforts","role":"O","who":"명사","k":"그들의 노력을"}],"words":[{"w":"Instead","pos":"부사","mean":"대신"},{"w":"try","pos":"동사","mean":"노력하다"},{"w":"to","pos":"to(부정사)","mean":"~하기를"},{"w":"be","pos":"동사","mean":"~이다"},{"w":"happy","pos":"형용사","mean":"기쁜"},{"w":"for","pos":"전치사","mean":"~을 위해"},{"w":"others","pos":"대명사","mean":"다른 사람들"},{"w":"and","pos":"접속사","mean":"그리고"},{"w":"respect","pos":"동사","mean":"존중하다"},{"w":"their","pos":"대명사","mean":"그들의"},{"w":"efforts","pos":"명사","mean":"노력"}],"memo":null},{"no":"18","en":"With positive words, you can learn from your friends, get along better, and focus on your own growth.","ko":"긍정적인 말을 통해 여러분은 친구에게서 배우고, 더 잘 지내며, 자신의 성장에 집중할 수 있다.","pattern":"1형식 + 1형식 + 1형식","pt":null,"chunks":[{"t":"With positive words","role":"M","kind":"부사구","to":2,"k":"긍정적인 말로"},{"t":"you","role":"S","who":"대명사","k":"여러분은"},{"t":"can learn","role":"V","k":"배울 수 있다"},{"t":"from your friends","role":"M","kind":"부사구","to":2,"k":"친구들에게서"},{"t":"get along","role":"V","k":"잘 지낼 수 있다"},{"t":"better","role":"M","kind":"부사","to":4,"k":"더 잘"},{"t":"and","role":"M","kind":"접속사","k":"그리고"},{"t":"focus","role":"V","k":"집중할 수 있다"},{"t":"on your own growth","role":"M","kind":"부사구","to":7,"k":"자신의 성장에"}],"words":[{"w":"With","pos":"전치사","mean":"~로"},{"w":"positive","pos":"형용사","mean":"긍정적인"},{"w":"words","pos":"명사","mean":"말"},{"w":"you","pos":"대명사","mean":"여러분"},{"w":"can","pos":"조동사","mean":"~할 수 있다"},{"w":"learn","pos":"동사","mean":"배우다"},{"w":"from","pos":"전치사","mean":"~에게서"},{"w":"your","pos":"대명사","mean":"여러분의"},{"w":"friends","pos":"명사","mean":"친구"},{"w":"get","pos":"동사","mean":"잘 지내다 (get along 전체 뜻)"},{"w":"along","pos":"부사","mean":"(get along의 일부)"},{"w":"better","pos":"부사","mean":"더 잘"},{"w":"and","pos":"접속사","mean":"그리고"},{"w":"focus","pos":"동사","mean":"집중하다"},{"w":"on","pos":"전치사","mean":"~에"},{"w":"your","pos":"대명사","mean":"여러분의"},{"w":"own","pos":"형용사","mean":"자신의"},{"w":"growth","pos":"명사","mean":"성장"}],"memo":null},{"no":"19","en":"Say it!","ko":"말해 보라!","pattern":"3형식(명령문)","pt":"SVO","chunks":[{"t":"Say","role":"V","k":"말해라"},{"t":"it","role":"O","who":"대명사","k":"그것을"}],"words":[{"w":"Say","pos":"동사","mean":"말하다"},{"w":"it","pos":"대명사","mean":"그것"}],"memo":null},{"no":"20","en":"“He did a great job.","ko":"“그가 정말 잘했어.","pattern":"3형식","pt":"SVO","chunks":[{"t":"“He","role":"S","who":"대명사","k":"그는"},{"t":"did","role":"V","k":"했다"},{"t":"a great job","role":"O","who":"명사","k":"훌륭한 일을"}],"words":[{"w":"He","pos":"대명사","mean":"그"},{"w":"did","pos":"동사","mean":"하다"},{"w":"a","pos":"관사","mean":"하나의"},{"w":"great","pos":"형용사","mean":"훌륭한"},{"w":"job","pos":"명사","mean":"일"}],"memo":null},{"no":"21","en":"Good for him!","ko":"잘됐다!","pattern":"형식 없음(감탄 표현)","pt":null,"chunks":[{"t":"Good for him","role":"M","kind":"감탄사","to":-1,"k":"잘됐다"}],"words":[{"w":"Good","pos":"형용사","mean":"잘된, 좋은"},{"w":"for","pos":"전치사","mean":"~에게"},{"w":"him","pos":"대명사","mean":"그"}],"memo":{"basis":"기준: 주어·동사가 생략된 관용 감탄 표현(Good for him!)은 한 덩어리 수식어(감탄사)로 처리","text":"(That is) good for him에서 주어·동사가 생략된 표현이라 뼈대 표시 없이 문장 전체 표현으로 처리"}},{"no":"22","en":"I’ll try hard, too!”","ko":"나도 열심히 할 거야!”","pattern":"1형식","pt":"SV","chunks":[{"t":"I","role":"S","who":"대명사","k":"나는"},{"t":"’ll try","role":"V","k":"노력할 것이다"},{"t":"hard","role":"M","kind":"부사","to":1,"k":"열심히"},{"t":"too!”","role":"M","kind":"부사","to":-1,"k":"역시"}],"words":[{"w":"I","pos":"대명사","mean":"나"},{"w":"’ll","pos":"조동사","mean":"~할 것이다"},{"w":"try","pos":"동사","mean":"노력하다"},{"w":"hard","pos":"부사","mean":"열심히"},{"w":"too","pos":"부사","mean":"역시, 또한"}],"memo":null},{"no":"23","en":"“We lost the game because of your mistake.","ko":"“우리는 네 실수 때문에 게임에서 졌어.","pattern":"3형식","pt":"SVO","chunks":[{"t":"“We","role":"S","who":"대명사","k":"우리는"},{"t":"lost","role":"V","k":"졌다"},{"t":"the game","role":"O","who":"명사","k":"게임에서"},{"t":"because of your mistake","role":"M","kind":"부사구","to":1,"k":"네 실수 때문에"}],"words":[{"w":"We","pos":"대명사","mean":"우리"},{"w":"lost","pos":"동사","mean":"지다"},{"w":"the","pos":"관사","mean":"그"},{"w":"game","pos":"명사","mean":"게임"},{"w":"because","pos":"전치사","mean":"~ 때문에 (because of 전체 뜻)"},{"w":"of","pos":"전치사","mean":"(because of의 일부)"},{"w":"your","pos":"대명사","mean":"너의"},{"w":"mistake","pos":"명사","mean":"실수"}],"memo":null},{"no":"24","en":"It’s your fault.”","ko":"네 잘못이야.”","pattern":"2형식","pt":"SVC","chunks":[{"t":"It","role":"S","who":"대명사","k":"그것은"},{"t":"’s","role":"V","k":"~이다"},{"t":"your fault.”","role":"C","who":"명사","k":"네 잘못"}],"words":[{"w":"It","pos":"대명사","mean":"그것"},{"w":"’s","pos":"동사","mean":"~이다"},{"w":"your","pos":"대명사","mean":"너의"},{"w":"fault","pos":"명사","mean":"잘못"}],"memo":null},{"no":"25","en":"When things go wrong, we sometimes blame others.","ko":"일이 잘못되었을 때 우리는 가끔 다른 사람을 비난하기도 한다.","pattern":"3형식","pt":"SVO","chunks":[{"t":"When things go wrong","role":"M","kind":"부사절","to":3,"subpt":"SVC","sub":[{"t":"When","role":"CJ","k":"~할 때"},{"t":"things","role":"S","who":"명사","k":"일들이"},{"t":"go","role":"V","k":"되다"},{"t":"wrong","role":"C","who":"형용사","k":"잘못된"}],"k":"일이 잘못될 때"},{"t":"we","role":"S","who":"대명사","k":"우리는"},{"t":"sometimes","role":"M","kind":"부사","to":3,"k":"가끔"},{"t":"blame","role":"V","k":"비난한다"},{"t":"others","role":"O","who":"대명사","k":"다른 사람들을"}],"words":[{"w":"When","pos":"접속사","mean":"~할 때"},{"w":"things","pos":"명사","mean":"일"},{"w":"go","pos":"동사","mean":"~이 되다"},{"w":"wrong","pos":"형용사","mean":"잘못된"},{"w":"we","pos":"대명사","mean":"우리"},{"w":"sometimes","pos":"부사","mean":"가끔"},{"w":"blame","pos":"동사","mean":"비난하다"},{"w":"others","pos":"대명사","mean":"다른 사람들"}],"memo":null},{"no":"26","en":"However, negative words like “It’s your fault” can hurt their feelings and damage your friendship.","ko":"하지만 “네 잘못이야”와 같은 부정적인 말은 상대방의 감정을 상하게 하고 우정을 해칠 수 있다.","pattern":"3형식 + 3형식","pt":null,"chunks":[{"t":"However","role":"M","kind":"부사","to":-1,"k":"하지만"},{"t":"negative words","role":"S","who":"명사","k":"부정적인 말은"},{"t":"like “It’s your fault”","role":"M","kind":"형용사구","to":1,"k":"“그건 네 잘못이야” 같은"},{"t":"can hurt","role":"V","k":"상하게 할 수 있다"},{"t":"their feelings","role":"O","who":"명사","k":"그들의 감정을"},{"t":"and","role":"M","kind":"접속사","k":"그리고"},{"t":"damage","role":"V","k":"해칠 수 있다"},{"t":"your friendship","role":"O","who":"명사","k":"여러분의 우정을"}],"words":[{"w":"However","pos":"부사","mean":"하지만"},{"w":"negative","pos":"형용사","mean":"부정적인"},{"w":"words","pos":"명사","mean":"말"},{"w":"like","pos":"전치사","mean":"~같은"},{"w":"It","pos":"대명사","mean":"그것"},{"w":"’s","pos":"동사","mean":"~이다"},{"w":"your","pos":"대명사","mean":"너의"},{"w":"fault","pos":"명사","mean":"잘못"},{"w":"can","pos":"조동사","mean":"~할 수 있다"},{"w":"hurt","pos":"동사","mean":"상하게 하다"},{"w":"their","pos":"대명사","mean":"그들의"},{"w":"feelings","pos":"명사","mean":"감정"},{"w":"and","pos":"접속사","mean":"그리고"},{"w":"damage","pos":"동사","mean":"해치다"},{"w":"your","pos":"대명사","mean":"여러분의"},{"w":"friendship","pos":"명사","mean":"우정"}],"memo":null},{"no":"27","en":"Instead, show your support and cheer them up.","ko":"대신 지지를 보내고 그들을 응원해 주어라.","pattern":"3형식(명령문) + 3형식(명령문)","pt":"SVO","chunks":[{"t":"Instead","role":"M","kind":"부사","to":-1,"k":"대신"},{"t":"show","role":"V","k":"보여 주어라"},{"t":"your support","role":"O","who":"명사","k":"여러분의 지지를"},{"t":"and","role":"M","kind":"접속사","k":"그리고"},{"t":"cheer","role":"V","k":"응원해라"},{"t":"them","role":"O","who":"대명사","k":"그들을"},{"t":"up","role":"V","k":"(응원의 일부)"}],"words":[{"w":"Instead","pos":"부사","mean":"대신"},{"w":"show","pos":"동사","mean":"보여 주다"},{"w":"your","pos":"대명사","mean":"여러분의"},{"w":"support","pos":"명사","mean":"지지"},{"w":"and","pos":"접속사","mean":"그리고"},{"w":"cheer","pos":"동사","mean":"응원하다 (cheer up 전체 뜻)"},{"w":"them","pos":"대명사","mean":"그들"},{"w":"up","pos":"부사","mean":"(cheer up의 일부)"}],"memo":{"basis":"기준: 구동사 사이에 대명사 목적어가 끼면 V가 두 조각","text":"cheer them up은 cheer와 up이 구동사 한 덩어리이지만 대명사 them이 사이에 들어가 V를 cheer, up 두 조각으로 표시"}},{"no":"28","en":"Positive words will make your team develop strong teamwork and perform better next time.","ko":"긍정적인 말은 여러분의 팀이 강한 팀워크를 키우고 다음에는 더 잘할 수 있게 할 것이다.","pattern":"5형식","pt":"SVOC","chunks":[{"t":"Positive words","role":"S","who":"명사","k":"긍정적인 말은"},{"t":"will make","role":"V","k":"만들 것이다"},{"t":"your team","role":"O","who":"명사","k":"여러분의 팀이"},{"t":"develop strong teamwork","role":"OC","kind":"동사원형구","who":"동사원형","subpt":"SVO","sub":[{"t":"develop","role":"V","k":"키우도록"},{"t":"strong teamwork","role":"O","who":"명사","k":"강한 팀워크를"}],"k":"강한 팀워크를 키우도록"},{"t":"and","role":"M","kind":"접속사","k":"그리고"},{"t":"perform better next time","role":"OC","kind":"동사원형구","who":"동사원형","subpt":"SV","sub":[{"t":"perform","role":"V","k":"해내도록"},{"t":"better","role":"M","kind":"부사","to":0,"k":"더 잘"},{"t":"next time","role":"M","kind":"부사구","to":0,"k":"다음번에"}],"k":"다음번에 더 잘 해내도록"}],"words":[{"w":"Positive","pos":"형용사","mean":"긍정적인"},{"w":"words","pos":"명사","mean":"말"},{"w":"will","pos":"조동사","mean":"~할 것이다"},{"w":"make","pos":"동사","mean":"~하게 하다"},{"w":"your","pos":"대명사","mean":"여러분의"},{"w":"team","pos":"명사","mean":"팀"},{"w":"develop","pos":"동사","mean":"키우다"},{"w":"strong","pos":"형용사","mean":"강한"},{"w":"teamwork","pos":"명사","mean":"팀워크"},{"w":"and","pos":"접속사","mean":"그리고"},{"w":"perform","pos":"동사","mean":"해내다"},{"w":"better","pos":"부사","mean":"더 잘"},{"w":"next","pos":"형용사","mean":"다음의"},{"w":"time","pos":"명사","mean":"다음번"}],"memo":null},{"no":"29","en":"Say it!","ko":"말해 보라!","pattern":"3형식(명령문)","pt":"SVO","chunks":[{"t":"Say","role":"V","k":"말해라"},{"t":"it","role":"O","who":"대명사","k":"그것을"}],"words":[{"w":"Say","pos":"동사","mean":"말하다"},{"w":"it","pos":"대명사","mean":"그것"}],"memo":null},{"no":"30","en":"“You’re a team member whom I trust.","ko":"“너는 내가 믿는 팀원이야.","pattern":"2형식","pt":"SVC","chunks":[{"t":"“You","role":"S","who":"대명사","k":"너는"},{"t":"’re","role":"V","k":"~이다"},{"t":"a team member","role":"C","who":"명사","k":"팀원"},{"t":"whom I trust","role":"M","kind":"형용사절","to":2,"subpt":"SVO","sub":[{"t":"whom","role":"O","who":"대명사","k":"그 사람을"},{"t":"I","role":"S","who":"대명사","k":"내가"},{"t":"trust","role":"V","k":"믿는"}],"k":"내가 믿는"}],"words":[{"w":"You","pos":"대명사","mean":"너"},{"w":"’re","pos":"동사","mean":"~이다"},{"w":"a","pos":"관사","mean":"하나의"},{"w":"team","pos":"명사","mean":"팀"},{"w":"member","pos":"명사","mean":"팀원"},{"w":"whom","pos":"관계대명사","mean":"~하는 (앞의 사람을 꾸며 줌)"},{"w":"I","pos":"대명사","mean":"나"},{"w":"trust","pos":"동사","mean":"믿다"}],"memo":null},{"no":"31","en":"Let’s keep doing our best together, and we’ll win the next game.”","ko":"함께 계속 최선을 다하면 다음 게임에서 이길 수 있을 거야.”","pattern":"3형식(청유문) + 3형식","pt":null,"chunks":[{"t":"Let’s keep","role":"V","k":"계속하자"},{"t":"doing our best together","role":"O","kind":"동명사구","who":"동명사","subpt":"SVO","sub":[{"t":"doing","role":"V","k":"하기를"},{"t":"our best","role":"O","who":"명사","k":"우리의 최선을"},{"t":"together","role":"M","kind":"부사","to":0,"k":"함께"}],"k":"함께 최선을 다하기를"},{"t":"and","role":"M","kind":"접속사","k":"그리고"},{"t":"we","role":"S","who":"대명사","k":"우리는"},{"t":"’ll win","role":"V","k":"이길 것이다"},{"t":"the next game.”","role":"O","who":"명사","k":"다음 게임을"}],"words":[{"w":"Let’s","pos":"동사","mean":"~하자"},{"w":"keep","pos":"동사","mean":"계속하다"},{"w":"doing","pos":"동사","mean":"하다"},{"w":"our","pos":"대명사","mean":"우리의"},{"w":"best","pos":"명사","mean":"최선"},{"w":"together","pos":"부사","mean":"함께"},{"w":"and","pos":"접속사","mean":"그리고"},{"w":"we","pos":"대명사","mean":"우리"},{"w":"’ll","pos":"조동사","mean":"~할 것이다"},{"w":"win","pos":"동사","mean":"이기다"},{"w":"the","pos":"관사","mean":"그"},{"w":"next","pos":"형용사","mean":"다음의"},{"w":"game","pos":"명사","mean":"게임, 경기"}],"memo":{"basis":"기준: Let’s + 동사는 청유 표현이라 한 덩어리 동사로 처리","text":"Let’s keep을 V 한 덩어리로, keep의 목적어는 동명사구 doing our best로 표시"}},{"no":"32","en":"In the end, words have the power to change our opinions, actions, and relationships.","ko":"결국, 말은 우리의 의견, 행동, 그리고 관계를 바꿀 수 있는 힘을 가지고 있다.","pattern":"3형식","pt":"SVO","chunks":[{"t":"In the end","role":"M","kind":"부사구","to":-1,"k":"결국"},{"t":"words","role":"S","who":"명사","k":"말은"},{"t":"have","role":"V","k":"가지고 있다"},{"t":"the power","role":"O","who":"명사","k":"힘을"},{"t":"to change our opinions, actions, and relationships","role":"M","kind":"to부정사(형용사적 용법)","to":3,"subpt":"SVO","sub":[{"t":"to change","role":"V","k":"바꿀"},{"t":"our opinions, actions, and relationships","role":"O","who":"명사","k":"우리의 의견, 행동, 그리고 관계를"}],"k":"우리의 의견, 행동, 그리고 관계를 바꿀 수 있는"}],"words":[{"w":"In","pos":"전치사","mean":"결국 (in the end 전체 뜻)"},{"w":"the","pos":"관사","mean":"(in the end의 일부)"},{"w":"end","pos":"명사","mean":"(in the end의 일부)"},{"w":"words","pos":"명사","mean":"말"},{"w":"have","pos":"동사","mean":"가지다"},{"w":"the","pos":"관사","mean":"그"},{"w":"power","pos":"명사","mean":"힘"},{"w":"to","pos":"to(부정사)","mean":"~할"},{"w":"change","pos":"동사","mean":"바꾸다"},{"w":"our","pos":"대명사","mean":"우리의"},{"w":"opinions","pos":"명사","mean":"의견"},{"w":"actions","pos":"명사","mean":"행동"},{"w":"and","pos":"접속사","mean":"그리고"},{"w":"relationships","pos":"명사","mean":"관계"}],"memo":null},{"no":"33","en":"When you feel upset about yourself or the people around you, use positive words.","ko":"자신이나 주변 사람들 때문에 기분이 상할 때, 긍정적인 말을 사용하라.","pattern":"3형식(명령문)","pt":"SVO","chunks":[{"t":"When you feel upset about yourself or the people around you","role":"M","kind":"부사절","to":1,"subpt":"SVC","sub":[{"t":"When","role":"CJ","k":"~할 때"},{"t":"you","role":"S","who":"대명사","k":"여러분이"},{"t":"feel","role":"V","k":"느끼다"},{"t":"upset","role":"C","who":"형용사","k":"속상한"},{"t":"about yourself or the people around you","role":"M","kind":"부사구","to":3,"k":"자신이나 주변 사람들에 대해"}],"k":"자신이나 주변 사람들에 대해 기분이 상할 때"},{"t":"use","role":"V","k":"사용해라"},{"t":"positive words","role":"O","who":"명사","k":"긍정적인 말을"}],"words":[{"w":"When","pos":"접속사","mean":"~할 때"},{"w":"you","pos":"대명사","mean":"여러분"},{"w":"feel","pos":"동사","mean":"느끼다"},{"w":"upset","pos":"형용사","mean":"속상한"},{"w":"about","pos":"전치사","mean":"~에 대해"},{"w":"yourself","pos":"대명사","mean":"너 자신"},{"w":"or","pos":"접속사","mean":"또는"},{"w":"the","pos":"관사","mean":"그"},{"w":"people","pos":"명사","mean":"사람들"},{"w":"around","pos":"전치사","mean":"~ 주변에"},{"w":"you","pos":"대명사","mean":"여러분"},{"w":"use","pos":"동사","mean":"사용하다"},{"w":"positive","pos":"형용사","mean":"긍정적인"},{"w":"words","pos":"명사","mean":"말"}],"memo":null},{"no":"34","en":"You can learn, grow, and understand better.","ko":"여러분은 배우고, 성장하고, 더 잘 이해할 수 있다.","pattern":"1형식 + 1형식 + 1형식","pt":null,"chunks":[{"t":"You","role":"S","who":"대명사","k":"여러분은"},{"t":"can learn","role":"V","k":"배울 수 있다"},{"t":"grow","role":"V","k":"성장할 수 있다"},{"t":"and","role":"M","kind":"접속사","k":"그리고"},{"t":"understand","role":"V","k":"이해할 수 있다"},{"t":"better","role":"M","kind":"부사","to":4,"k":"더 잘"}],"words":[{"w":"You","pos":"대명사","mean":"여러분"},{"w":"can","pos":"조동사","mean":"~할 수 있다"},{"w":"learn","pos":"동사","mean":"배우다"},{"w":"grow","pos":"동사","mean":"성장하다"},{"w":"and","pos":"접속사","mean":"그리고"},{"w":"understand","pos":"동사","mean":"이해하다"},{"w":"better","pos":"부사","mean":"더 잘"}],"memo":null},{"no":"35","en":"Your words shape your world.","ko":"여러분의 말이 여러분의 세상을 만든다.","pattern":"3형식","pt":"SVO","chunks":[{"t":"Your words","role":"S","who":"명사","k":"여러분의 말이"},{"t":"shape","role":"V","k":"만든다"},{"t":"your world","role":"O","who":"명사","k":"여러분의 세상을"}],"words":[{"w":"Your","pos":"대명사","mean":"여러분의"},{"w":"words","pos":"명사","mean":"말"},{"w":"shape","pos":"동사","mean":"만들다"},{"w":"your","pos":"대명사","mean":"여러분의"},{"w":"world","pos":"명사","mean":"세상"}],"memo":null}]}]};
+const app=document.getElementById('app');
+const LEVEL={gibon:0,baljeon:1,simhwa:2,gogyo:2};
+LEVEL[DATA.sets[0].id]=1;
+const NAME={S:'주어',V:'동사',O:'목적어',IO:'간접목적어',DO:'직접목적어',C:'보어',OC:'목적격보어',M:'수식어',CJ:'접속사'};
+const BN={S:'주어',V:'동사',O:'목적어',C:'보어',M:'수식어',CJ:'접속사'};
+const ANCH={SV:['SV','1형식',[['Birds','S'],['fly','V']]],SVC:['SVC','2형식',[['She','S'],['is','V'],['happy','C']]],SVO:['SVO','3형식',[['I','S'],['like','V'],['apples','O']]],SVOO:['SVOO','4형식',[['She','S'],['gave','V'],['me','O'],['a book','O']]],SVOC:['SVOC','5형식',[['They','S'],['call','V'],['him','O'],['Tom','C']]]};
+const WHO=['명사','대명사','형용사','동명사','to부정사','동사원형','절'];
+const WHYWHO={'명사':'이름(사람·사물·장소)을 나타내는 말','대명사':'이름을 대신해 쓰는 말','형용사':'상태를 설명하는 말','동명사':'동사+ing 모양이 명사 역할을 함','to부정사':'to+동사원형 모양이 명사 역할을 함','동사원형':'to 없이 동사 그대로의 모양','절':'주어+동사가 들어 있는 덩어리'};
+const ROLEOPT=[['S','주어'],['V','동사'],['O','목적어'],['C','보어'],['M','수식어'],['CJ','접속사']];
+const BASE={S:'S',V:'V',O:'O',IO:'O',DO:'O',C:'C',OC:'C',M:'M',CJ:'CJ'};
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function en(s){return '<span lang="en" translate="no">'+esc(s)+'</span>'}
+function B(c){if(c.role==='CJ'||(c.role==='M'&&c.kind==='접속사'))return 'CJ';return BASE[c.role]}
+function ck(c){const b=B(c);if(b==='M')return /형용사/.test(c.kind||'')?'MA':'MB';return b}
+function sp(c,i){return (i>0&&!/^['’.,?!;:]/.test(c.t))?' ':''}
+function barCol(c){const b=B(c);if(b==='S')return '#ffc83d';if(b==='O')return '#a9e6a4';if(b==='C')return '#9fd3f2';return /형용사/.test(c.kind||'')?'#c9a6f5':'#f2b36b'}
+function cands(it){return it.chunks.concat(it.extra||[])}
+function toName(c,it){return c.to===-1?'문장 전체':c.to===-2?'꾸밈 없음':cands(it)[c.to].t}
+function eul(w){const ch=String(w).charCodeAt(String(w).length-1);return (ch>=0xAC00&&ch<=0xD7A3&&(ch-0xAC00)%28!==0)?'을':'를'}
+function isAdj(c){return /형용사/.test(c.kind||'')}
+function rel(c,it){
+  if(c.to===-2)return '유도부사 = 문장을 여는 말, 꾸미는 대상 없음';
+  if(c.to===-1)return '부사가 문장 전체를 꾸밈';
+  const t=cands(it)[c.to],tb=B(t);
+  if(/비교/.test(c.kind||''))return '비교하는 대상을 나타냄';
+  if(isAdj(c)){if(tb==='V')return '';const n=(t.who==='대명사'?'대명사':'명사');return '형용사가 '+n+eul(n)+' 꾸밈'}
+  if(tb==='CJ')return '부사가 접속사를 꾸밈';
+  if(tb==='V')return '부사가 동사를 꾸밈';
+  if(tb==='M')return '부사가 '+(isAdj(t)?'형용사':'부사')+'를 꾸밈';
+  if(t.who==='형용사')return '부사가 형용사를 꾸밈';
+  return '수식어가 '+(t.who&&t.who!=='절'?t.who+eul(t.who):'앞의 말을')+' 꾸밈';
+}
+function head(c){
+  let det=[c.kind,c.info].filter(Boolean).join(', ').split(/\s*,\s*/).filter(Boolean);
+  const seen=[];det.forEach(d=>{const dd=d.replace(/\(.*\)/,'').trim();if(dd&&!seen.some(x=>x.indexOf(dd)>=0||dd.indexOf(x)>=0)){seen.push(d)}});
+  det=seen;let h=c.who||'';
+  det=det.filter(d=>d!==h);
+  if(det.length&&h&&det[0].indexOf(h)===0){h=det.shift()}
+  return esc(h)+det.map(d=>' · '+esc(d)).join('');
+}
+function ansText(c,it){
+  const b=B(c);
+  if(b==='V')return '동사';
+  if(b==='CJ')return '접속사';
+  if(b==='M'){if(c.to===-2)return '수식어 ('+esc(c.kind||'')+') · 꾸밈 없음<br><small>'+esc(rel(c,it))+'</small>';return '수식어 ('+esc(c.kind||'')+(c.info?' · '+esc(c.info):'')+') → '+(c.to>=0?en(toName(c,it)):esc(toName(c,it)))+' 꾸밈'+(rel(c,it)?'<br><small>'+esc(rel(c,it))+'</small>':'')}
+  return NAME[c.role]+' ('+head(c)+')';
+}
+const BEV=['is','am','are','was','were','be','been','being'];
+function mainV(c,it){
+  const ch=it.chunks,k=ch.indexOf(c);let a=0,z=ch.length;
+  for(let j=k-1;j>=0;j--)if(B(ch[j])==='CJ'){a=j+1;break}
+  for(let j=k+1;j<ch.length;j++)if(B(ch[j])==='CJ'){z=j;break}
+  const vs=ch.slice(a,z).filter(x=>x.role==='V');
+  return vs.length?vs[vs.length-1]:(ch.filter(x=>x.role==='V')[0]||{t:'동사'});
+}
+function whyRole(c,it){
+  const b=B(c),vc=mainV(c,it),v=vc.t,be=BEV.indexOf(v.toLowerCase().split(' ').pop())>=0;
+  if(b==='S')return c.t+(be?' = 설명의 대상이 되는 쪽':' = '+v+' 하는 쪽');
+  if(b==='V')return c.t+' = 동작·상태를 말하는 말';
+  if(b==='O')return c.t+' = '+v+' 의 대상 (~을/를)';
+  if(b==='C')return c.t+' = 앞의 말을 설명하는 말';
+  if(b==='CJ')return c.t+' = 말과 말을 이어 주는 말';
+  if(c.to===-2)return c.t+' = 문장을 여는 말 (뒤에 진짜 주어가 옴)';
+  return c.t+' = 빼도 문장이 성립하는 꾸미는 말';
+}
+let cur=null,round=0,cust=null,retried=false,conf={};
+function bump(k){conf[k]=(conf[k]||0)+1}
+function home(){rounds(DATA.sets[0].id)}
+function nr(){return Math.ceil(cur.items.length/10)}
+function recKey(){return 'bc_rec_'+cur.id}
+function recGet(){try{return JSON.parse(localStorage.getItem(recKey())||'{}')}catch(e){return {}}}
+function recSet(r,wrong){try{const o=recGet();const d=new Date();o[r]={w:wrong,d:d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)};localStorage.setItem(recKey(),JSON.stringify(o))}catch(e){}}
+function rounds(id){
+  cur=DATA.sets[0];cust=null;
+  const rec=recGet();
+  let h='<h1>문장 성분 연습</h1><h2>'+esc(cur.label)+'</h2><div class="wm">10문장씩 골라서 풀기 · 앞에서부터</div>';
+  for(let r=0;r<nr();r++){
+    if(r%10===0){const e=Math.min(cur.items.length,(r+10)*10);h+=(r?'</div>':'')+'<div class="sec">'+cur.items[r*10].no+' – '+cur.items[e-1].no+'</div><div class="bgrid">'}
+    const a=cur.items[r*10].no,b=cur.items[Math.min(cur.items.length,(r+1)*10)-1].no;
+    h+='<button class="blk'+(rec[r]?' dn':'')+'" style="--c:'+cur.color+'" data-r="'+r+'"'+(rec[r]?' title="'+esc(rec[r].d)+'"':'')+'>'+a.slice(-4)+'–'+b.slice(-4)+(rec[r]?'<i>✓</i>':'')+'</button>';
+  }
+  app.innerHTML=h+'</div><button class="back" id="bcx">목록으로</button>';
+  document.getElementById('bcx').onclick=()=>{location.href='won.html'};
+  app.querySelectorAll('.blk').forEach(b=>b.onclick=()=>startQ(+b.dataset.r));
+  window.scrollTo(0,0);
+}
+function items(){return cust||cur.items.slice(round*10,round*10+10)}
+function seen(){try{return localStorage.getItem('bc_concept')==='1'}catch(e){return false}}
+function mark(){try{localStorage.setItem('bc_concept','1')}catch(e){}}
+function conceptHTML(){
+  return '<div class="cc"><div class="cch">역할과 모양은 다름</div><div class="ccl"><b>문장성분</b> = 문장 안에서 하는 역할 <span class="wm">주어 · 동사 · 목적어 · 보어</span></div><div class="ccl"><b>누가 들어갔나</b> = 그 자리에 들어간 말의 모양 <span class="wm">명사 · 대명사 · 형용사 · 동명사 · to부정사 · 동사원형 · 절</span></div><div class="ccx"><span lang="en" translate="no"><span class="x k-S">Apples</span> <span class="x k-V">are</span> red.</span><span class="wm">주어 · 들어간 말은 명사</span></div><div class="ccx"><span lang="en" translate="no"><span class="x k-S">I</span> <span class="x k-V">like</span> <span class="x k-O">apples</span>.</span><span class="wm">목적어 · 들어간 말은 명사</span></div><div class="ccl">같은 단어, 다른 역할</div></div>';
+}
+function concept(next){
+  app.innerHTML='<div class="card">'+conceptHTML()+'</div><div class="btnrow"><button class="pri" id="cgo">시작</button></div><button class="back" id="lst">목록으로</button>';
+  document.getElementById('cgo').onclick=()=>{mark();next()};document.getElementById('lst').onclick=()=>rounds(cur.id);window.scrollTo(0,0);
+}
+function showConcept(){
+  const d=document.createElement('div');d.className='ov';d.innerHTML='<div class="card">'+conceptHTML()+'<button class="back" id="cx">닫기</button></div>';
+  document.body.appendChild(d);d.querySelector('#cx').onclick=()=>d.remove();
+}
+function startQ(r){round=r;cust=null;retried=false;conf={};if(seen())quiz(0,0,[]);else concept(()=>quiz(0,0,[]))}
+/* ---------- copy view ---------- */
+function label(c,it){
+  const b=B(c);let sm='';
+  if(c.who)sm=head(c);else if(b==='M'&&c.kind)sm=esc(c.kind);
+  let tg='';
+  if(b==='M'){if(c.to===-1)tg=' → 문장 전체 꾸밈';else if(c.to>=0)tg=' → '+en(cands(it)[c.to].t)+' 꾸밈'}
+  return (c.k?'<span class="g">'+esc(c.k)+'</span>':'')+'<span class="r">'+(b==='CJ'?'접속사':NAME[c.role])+(sm?' <small>('+sm+')</small>':'')+tg+'</span>';
+}
+function chunkSpans(it){
+  return it.chunks.map((c,i)=>sp(c,i)+'<span class="ch"><span class="t k-'+ck(c)+'">'+esc(c.t)+'</span><span class="l">'+label(c,it)+'</span></span>').join('');
+}
+function subHTML(chs){
+  return chs.map(c=>{
+    const b=B(c);let extra='';
+    if(b==='M'&&c.to>=0&&chs[c.to])extra=' → '+en(chs[c.to].t)+' 꾸밈';
+    return '<div class="sub"><b>'+(b==='CJ'?'접속사':NAME[c.role])+'</b> '+en(c.t)+(c.who?' <span class="wm">'+head(c)+'</span>':(c.kind?' <span class="wm">'+esc(c.kind)+'</span>':''))+extra+'</div>';
+  }).join('');
+}
+function anchHTML(code){
+  const a=ANCH[code];
+  return '<div class="anc"><b>'+a[0]+'</b>'+a[2].map(e=>'<span class="x k-'+e[1]+'" lang="en" translate="no">'+esc(e[0])+'</span>').join('')+'<span>와 같은 구조</span></div>';
+}
+function copyView(wl,wrong){
+  const its=items();
+  let h='<h1>틀린 문장 색칠</h1><div class="legend"><span class="k-S">주어</span><span class="k-V">동사</span><span class="k-O">목적어</span><span class="k-C">보어</span><span class="k-MA">형용사 수식어</span><span class="k-MB">그 밖의 수식어</span></div>';
+  wl.forEach(i=>{
+    const it=its[i];
+    const wm=it.words.filter(w=>w.pos!=='관사').map(w=>en(w.w)+' '+esc(w.mean)).join(' · ');
+    const subs=it.chunks.filter(c=>c.sub).map(c=>subHTML(c.sub)).join('');
+    h+='<div class="card"><div class="no">'+esc(it.no)+(it.pt?'':' · '+esc(it.pattern))+'</div><div class="sent" lang="en" translate="no">'+chunkSpans(it)+'</div>'+(it.pt?anchHTML(it.pt):'')+subs+'<div class="ko">'+esc(it.ko)+'</div><div class="wm">'+wm+'</div>'+(it.memo?'<div class="note"><b>'+esc(it.memo.basis)+'</b> '+esc(it.memo.text||'')+'</div>':'')+'</div>';
+  });
+  h+='<div class="btnrow"><button class="pri" id="go">다 칠했음</button></div><button class="back" id="lst">목록으로</button>';
+  app.innerHTML=h;
+  document.getElementById('lst').onclick=()=>rounds(cur.id);
+  const go=document.getElementById('go');
+  go.onclick=()=>{if(!go.classList.contains('warn')){go.classList.add('warn');go.textContent='한 번 더 누르면 끝남';return}afterCopy(wl,wrong)};
+  window.scrollTo(0,0);
+}
+function afterCopy(wl,wrong){
+  if(!retried&&wl.length>=5){const its=items();cust=wl.map(i=>its[i]);retried=true;quiz(0,wrong,[])}else done(wrong)
+}
+function confHTML(){
+  const a=Object.keys(conf).map(k=>[k,conf[k]]).sort((x,y)=>y[1]-x[1]).slice(0,3);
+  if(!a.length)return '';
+  return '<div class="confl"><b>많이 헷갈린 것</b>'+a.map(e=>'<div>'+esc(e[0])+' · '+e[1]+'번</div>').join('')+'</div>';
+}
+function done(wrong){
+  cust=null;const its=items();recSet(round,wrong);
+  app.innerHTML='<h1>'+its[0].no+' – '+its[its.length-1].no+' 완료</h1><div class="card sum">오답 '+wrong+'번'+confHTML()+'</div><button class="pri" id="bk">목록으로</button>';
+  document.getElementById('bk').onclick=()=>rounds(cur.id);window.scrollTo(0,0);
+}
+/* ---------- one floor ---------- */
+function mount(it,host,floor,cls,done,opt){
+  opt=opt||{};
+  host.innerHTML='<div class="card"><div class="ftag"></div><div class="sent" lang="en" translate="no" id="sent'+floor+'">'+it.chunks.map((c,k)=>sp(c,k)+'<span class="t" data-k="'+k+'">'+esc(c.t)+'</span>').join('')+'</div><div class="rows"></div></div><div class="btnrow"><button class="pri" disabled>제출</button></div>';
+  host.className=cls;
+  host.querySelector('.ftag').textContent=opt.tag||(floor+'층');
+  const rows=host.querySelector('.rows'),sub=host.querySelector('.pri');
+  const st=it.chunks.map(()=>({role:opt.fixedM?'M':null,who:null,to:undefined}));let pat=null;
+  const cd=cands(it),noneOK=true,cjOK=cd.some(x=>x.role==='M'&&B(x)!=='CJ'&&x.to>=0&&B(cd[x.to])==='CJ');
+  function complete(){
+    for(let k=0;k<it.chunks.length;k++){const s=st[k];if(!s.role)return false;
+      if((s.role==='S'||s.role==='O'||s.role==='C')&&!s.who)return false;
+      if(s.role==='M'&&s.to===undefined)return false}
+    if(it.pt&&!pat)return false;return true;
+  }
+  function refresh(){sub.disabled=!complete()}
+  const rowEls=[];
+  it.chunks.forEach((c,k)=>{
+    const r=document.createElement('div');r.className='qr';
+    r.innerHTML='<span class="t" lang="en" translate="no">'+esc(c.t)+'</span>'+(c.k?'<span class="g">'+esc(c.k)+'</span>':'')+(opt.fixedM?'':'<div class="cap">문장성분</div><span class="opt"></span>')+'<div class="pbox"></div>';
+    const o=r.querySelector('.opt'),pb=r.querySelector('.pbox');
+    function drawSub(){
+      pb.innerHTML='';const s=st[k];
+      if(s.role==='S'||s.role==='O'||s.role==='C'){
+        const line=document.createElement('div');line.className='popt';
+        line.innerHTML='<span class="cap2">누가 들어갔나?</span>';
+        WHO.forEach((w,wi)=>{if(wi===3){const br=document.createElement('span');br.style.cssText='flex:0 0 100%;height:0';line.appendChild(br)}const b=document.createElement('button');b.textContent=w;if(s.who===w)b.className='sel';b.onclick=()=>{s.who=w;drawSub();refresh()};line.appendChild(b)});
+        pb.appendChild(line);
+      }else if(s.role==='M'){
+        const line=document.createElement('div');line.className='popt';
+        line.innerHTML='<span class="cap2">누구를 꾸미나?</span>';
+        cd.forEach((x,j)=>{if(j===k||(B(x)==='CJ'&&!cjOK))return;const b=document.createElement('button');const same=cd.filter(y=>y.t===x.t&&!(B(y)==='CJ'&&!cjOK));const ord=same.length>1?' '+'①②③④⑤'[same.indexOf(x)]:'';b.textContent=x.t+ord;b.dataset.j=j;b.setAttribute('lang','en');if(s.to===j)b.className='sel';b.onclick=()=>{s.to=j;drawSub();refresh()};line.appendChild(b)});
+        const b=document.createElement('button');b.textContent='문장 전체';if(s.to===-1)b.className='sel';b.onclick=()=>{s.to=-1;drawSub();refresh()};line.appendChild(b);
+        if(noneOK){const b2=document.createElement('button');b2.textContent='꾸밈 없음';if(s.to===-2)b2.className='sel';b2.onclick=()=>{s.to=-2;drawSub();refresh()};line.appendChild(b2)}
+        pb.appendChild(line);
+      }
+    }
+    if(o)ROLEOPT.forEach(([key,nm])=>{
+      const b=document.createElement('button');b.textContent=nm;
+      b.onclick=()=>{st[k].role=key;st[k].who=null;st[k].to=undefined;o.querySelectorAll('button').forEach(x=>x.className=x===b?'sel':'');drawSub();refresh()};
+      o.appendChild(b)});
+    if(opt.fixedM)drawSub();
+    rows.appendChild(r);rowEls.push(r);
+  });
+  let pr=null;
+  if(it.pt){
+    pr=document.createElement('div');pr.className='qr';
+    pr.innerHTML='<span class="t" style="background:transparent;padding-left:0">문형</span><span class="opt"></span>';
+    const o=pr.querySelector('.opt');
+    Object.keys(ANCH).forEach(code=>{
+      const b=document.createElement('button');b.textContent=code;
+      b.onclick=()=>{pat=code;o.querySelectorAll('button').forEach(x=>x.className=x===b?'sel':'');refresh()};
+      o.appendChild(b)});
+    rows.appendChild(pr);
+  }
+  sub.onclick=()=>{
+    if(!complete())return;
+    sub.style.display='none';let bad=0;
+    it.chunks.forEach((c,k)=>{
+      const s=st[k],r=rowEls[k],b=B(c);
+      let ok=s.role===b,kind='role';
+      if(ok&&(b==='S'||b==='O'||b==='C')){ok=s.who===c.who;kind='who'}
+      if(ok&&b==='M'){ok=s.to===c.to;kind='to'}
+      const cls2='k-'+ck(c);r.querySelector('.t').classList.add(cls2);host.querySelector('.sent .t[data-k="'+k+'"]').classList.add(cls2);
+      const oo=r.querySelector('.opt');if(oo)oo.remove();r.querySelector('.pbox').remove();
+      const cp=r.querySelector('.cap');if(cp)cp.remove();
+      if(ok){r.insertAdjacentHTML('beforeend','<span class="mk mko">O</span><span class="ok">'+ansText(c,it)+'</span>')}
+      else{bad++;r.classList.add('wr');
+        let why;
+        if(kind==='role'){why=whyRole(c,it);bump((BN[s.role]||'')+' → '+BN[b])}
+        else if(kind==='to'){why=c.to===-2?c.t+' = 문장을 여는 말, 꾸미는 대상이 없음':c.t+' 는 '+toName(c,it)+' 를 꾸미는 말';bump('꾸미는 대상')}
+        else{why=c.t+' = '+WHYWHO[c.who];bump(s.who+' → '+c.who)}
+        const mine=(BN[s.role]||'')+(s.who?' ('+s.who+')':'')+(s.role==='M'&&s.to!==undefined?' → '+(s.to===-1?'문장 전체':s.to===-2?'꾸밈 없음':cd[s.to].t):'');
+        r.insertAdjacentHTML('beforeend','<span class="mk mkx">X</span><span class="mine">내 답: '+esc(mine)+'</span><span class="ok">정답: '+ansText(c,it)+'</span><div class="why" lang="ko">'+esc(why)+'</div>')}
+    });
+    if(it.pt){
+      const ok=pat===it.pt;pr.querySelector('.opt').remove();
+      if(ok)pr.insertAdjacentHTML('beforeend','<span class="mk mko">O</span><span class="ok">'+it.pt+' · '+ANCH[it.pt][1]+'</span>');
+      else{bad++;bump('문형');pr.classList.add('wr');pr.insertAdjacentHTML('beforeend','<span class="mk mkx">X</span><span class="mine">내 답: '+pat+'</span><span class="ok">정답: '+it.pt+' · '+ANCH[it.pt][1]+'</span>')}
+      const sk=it.chunks.filter(c=>B(c)!=='M'&&B(c)!=='CJ').map(c=>'<span class="x k-'+ck(c)+'" lang="en" translate="no">'+esc(c.t)+'</span>').join('');
+      const an=ANCH[it.pt][2].map(e=>'<span class="x k-'+e[1]+'" lang="en" translate="no">'+esc(e[0])+'</span>').join('');
+      rows.insertAdjacentHTML('afterend','<div class="wrap"><div class="wh">'+it.pt+' · '+ANCH[it.pt][1]+'</div><div class="wl"><span class="wn">이 문장</span>'+sk+'</div><div class="wl"><span class="wn">기본 예문</span>'+an+'</div></div>');
+    }
+    rows.insertAdjacentHTML('beforebegin','<div class="res '+(bad?'resx':'reso')+'">'+(bad?'틀린 곳 '+bad+'개':'모두 맞음')+'</div>');
+    if(floor===1)window.scrollTo(0,0);else host.scrollIntoView({block:'start'});
+    done(bad);
+  };
+}
+/* ---------- closing card with arrows ---------- */
+function ilab(x){
+  const d=(x.kind||'')+(x.info||'');
+  if(B(x)==='S'&&/가주어/.test(d))return '가주어';
+  if(B(x)==='S'&&/진주어/.test(d))return '진주어';
+  if(B(x)==='CJ')return '접속사';
+  return NAME[x.role]||'';
+}
+function rowHTML(chunks,extra,label,cls,bar){
+  const all=chunks.concat(extra||[]);
+  const pairs=[];
+  all.forEach((c,i)=>{if(c.role==='M'&&B(c)!=='CJ'&&c.to!==undefined&&c.to>-2)pairs.push([i,c.to,isAdj(c)?'#6f3fc2':'#c9680f'])});
+  const gi=chunks.findIndex(x=>B(x)==='S'&&/가주어/.test((x.kind||'')+(x.info||'')));
+  const ji=chunks.findIndex(x=>B(x)==='S'&&/진주어/.test((x.kind||'')+(x.info||'')));
+  if(gi>=0&&ji>=0)pairs.push([gi,ji,'#8a7a2a','d']);
+  return '<div class="grp'+(cls||'')+'"'+(bar?' style="border-left-color:'+bar+'"':'')+'><div class="n">'+label+'</div><div class="rw" data-pairs=\''+JSON.stringify(pairs)+'\'><svg class="ar"></svg><div class="cl">'+all.map(x=>'<span class="cb"><i>'+ilab(x)+'</i><span class="x k-'+ck(x)+'" lang="en" translate="no">'+esc(x.t)+'</span></span>').join('')+'</div></div></div>';
+}
+function draw(){
+  document.querySelectorAll('.rw').forEach(rw=>{
+    const pairs=JSON.parse(rw.getAttribute('data-pairs')||'[]');
+    rw.classList.toggle('has',pairs.length>0);
+    const svg=rw.querySelector('svg'),R=rw.getBoundingClientRect(),cbs=[].slice.call(rw.querySelectorAll('.cb'));let out='';
+    function box(i){const b=cbs[i].getBoundingClientRect();return {x:b.left-R.left+b.width/2,top:b.top-R.top,bot:b.bottom-R.top,l:b.left-R.left,r:b.right-R.left}}
+    pairs.forEach(p=>{
+      const a=box(p[0]),col=p[2];
+      if(p[1]===-1){
+        const first=box(0),last=box(cbs.length-1),y=10;
+        out+='<path d="M'+a.x+' '+(a.top-2)+' V'+y+' M'+first.l+' '+(y+7)+' V'+y+' H'+last.r+' V'+(y+7)+'" fill="none" stroke="'+col+'" stroke-width="2.2" stroke-linecap="round"/><text x="'+((first.l+last.r)/2)+'" y="'+(y-3)+'" font-size="11" font-weight="700" fill="'+col+'" text-anchor="middle">문장 전체</text>';
+        return;
+      }
+      const b=box(p[1]);
+      if(p[3]==='d'){
+        const d=Math.abs(a.x-b.x),h=Math.min(22,10+d/12),y0=a.top-2;
+        out+='<path d="M'+a.x+' '+y0+' C'+a.x+' '+(y0-h*1.3)+' '+b.x+' '+(y0-h*1.3)+' '+b.x+' '+y0+'" fill="none" stroke="'+col+'" stroke-width="2" stroke-dasharray="2 4" stroke-linecap="round"/>';
+        return;
+      }
+      if(Math.abs(a.top-b.top)>10){const dn=a.top>b.top,x1=a.x,y1=dn?a.top-1:a.bot+1,x2=b.x,y2=dn?b.bot+2:b.top-2,sg=dn?1:-1;out+='<path d="M'+x1+' '+y1+' C'+x1+' '+(y1-sg*8)+' '+x2+' '+(y2+sg*8)+' '+x2+' '+y2+'" fill="none" stroke="'+col+'" stroke-width="2.2" stroke-linecap="round"/><path d="M'+(x2-5)+' '+(y2+sg*6)+' L'+x2+' '+y2+' L'+(x2+5)+' '+(y2+sg*6)+'" fill="none" stroke="'+col+'" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>';return}
+      const d=Math.abs(a.x-b.x),h=Math.min(24,12+d/12),y0=a.top-2,y1=a.top-3;
+      out+='<path d="M'+a.x+' '+y0+' C'+a.x+' '+(y0-h*1.3)+' '+b.x+' '+(y0-h*1.3)+' '+b.x+' '+(y1-1)+'" fill="none" stroke="'+col+'" stroke-width="2.2" stroke-linecap="round"/><path d="M'+(b.x-5)+' '+(y1-7)+' L'+b.x+' '+y1+' L'+(b.x+5)+' '+(y1-7)+'" fill="none" stroke="'+col+'" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>';
+    });
+    svg.innerHTML=out;
+  });
+}
+window.addEventListener('resize',draw);
+function plab(it){return it.pt?it.pt+' ('+ANCH[it.pt][1]+')':esc(it.pattern)}
+function closing(it,floors){
+  let h='<div class="clos"><div class="wh">구조 정리</div>'+rowHTML(it.chunks,null,'1층 · '+plab(it),'',null);
+  const zs=[];
+  floors.forEach(f=>{
+    const c=f.c,sit=f.sit;
+    if(c.sub){
+      h+=rowHTML(c.sub,null,'2층 · '+(c.subpt?c.subpt+' ('+ANCH[c.subpt][1]+')':''),' l2',barCol(c));
+      let z=B(c)==='M'?(en(toName(c,it))+' 를 꾸미는 덩어리 = '+c.subpt+' 구조'):(NAME[c.role]+' 자리에 '+c.subpt+' 구조가 통째로 들어간 모양');
+      const tg=c.sub.filter(x=>x.role==='M'&&x.to>=0&&B(x)!=='CJ');
+      if(tg.length)z+='<br>2층 '+en(tg[0].t)+' → '+en(c.sub[tg[0].to].t)+' 꾸밈';
+      zs.push(z);
+    }else if(c.chain){
+      h+=rowHTML(c.chain.chunks,c.chain.extra,'꾸밈 사슬',' l2',barCol(c));
+      zs.push(en(c.chain.chunks.map(x=>x.t).concat(c.chain.extra.map(x=>x.t)).join(' → '))+' 순서로 꾸밈이 이어지는 구조');
+    }
+  });
+  it.chunks.forEach(c=>{
+    if(c.role==='M'&&c.to===-1)zs.push(en(c.t)+' = 문장 전체를 꾸미는 말 (뺄 수 있음)');
+    if(c.role==='M'&&c.to===-2){const s=it.chunks.filter(x=>B(x)==='S')[0];zs.push(en(c.t)+' = 문장을 여는 유도부사'+(s?' · 뒤의 '+en(s.t)+' 가 진짜 주어 (도치)':''))}
+  });
+  const g=it.chunks.filter(x=>ilab(x)==='가주어')[0],j=it.chunks.filter(x=>ilab(x)==='진주어')[0];
+  if(g&&j)zs.push(en(g.t)+' = 가주어 · '+en(j.t)+' = 진주어 (점선으로 연결)');
+  if(zs.length)h+='<div class="clz">'+zs.join('<br>')+'</div>';
+  return h+'</div>';
+}
+function floorsOf(it){return it.chunks.filter(c=>c.sub||c.chain)}
+/* ---------- quiz ---------- */
+function quiz(i,wrong,wl){
+  const its=items();
+  if(i>=its.length){if(wl.length)copyView(wl,wrong);else done(wrong);return}
+  const it=its[i],lv=LEVEL[cur.id];
+  app.innerHTML='<div class="prog">'+(retried?'다시 · ':'')+(i+1)+' / '+its.length+' <button class="lk" id="cc">개념</button></div><div id="f1"></div><div id="f2"></div><div id="nxt"></div><button class="back" id="lst">목록으로</button>';
+  document.getElementById('cc').onclick=showConcept;document.getElementById('lst').onclick=()=>rounds(cur.id);
+  const f2=document.getElementById('f2'),nxt=document.getElementById('nxt');
+  let bad=0;
+  function finish(opened){
+    nxt.innerHTML=closing(it,opened)+(it.memo?'<div class="postit"><b>'+esc(it.memo.basis)+'</b>'+(it.memo.text?'<br>'+esc(it.memo.text):'')+'</div>':'')+'<button class="pri" style="width:100%;margin-top:12px">'+(i+1<its.length?'다음 문장':'끝')+'</button>';
+    nxt.lastChild.onclick=()=>{if(bad){wrong+=bad;if(wl.indexOf(i)<0)wl.push(i)}quiz(i+1,wrong,wl)};
+    draw();setTimeout(draw,250);setTimeout(draw,800);
+  }
+  function run(list,n,opened){
+    if(n>=list.length){finish(opened);return}
+    const c=list[n],sit=c.sub?{chunks:c.sub,pt:c.subpt}:{chunks:c.chain.chunks,extra:c.chain.extra};
+    const host=document.createElement('div');f2.appendChild(host);
+    mount(sit,host,2,'inner',b=>{bad+=b;opened.push({c:c,sit:sit});run(list,n+1,opened)},c.chain?{fixedM:true,tag:'꾸밈 사슬'}:{});
+    host.style.borderLeftColor=barCol(c);
+  }
+  mount(it,document.getElementById('f1'),1,'',b1=>{
+    bad+=b1;
+    const fl=lv===0?[]:floorsOf(it);
+    if(!fl.length){finish([]);return}
+    if(lv===2){run(fl,0,[]);return}
+    f2.innerHTML='<button class="sm" id="op">속 문장 열기</button><button class="sm" id="sk">건너뛰기</button>';
+    document.getElementById('op').onclick=()=>{f2.innerHTML='';run(fl,0,[])};
+    document.getElementById('sk').onclick=()=>{f2.innerHTML='';finish([])};
+  });
+  window.scrollTo(0,0);
+}
+home();
+</script>
+</body>
+</html>
