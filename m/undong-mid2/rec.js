@@ -6,10 +6,11 @@
   var m=/\/via-mid\/m\/(yonga-mid2|geumcheon-mid2|yongseong-mid2|undong-mid2)\//.exec(P);
   if(!m||W.__recm)return;
   W.__recm=1;
-  try{if(sessionStorage.getItem(PFX+'shared')==='1'||/[?&]shared=1/.test(location.search))return}catch(e){}
   var URL_=W.REC_URL||'https://script.google.com/macros/s/AKfycbw1YQfKsgAXNk8NYoxOfz4bsCSy66fiim7HoFAUk162ksxrEbmspMs2UifNZ-93sdf05A/exec';
   var SCH=m[1],NUM='6900',PFX=({'yonga-mid2':'mid7:','geumcheon-mid2':'gcm2:','yongseong-mid2':'ysm2:','undong-mid2':'udm2:'})[SCH],SFX=(SCH==='yonga-mid2'?'':'_'+SCH);
   var UK='recm_uid'+SFX,MK='recm_meta'+SFX,NK='recm_name'+SFX,AK='recm_at'+SFX,MAXV=45000;
+  /* 261116: 공폰 모드 확인. 예전에는 PFX 가 정해지기 전에 확인해서 공폰 모드의 안쪽 화면에서 걸러지지 않았다 */
+  try{if(sessionStorage.getItem(PFX+'shared')==='1'||/[?&]shared=1/.test(location.search))return}catch(e){}
   var LS=null;try{LS=W.localStorage;LS.getItem('x')}catch(e){return}
   function g(k){try{return LS.getItem(k)}catch(e){return null}}
   function s(k,v){try{LS.setItem(k,v)}catch(e){}}
@@ -30,14 +31,33 @@
     var ta=typeof a,tb=typeof b,o,k;
     if(ta==='number'&&tb==='number')return Math.max(a,b);
     if(ta==='boolean'&&tb==='boolean')return a||b;
-    if(Array.isArray(a)&&Array.isArray(b)){var seen={};o=[];a.concat(b).forEach(function(x){var t=JSON.stringify(x);if(!seen[t]){seen[t]=1;o.push(x)}});return o}
+    if(Array.isArray(a)&&Array.isArray(b)){
+      /* 261116: 같은 값을 지우지 않는다. 한쪽이 다른 쪽의 앞부분이면 긴 쪽, 낱개 목록(글자·묶음)이면 이 기기 것에 저쪽에만 있는 것을 붙인다.
+         순서가 뜻인 숫자 배열(문제 번호·풀이 상태)이 서로 다르면 합칠 수 없으므로 NOMERGE 로 알린다(merge 가 이 기기 값을 그대로 둔다) */
+      var ja=a.map(function(x){return JSON.stringify(x)}),jb=b.map(function(x){return JSON.stringify(x)}),i,n=Math.min(ja.length,jb.length),pre=true;
+      for(i=0;i<n;i++){if(ja[i]!==jb[i]){pre=false;break}}
+      if(pre)return ja.length>=jb.length?a:b;
+      var prim=function(x){return x===null||typeof x==='number'||typeof x==='boolean'};
+      if(a.some(prim)||b.some(prim))throw NOMERGE;
+      var cnt={};o=a.slice();ja.forEach(function(t){cnt[t]=(cnt[t]||0)+1});b.forEach(function(x,j){var t=jb[j];if(cnt[t]>0)cnt[t]--;else o.push(x)});return o}
     if(a&&b&&ta==='object'&&tb==='object'&&!Array.isArray(a)&&!Array.isArray(b)){
       o={};for(k in a)o[k]=(k in b)?dm(a[k],b[k]):a[k];for(k in b)if(!(k in a))o[k]=b[k];return o}
     return b;
   }
-  function merge(loc,rem){try{return JSON.stringify(dm(JSON.parse(loc),JSON.parse(rem)))}catch(e){return rem}}
+  var NOMERGE={nomerge:1};
+  /* 261116: 두 값이 통째로 찍은 기록(맨 위에 시각 t 가 있음)이면 더 나중 것을 쓴다. 합칠 수 없는 값은 지금 쓰는 이 기기 값을 둔다 */
+  function merge(loc,rem){var a,b;try{a=JSON.parse(loc);b=JSON.parse(rem)}catch(e){return rem}
+    try{if(a&&b&&typeof a==='object'&&typeof b==='object'&&!Array.isArray(a)&&!Array.isArray(b)&&typeof a.t==='number'&&typeof b.t==='number'&&a.t!==b.t)return a.t>b.t?loc:rem;
+      return JSON.stringify(dm(a,b))}catch(e){return loc}}
   /* 서버가 "명단에 없는 이름"이라고 하면 이 기기의 이름 등록을 풀어 잠금 화면으로 돌린다 */
-  function deny(){if(!g(NK))return;d(NK);d(UK);d(MK);reloadOnce(true)}
+  /* 261116: 서버 답 한 번으로는 이름을 풀지 않는다. 8초 뒤 다시 물어서 또 "명단에 없음"일 때만 푼다(서버가 잠깐 잘못 답해도 이름이 풀리지 않게) */
+  var dn=0;
+  function deny(){
+    if(!g(NK)||dn)return;dn=1;var id=ident();
+    setTimeout(function(){
+      chk(id).then(function(r){dn=0;if(r&&!r.ok&&r.err==='noname'&&ident()===id){d(NK);d(UK);d(MK);reloadOnce(true)}},function(){dn=0});
+    },8000);
+  }
   /* 저장 상태 표시: 두 번 이상 연속 실패하면 카드에 빨간 안내를 띄운다 */
   var bad=0;
   function stat(ok){
@@ -57,7 +77,7 @@
       .then(function(r){return r.json()}).then(function(r){if(!r)throw new Error('rec');return r});
   }
   function unwrap(v){return(v&&typeof v==='object'&&typeof v.s==='string')?v.s:null}
-  var busy=false,again=false;
+  var busy=false,again=false,recent={};
   function pending(skip){
     var meta=jg(MK)||{},ch={},sent={};
     keys().forEach(function(k){
@@ -68,11 +88,13 @@
   }
   function push(id,keep,skip){
     var c=pending(skip);if(!c.n)return Promise.resolve(false);
+    var k0;for(k0 in c.sent)recent[k0]=Date.now();
     return post({act:'put',id:id,data:c.ch},keep).then(function(){
       var meta=jg(MK)||{},k;for(k in c.sent)meta[k]=c.sent[k];s(MK,JSON.stringify(meta));return true});
   }
   function sync(id,apply,pre){
     if(busy){again=true;return Promise.resolve(false)}busy=true;
+    var t0=Date.now();
     return (pre?Promise.resolve(pre):post({act:'put',id:id,data:{}})).then(function(r){
       var rem=r.data||{},meta=jg(MK)||{},rl=false,skip={},k;
       for(k in rem){
@@ -82,9 +104,10 @@
         if(lv===rs){meta[k]=rs;continue}
         if(lv===null){if(apply){s(k,rs);meta[k]=rs;rl=true}continue}
         var lchg=meta[k]!==lv;
-        if(!lchg){if(apply){s(k,rs);meta[k]=rs;rl=true}}
+        /* 261116: 이 받기를 보내기 직전(15초 안)이나 기다리는 동안 이 기기가 올린 키는, 서버의 옛 값으로 되돌리지 않는다 */
+        if(!lchg){if(apply&&!(recent[k]&&recent[k]>t0-15000)){s(k,rs);meta[k]=rs;rl=true}}
         else if(meta[k]!==rs){
-          s(k,merge(lv,rs));rl=true;
+          var mg=merge(lv,rs);if(mg!==lv){s(k,mg);rl=true}
         }
       }
       s(MK,JSON.stringify(meta));s(AK,String(Date.now()));
@@ -96,14 +119,23 @@
   function reloadOnce(force){if(!force&&TCH)return;
     try{var t=Number(sessionStorage.getItem('recm_rl'+SFX)||0);if(Date.now()-t>20000){sessionStorage.setItem('recm_rl'+SFX,String(Date.now()));location.reload()}}catch(e){}
   }
-  var timer=null;
+  /* 261116: 저장이 일어날 때마다 서버와 맞추지 않는다. 마지막 저장 뒤 5초 조용하면(계속 풀고 있으면 늦어도 15초마다) 바뀐 것만 한 번 올린다.
+     받기는 화면을 열 때·돌아올 때 한다. 서버가 한 번에 한 요청씩만 처리하므로 요청 수를 줄이는 것이 곧 속도다 */
+  var timer=null,firstAt=0;
+  function pushNow(){
+    var id=ident();if(!id||id!==g(UK))return;
+    if(busy){again=true;return}
+    busy=true;push(id,false).catch(function(){}).then(function(){busy=false;if(again){again=false;sched()}});
+  }
   function sched(){
-    if(timer)return;
-    timer=setTimeout(function(){timer=null;var id=ident();if(id&&id===g(UK))sync(id,false).then(function(rl){if(rl)reloadOnce()}).catch(function(){})},4000);
+    var now=Date.now();if(!firstAt)firstAt=now;
+    if(timer)clearTimeout(timer);
+    timer=setTimeout(function(){timer=null;firstAt=0;pushNow()},Math.max(0,Math.min(5000,firstAt+15000-now)));
   }
   try{
     var sp=W.Storage.prototype,os=sp.setItem;
-    sp.setItem=function(k){os.apply(this,arguments);if(this===LS&&mirrored(k))sched()};
+    /* 261116: 이용 시간(tm:)은 5초마다 저장되므로 그때마다 서버에 올리지 않는다. 다른 기록이 올라갈 때·1분마다·화면을 나갈 때 함께 올라간다 */
+    sp.setItem=function(k){os.apply(this,arguments);if(this===LS&&mirrored(k)&&String(k).indexOf(PFX+'tm:')!==0)sched()};
   }catch(e){}
   function start(){
     var id=ident();if(!id)return;
@@ -119,9 +151,10 @@
     }
     if(!prev){first();return}
     var last=Number(g(AK)||0);
+    /* 261116: 45초 안에 이미 맞췄으면(이름 넣고 들어온 직후·앱 안에서 화면을 옮길 때) 다시 받지 않고, 올릴 것이 있을 때만 올린다 */
     if(Date.now()-last>45000)sync(id,true).then(function(rl){if(rl)reloadOnce()}).catch(function(){});
-    else sync(id,false).then(function(rl){if(rl)reloadOnce()}).catch(function(){});
-    setInterval(function(){if(!D.hidden)sync(id,false).then(function(rl){if(rl)reloadOnce()}).catch(function(){})},60000);
+    else if(pending().n)sched();
+    setInterval(function(){if(!D.hidden&&pending().n)pushNow()},60000);
     var hid=0;
     D.addEventListener('visibilitychange',function(){
       if(D.hidden){hid=Date.now();push(id,true).catch(function(){})}
@@ -213,3 +246,4 @@
   function ready(){flushOut();start();mountCard()}
   if(D.readyState==='complete')ready();else W.addEventListener('load',ready);
 })();
+/* recm 261116a */
