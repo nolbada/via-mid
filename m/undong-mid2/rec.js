@@ -10,7 +10,7 @@
   var SCH=m[1],NUM='6900',PFX=({'yonga-mid2':'mid7:','geumcheon-mid2':'gcm2:','yongseong-mid2':'ysm2:','undong-mid2':'udm2:'})[SCH],SFX=(SCH==='yonga-mid2'?'':'_'+SCH);
   var UK='recm_uid'+SFX,MK='recm_meta'+SFX,NK='recm_name'+SFX,AK='recm_at'+SFX,MAXV=45000;
   /* 261116: 공폰 모드 확인. 예전에는 PFX 가 정해지기 전에 확인해서 공폰 모드의 안쪽 화면에서 걸러지지 않았다 */
-  try{if(sessionStorage.getItem(PFX+'shared')==='1'||/[?&]shared=1/.test(location.search))return}catch(e){}
+  try{if(!/[?&]shared=0/.test(location.search)&&(sessionStorage.getItem(PFX+'shared')==='1'||/[?&]shared=1/.test(location.search)))return}catch(e){}
   var LS=null;try{LS=W.localStorage;LS.getItem('x')}catch(e){return}
   function g(k){try{return LS.getItem(k)}catch(e){return null}}
   function s(k,v){try{LS.setItem(k,v)}catch(e){}}
@@ -246,4 +246,4 @@
   function ready(){flushOut();start();mountCard()}
   if(D.readyState==='complete')ready();else W.addEventListener('load',ready);
 })();
-/* recm 261116a */
+/* recm 261116b */
