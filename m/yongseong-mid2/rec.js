@@ -8,12 +8,14 @@
   W.__recm=1;
   var URL_=W.REC_URL||'https://script.google.com/macros/s/AKfycbw1YQfKsgAXNk8NYoxOfz4bsCSy66fiim7HoFAUk162ksxrEbmspMs2UifNZ-93sdf05A/exec';
   var SCH=m[1],NUM='6900',PFX=({'yonga-mid2':'mid7:','geumcheon-mid2':'gcm2:','yongseong-mid2':'ysm2:'})[SCH],SFX=(SCH==='yonga-mid2'?'':'_'+SCH);
-  var UK='recm_uid'+SFX,MK='recm_meta'+SFX,NK='recm_name'+SFX,AK='recm_at'+SFX,MAXV=45000;
+  var UK='recm_uid'+SFX,MK='recm_meta'+SFX,NK='recm_name'+SFX,AK='recm_at'+SFX,LTK='recm_lt'+SFX,MAXV=45000;
   /* 261116: 공폰 모드 확인. 예전에는 PFX 가 정해지기 전에 확인해서 공폰 모드의 안쪽 화면에서 걸러지지 않았다 */
   try{if(!/[?&]shared=0/.test(location.search)&&(sessionStorage.getItem(PFX+'shared')==='1'||/[?&]shared=1/.test(location.search)))return}catch(e){}
   var LS=null;try{LS=W.localStorage;LS.getItem('x')}catch(e){return}
   function g(k){try{return LS.getItem(k)}catch(e){return null}}
-  function s(k,v){try{LS.setItem(k,v)}catch(e){}}
+  /* 261116d: 이 스크립트가 직접 쓰는 것(inS)과 앱이 쓰는 것을 구분한다 */
+  var inS=0;
+  function s(k,v){inS++;try{LS.setItem(k,v)}catch(e){}inS--}
   function d(k){try{LS.removeItem(k)}catch(e){}}
   function jg(k){try{return JSON.parse(g(k)||'null')}catch(e){return null}}
   function mirrored(k){
@@ -78,6 +80,8 @@
   }
   function unwrap(v){return(v&&typeof v==='object'&&typeof v.s==='string')?v.s:null}
   var busy=false,again=false,recent={};
+  /* 261116d: 기록마다 '이 기기에서 마지막으로 바뀐 시각'을 적어 둔다. 서버에서 받은 값이 그보다 옛것이면 받지 않는다(옛 값이 새 값을 덮어쓰지 못하게) */
+  function stamp(k){var o=jg(LTK)||{};o[k]=Date.now();s(LTK,JSON.stringify(o))}
   function pending(skip){
     var meta=jg(MK)||{},ch={},sent={};
     keys().forEach(function(k){
@@ -96,7 +100,7 @@
     if(busy){again=true;return Promise.resolve(false)}busy=true;
     var t0=Date.now();
     return (pre?Promise.resolve(pre):post({act:'put',id:id,data:{}})).then(function(r){
-      var rem=r.data||{},meta=jg(MK)||{},rl=false,skip={},k;
+      var rem=r.data||{},meta=jg(MK)||{},rl=false,skip={},k,lt=jg(LTK)||{};
       for(k in rem){
         if(!mirrored(k))continue;
         var rs=unwrap(rem[k].v);if(rs===null)continue;
@@ -105,16 +109,23 @@
         if(lv===null){if(apply){s(k,rs);meta[k]=rs;rl=true}continue}
         var lchg=meta[k]!==lv;
         /* 261116: 이 받기를 보내기 직전(15초 안)이나 기다리는 동안 이 기기가 올린 키는, 서버의 옛 값으로 되돌리지 않는다 */
-        if(!lchg){if(apply&&!(recent[k]&&recent[k]>t0-15000)){s(k,rs);meta[k]=rs;rl=true}}
+        if(!lchg){
+          var rt=Number(rem[k].t||0);
+          /* 261116c: 서버 값이 이 기기에서 바꾼 시각보다 옛것이면 받지 않고, 이 기기 값을 다시 올린다 */
+          if(lt[k]&&rt&&rt<lt[k]){delete meta[k]}
+          else if(apply&&!(recent[k]&&recent[k]>t0-15000)){s(k,rs);meta[k]=rs;if(rt)lt[k]=rt;rl=true}
+        }
         else if(meta[k]!==rs){
           var mg=merge(lv,rs);if(mg!==lv){s(k,mg);rl=true}
         }
       }
+      for(k in lt){if(g(k)===null)delete lt[k]}
+      s(LTK,JSON.stringify(lt));
       s(MK,JSON.stringify(meta));s(AK,String(Date.now()));
       return push(id,false,skip).then(function(){busy=false;if(again){again=false;sched()}return rl},function(){busy=false;return rl});
     },function(e){busy=false;throw e});
   }
-  function wipe(){keys().forEach(d);d(MK)}
+  function wipe(){keys().forEach(d);d(MK);d(LTK)}
   var TCH=0;try{['click','touchstart','keydown'].forEach(function(ev){W.addEventListener(ev,function(){TCH=1},true)})}catch(e){}
   function reloadOnce(force){if(!force&&TCH)return;
     try{var t=Number(sessionStorage.getItem('recm_rl'+SFX)||0);if(Date.now()-t>20000){sessionStorage.setItem('recm_rl'+SFX,String(Date.now()));location.reload()}}catch(e){}
@@ -135,7 +146,13 @@
   try{
     var sp=W.Storage.prototype,os=sp.setItem;
     /* 261116: 이용 시간(tm:)은 5초마다 저장되므로 그때마다 서버에 올리지 않는다. 다른 기록이 올라갈 때·1분마다·화면을 나갈 때 함께 올라간다 */
-    sp.setItem=function(k){os.apply(this,arguments);if(this===LS&&mirrored(k)&&String(k).indexOf(PFX+'tm:')!==0)sched()};
+    /* 261116c: 앱이 값을 실제로 바꿨을 때만 시각을 적는다(같은 값을 다시 저장한 것은 바뀐 것이 아니다) */
+    sp.setItem=function(k,v){
+      var mine=this===LS&&!inS&&mirrored(k),old;
+      if(mine){try{old=LS.getItem(k)}catch(e){}}
+      os.apply(this,arguments);
+      if(mine){if(old!==String(v))stamp(k);if(String(k).indexOf(PFX+'tm:')!==0)sched()}
+    };
   }catch(e){}
   function start(){
     var id=ident();if(!id)return;
@@ -246,4 +263,4 @@
   function ready(){flushOut();start();mountCard()}
   if(D.readyState==='complete')ready();else W.addEventListener('load',ready);
 })();
-/* recm 261116b */
+/* recm 261116c */
