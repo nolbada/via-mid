@@ -93,7 +93,8 @@
   function push(id,keep,skip){
     var c=pending(skip);if(!c.n)return Promise.resolve(false);
     var k0;for(k0 in c.sent)recent[k0]=Date.now();
-    return post({act:'put',id:id,data:c.ch},keep).then(function(){
+    /* 261116e: 올리기만 할 때는 서버가 기록을 돌려주지 않게 한다(nr:1) */
+    return post({act:'put',id:id,nr:1,data:c.ch},keep).then(function(){
       var meta=jg(MK)||{},k;for(k in c.sent)meta[k]=c.sent[k];s(MK,JSON.stringify(meta));return true});
   }
   function sync(id,apply,pre){
@@ -191,7 +192,7 @@
     if(fl)return;
     var q=outq().filter(function(x){return !x.dead});if(!q.length)return;
     fl=true;var x=q[0];
-    tpost({act:'put',id:x.id,data:x.ch||{}}).then(function(r){
+    tpost({act:'put',id:x.id,nr:1,data:x.ch||{}}).then(function(r){
       if(!r||!r.ok){var e=new Error('out');e.code=r&&r.err;throw e}
       return tpost({act:'put',id:x.id,data:{}});
     }).then(function(r){
@@ -263,4 +264,4 @@
   function ready(){flushOut();start();mountCard()}
   if(D.readyState==='complete')ready();else W.addEventListener('load',ready);
 })();
-/* recm 261116c */
+/* recm 261116d */
