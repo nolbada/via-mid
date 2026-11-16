@@ -74,7 +74,8 @@ function login(msg){
   document.getElementById('pw').onkeydown=function(e){if(e.key==='Enter')document.getElementById('go').onclick()};
 }
 function load(){
-  var m=document.getElementById('m');if(m)m.textContent='불러오는 중...';
+  /* 261117: 저장된 비밀번호로 바로 열 때는 안내 칸(#m)이 아직 없어 화면이 비어 있었다. 받는 동안 '불러오는 중'을 보여 준다 */
+  var m=document.getElementById('m');if(m)m.textContent='불러오는 중...';else if(!app.firstChild)app.innerHTML=head()+'<div class="msg">불러오는 중...</div>';
   post({act:'admin_list'}).then(function(r){
     if(!r||!r.ok){if(r&&r.err==='pw'){try{localStorage.removeItem(PK)}catch(e){}login('비밀번호가 맞지 않아요.')}else login('불러오지 못했어요. 잠시 후 다시 해 주세요.');return}
     try{localStorage.setItem(PK,pw)}catch(e){}
