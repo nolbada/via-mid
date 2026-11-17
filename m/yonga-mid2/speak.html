@@ -30,6 +30,7 @@ h1{font-size:20px;margin:8px 0 18px}
 .ans{margin-top:18px;border-top:1px dashed var(--line);padding-top:16px}
 .ans .en{font-size:21px;line-height:1.5;font-weight:600;word-break:keep-all}
 .ans .ko{font-size:15px;line-height:1.6;color:var(--sub);margin-top:6px}
+.card>.ko{font-size:15px;line-height:1.6;color:var(--sub);margin-top:10px}
 .pair{margin-top:14px;font-size:14px;line-height:1.6;color:var(--sub)}
 .pair div+div{margin-top:8px}
 .pair .en{font-size:15px;color:var(--ink)}
@@ -161,10 +162,11 @@ function question(){
   var ask = c.show, ans = ask==="A"?"B":"A";
   var h = '<div class="top"><span>남은 카드 '+S.queue.length+'</span><span class="stars">'+LV[c.l]+'</span></div>';
   h += '<div class="card"><span class="tag">'+ask+'</span><div class="q" lang="en">'+esc(it[ask])+'</div>';
+  h += '<div class="ko hide" id="qko">'+esc(it[ask+"k"])+'</div>';
   h += '<div class="timer" id="tm"><i id="tb"></i></div>';
   h += '<div id="reveal" class="hide"><div class="ans"><span class="tag" style="background:#6b7785">'+ans+'</span>';
   h += '<div class="en" lang="en">'+esc(it[ans])+'</div><div class="ko">'+esc(it[ans+"k"])+'</div></div>';
-  h += '<div class="pair"><div>'+esc(it[ask+"k"])+'</div></div></div></div>';
+  h += '</div></div>';
   h += '<button class="btn" id="show">정답 확인</button>';
   h += '<div class="two hide" id="judge"><button class="btn ng" id="no">틀렸다</button><button class="btn ok" id="yes">맞았다</button></div>';
   h += '<button class="btn line" id="quit">목록으로</button>';
@@ -179,6 +181,7 @@ function question(){
   document.getElementById("show").onclick = function(){
     stopTimer();
     document.getElementById("reveal").className = "";
+    document.getElementById("qko").className = "ko";
     document.getElementById("show").className = "btn hide";
     document.getElementById("judge").className = "two";
   };
