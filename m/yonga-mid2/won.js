@@ -31,7 +31,7 @@ function pageAns(){
  [7,8].forEach(function(u,i){
   var inn='';
   [['hangeul','빈칸 우리말 정답'],['eobeop','어법 선택형'],['dongsa','동사형'],['check','Check 정답'],['yeongeo','빈칸 영어 정답'],['pre','예상문제 PRE-STEP 정답·해설'],['yesang1','예상문제 1회 정답·해설'],['yesang2','예상문제 2회 정답·해설']].forEach(function(x){inn+=lrow('L'+u+'/'+x[0]+'.html',x[1],'정답·해설')});
-  h+=acc('교과서 '+u+'과',i===0,inn)});
+  h+=acc('교과서 '+u+'과',false,inn)});
  app.innerHTML=h;
  app.appendChild(foot());tabs()}
 
