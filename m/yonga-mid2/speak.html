@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko" translate="no" class="notranslate">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="google" content="notranslate"><script src="../common/base.js?v=261105a"></script><meta name="theme-color" content="#0f766e">
+<meta http-equiv="Content-Language" content="ko">
+<title>용아중2 말하기 수행평가</title>
+<style>
+:root{--ink:#1f2933;--sub:#6b7785;--line:#dfe4ea;--bg:#f6f7f9;--card:#fff;--main:#0f766e;--ok:#2e7d4f;--ng:#b3412f;--okbg:#e8f3ec;--ngbg:#f9ebe8}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo",sans-serif;-webkit-text-size-adjust:100%}
+body{min-height:100vh}
+.wrap{max-width:560px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:20px;margin:8px 0 18px}
+.list{display:grid;gap:10px}
+.round{display:flex;align-items:center;justify-content:space-between;width:100%;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;font-size:17px;color:var(--ink);text-align:left}
+.round small{color:var(--sub);font-size:13px}
+.round.done{background:var(--okbg);border-color:#c5e0cf}
+.round b{font-weight:700}
+.sec{margin:20px 0 8px;color:var(--sub);font-size:13px}
+.top{display:flex;justify-content:space-between;align-items:center;color:var(--sub);font-size:14px;margin-bottom:12px}
+.stars{letter-spacing:2px;color:var(--main);font-size:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 18px}
+.tag{display:inline-block;font-size:13px;font-weight:700;color:#fff;background:var(--main);border-radius:6px;padding:2px 9px;margin-bottom:12px}
+.q{font-size:23px;line-height:1.5;font-weight:600;word-break:keep-all}
+.timer{height:8px;background:#e8ecf1;border-radius:4px;margin:18px 0 6px;overflow:hidden}
+.timer i{display:block;height:100%;width:100%;background:var(--main);transform-origin:left}
+.timer.out i{background:var(--ng)}
+.ans{margin-top:18px;border-top:1px dashed var(--line);padding-top:16px}
+.ans .en{font-size:21px;line-height:1.5;font-weight:600;word-break:keep-all}
+.ans .ko{font-size:15px;line-height:1.6;color:var(--sub);margin-top:6px}
+.pair{margin-top:14px;font-size:14px;line-height:1.6;color:var(--sub)}
+.pair div+div{margin-top:8px}
+.pair .en{font-size:15px;color:var(--ink)}
+.btn{display:block;width:100%;border:0;border-radius:12px;padding:17px;font-size:18px;font-weight:700;background:var(--main);color:#fff;margin-top:16px}
+.btn.line{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.two .btn{margin-top:0}
+.btn.ok{background:var(--ok)}
+.btn.ng{background:var(--ng)}
+.res{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.res .m{flex:none;width:30px;height:30px;border-radius:50%;color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:15px}
+.res.ok .m{background:var(--ok)}.res.ng .m{background:var(--ng)}
+.res .t{font-size:15px;line-height:1.5;word-break:keep-all}
+.score{font-size:30px;font-weight:700;margin:6px 0 16px}
+.hide{display:none!important}
+.foot{margin-top:28px;text-align:center;color:var(--sub);font-size:13px}
+a.btn{text-decoration:none;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+"use strict";
+/* 용아중2 2학기 말하기 수행평가: A를 물으면 B, B가 나오면 A */
+var DATA = [
+  [ /* 난이도 1 */
+    {A:"Why did Dr. Schofield begin to learn Korean?",Ak:"왜 스코필드 박사는 한국어를 배우기 시작했는가?",B:"It's because he wanted to teach medicine in Korean.",Bk:"왜냐하면 그가 한국어로 의학을 가르치고 싶었기 때문이다."},
+    {A:"On March 1, 1919, what did Dr. Schofield see?",Ak:"1919년 3월 1일에, 스코필드 박사는 무엇을 보았는가?",B:"He saw a large group of people gathering outside.",Bk:"그는 바깥에 많은 무리의 사람들이 모여들고 있는 것을 보았다."},
+    {A:"On March 1, 1919, what did Dr. Schofield hear in Tapgol Park?",Ak:"1919년 3월 1일에, 스코필드 박사는 탑골 공원에서 무엇을 들었는가?",B:"He heard people shouting for Korean independence.",Bk:"그는 사람들이 한국의 독립을 위해서 소리치고 있는 것을 들었다."},
+    {A:"What did Dr. Schofield do for the rest of his life in Korea?",Ak:"스코필드 박사는 한국에서 그의 남은 인생 동안 무엇을 했는가?",B:"He worked hard to help Koreans, especially poor students.",Bk:"그는 한국인들, 특히 가난한 학생들을 돕기 위해서 열심히 일했다."},
+    {A:"Why do people in Sweden especially welcome summer?",Ak:"왜 스웨덴 사람들은 여름을 특히나 반기는가?",B:"It's because they have long and dark winters.",Bk:"왜냐하면 그들은 길고 어두운 겨울을 보내기 때문이다."}
+  ],
+  [ /* 난이도 2 */
+    {A:"What do the three figures in STIK's painting represent?",Ak:"STIK의 그림 속 세 인물은 무엇을 나타내는가?",B:"They represent the past, present, and future of Shoreditch.",Bk:"그것들은 Shoreditch의 과거, 현재, 그리고 미래를 나타낸다."},
+    {A:"Why did Dr. Schofield have to go back to Canada in 1920?",Ak:"왜 스코필드 박사는 1920년에 캐나다로 돌아가야만 했는가?",B:"It's because he was under the watchful eye of the Japanese police.",Bk:"왜냐하면 그가 일본 경찰의 감시를 받았기 때문이다."},
+    {A:"Why do Mexicans set up altars in their homes?",Ak:"왜 멕시코인들이 그들의 집에 제단을 설치하는가?",B:"It's because they believe it is important to remember dead people.",Bk:"왜냐하면 그들은 죽은 사람들을 기억하는 것이 중요하다고 믿기 때문이다."},
+    {A:"Why can people enjoy the Midsummer festival all night long?",Ak:"왜 사람들이 밤새도록 미드섬머 축제를 즐길 수 있는가?",B:"It's because the sun hardly sets at that time of year in Sweden.",Bk:"왜냐하면 스웨덴에서 일 년 중 그맘때에 해가 거의 지지 않기 때문이다."},
+    {A:"What do people who participate in the Running of the Reindeer do?",Ak:"순록 달리기에 참가하는 사람들은 무엇을 하는가?",B:"They wear fun costumes and try to run faster than reindeer.",Bk:"그들은 재미있는 의상을 입고 순록보다 더 빨리 달리려고 노력한다."}
+  ],
+  [ /* 난이도 3 */
+    {A:"What is Ben Wilson well known for?",Ak:"Ben Wilson은 무엇으로 잘 알려져 있는가?",B:"He is well known for painting pictures on gum that people drop on the street.",Bk:"그는 사람들이 거리에 버린 껌 위에 그림을 그리는 것으로 잘 알려져 있다."},
+    {A:"What kinds of messages do Wilson's gum paintings often carry?",Ak:"Wilson의 껌 그림은 종종 어떤 종류의 메시지를 담고 있는가?",B:"They often carry personal messages from people he meets on the street.",Bk:"그것들은 종종 그가 거리에서 만난 사람들로부터의 개인적인 메시지를 담고 있다."},
+    {A:"Why did Dr. Schofield help the Korean independence movement?",Ak:"스코필드 박사는 왜 한국의 독립 운동을 도왔는가?",B:"It's because he believed that every country has the right to be independent.",Bk:"왜냐하면 그는 모든 나라가 독립적일 권리를 가지고 있다고 믿었기 때문이다."},
+    {A:"What does burning the fallas symbolize?",Ak:"파야스를 불태우는 것은 무엇을 상징하는가?",B:"It symbolizes saying goodbye to old things and hello to a new start.",Bk:"그것은 오래된 것들에 작별 인사를 하고 새로운 시작을 맞이하는 것을 상징한다."},
+    {A:"What do people do during the Midsummer festival?",Ak:"미드섬머 축제 동안에 사람들은 무엇을 하는가?",B:"They decorate a tall pole with flowers and green leaves and enjoy traditional dances around it.",Bk:"그들은 기다란 막대기를 꽃들과 초록 잎사귀들로 꾸미고 그 주변을 돌면서 전통적인 춤을 즐긴다."}
+  ]
+];
+var SECONDS = 10;
+var LV = ["★☆☆","★★☆","★★★"];
+
+var app = document.getElementById("app");
+var timerId = null;
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function stopTimer(){ if(timerId){ clearInterval(timerId); timerId=null; } }
+function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+
+function home(){
+  stopTimer();
+  app.innerHTML = '<h1>말하기 수행평가</h1><div class="list">'
+    + '<button class="round" id="m1"><b>학습모드</b><small>15세트 한눈에</small></button>'
+    + '<button class="round" id="m2"><b>실전모드</b><small>A와 B 랜덤</small></button></div>'
+    + '<a class="btn line" href="won.html">목록으로</a><div class="foot">비타민 영어클리닉 · 용아중2</div>';
+  document.getElementById("m1").onclick = study;
+  document.getElementById("m2").onclick = pickLevel;
+  window.scrollTo(0,0);
+}
+
+/* 학습모드: 시험지와 같은 순서로 15세트 */
+function study(){
+  stopTimer();
+  var h = '<h1>학습모드</h1>';
+  DATA.forEach(function(lv,l){
+    h += '<div class="sec"><span class="stars">'+LV[l]+'</span></div>';
+    lv.forEach(function(it,i){
+      h += '<div class="card" style="margin-bottom:10px;padding:16px">'
+        + '<div class="pair" style="margin-top:0"><div><span class="tag">A</span><div class="en" lang="en">'+esc(it.A)+'</div><div>'+esc(it.Ak)+'</div></div>'
+        + '<div><span class="tag" style="background:#6b7785">B</span><div class="en" lang="en">'+esc(it.B)+'</div><div>'+esc(it.Bk)+'</div></div></div></div>';
+    });
+  });
+  h += '<button class="btn line" id="list">목록으로</button>';
+  app.innerHTML = h;
+  window.scrollTo(0,0);
+  document.getElementById("list").onclick = home;
+}
+
+/* 실전모드: 난이도 선택 */
+function pickLevel(){
+  stopTimer();
+  app.innerHTML = '<h1>실전모드</h1><div class="list">'
+    + '<button class="round" data-l="all"><b>전체</b><small>30장</small></button>'
+    + '<button class="round" data-l="0"><b>★☆☆</b><small>10장</small></button>'
+    + '<button class="round" data-l="1"><b>★★☆</b><small>10장</small></button>'
+    + '<button class="round" data-l="2"><b>★★★</b><small>10장</small></button></div>'
+    + '<button class="btn line" id="list">목록으로</button>';
+  Array.prototype.forEach.call(app.querySelectorAll("[data-l]"),function(b){
+    b.onclick = function(){ var v=b.getAttribute("data-l"); play(v==="all"?null:parseInt(v,10)); };
+  });
+  document.getElementById("list").onclick = home;
+  window.scrollTo(0,0);
+}
+
+/* 덱: 문장 x 방향. 같은 문장이 바로 이어 나오지 않게 섞음 */
+function makeDeck(level){
+  var cards = [];
+  DATA.forEach(function(lv,l){
+    if(level!==null && l!==level) return;
+    lv.forEach(function(it,i){ cards.push({l:l,i:i,show:"A"}); cards.push({l:l,i:i,show:"B"}); });
+  });
+  var tries = 0, ok = false;
+  while(!ok && tries<200){
+    shuffle(cards); ok = true; tries++;
+    for(var k=1;k<cards.length;k++){
+      if(cards[k].l===cards[k-1].l && cards[k].i===cards[k-1].i){ ok=false; break; }
+    }
+  }
+  return cards;
+}
+
+var S = null;
+function play(level){
+  var deck = makeDeck(level);
+  S = {queue:deck, total:deck.length, done:0, missedOnce:{}, level:level};
+  question();
+}
+
+function question(){
+  stopTimer();
+  var c = S.queue[0], it = DATA[c.l][c.i];
+  var ask = c.show, ans = ask==="A"?"B":"A";
+  var h = '<div class="top"><span>남은 카드 '+S.queue.length+'</span><span class="stars">'+LV[c.l]+'</span></div>';
+  h += '<div class="card"><span class="tag">'+ask+'</span><div class="q" lang="en">'+esc(it[ask])+'</div>';
+  h += '<div class="timer" id="tm"><i id="tb"></i></div>';
+  h += '<div id="reveal" class="hide"><div class="ans"><span class="tag" style="background:#6b7785">'+ans+'</span>';
+  h += '<div class="en" lang="en">'+esc(it[ans])+'</div><div class="ko">'+esc(it[ans+"k"])+'</div></div>';
+  h += '<div class="pair"><div>'+esc(it[ask+"k"])+'</div></div></div></div>';
+  h += '<button class="btn" id="show">정답 확인</button>';
+  h += '<div class="two hide" id="judge"><button class="btn ng" id="no">틀렸다</button><button class="btn ok" id="yes">맞았다</button></div>';
+  h += '<button class="btn line" id="quit">목록으로</button>';
+  app.innerHTML = h;
+  window.scrollTo(0,0);
+  var t0 = Date.now(), bar = document.getElementById("tb"), tm = document.getElementById("tm");
+  timerId = setInterval(function(){
+    var p = Math.max(0, 1 - (Date.now()-t0)/(SECONDS*1000));
+    bar.style.transform = "scaleX("+p+")";
+    if(p<=0){ tm.className = "timer out"; stopTimer(); }
+  },50);
+  document.getElementById("show").onclick = function(){
+    stopTimer();
+    document.getElementById("reveal").className = "";
+    document.getElementById("show").className = "btn hide";
+    document.getElementById("judge").className = "two";
+  };
+  document.getElementById("yes").onclick = function(){ judged(true); };
+  document.getElementById("no").onclick = function(){ judged(false); };
+  document.getElementById("quit").onclick = pickLevel;
+}
+
+function judged(ok){
+  var c = S.queue.shift();
+  if(ok){ S.done++; }
+  else {
+    S.missedOnce[c.l+"-"+c.i] = true;
+    /* 틀린 카드는 3~5장 뒤에 다시 (남은 카드가 적으면 맨 뒤) */
+    var pos = Math.min(S.queue.length, 3 + Math.floor(Math.random()*3));
+    S.queue.splice(pos,0,c);
+  }
+  if(S.queue.length>0) question(); else finish();
+}
+
+function finish(){
+  stopTimer();
+  var miss = Object.keys(S.missedOnce);
+  var h = '<div class="top"><span>실전모드 완료</span></div><div class="score">'+S.total+' / '+S.total+'</div>';
+  if(miss.length){
+    h += '<div class="sec">한 번 이상 틀렸던 문장</div>';
+    miss.forEach(function(k){
+      var p = k.split("-"), it = DATA[+p[0]][+p[1]];
+      h += '<div class="res ng"><div class="m">X</div><div class="t" lang="en">'+esc(it.A)+'<br>'+esc(it.B)+'</div></div>';
+    });
+  }
+  h += '<button class="btn" id="again">다시 하기</button><button class="btn line" id="list">목록으로</button>';
+  app.innerHTML = h;
+  window.scrollTo(0,0);
+  var lv = S.level;
+  document.getElementById("again").onclick = function(){ play(lv); };
+  document.getElementById("list").onclick = home;
+}
+
+home();
+</script>
+</body>
+</html>
