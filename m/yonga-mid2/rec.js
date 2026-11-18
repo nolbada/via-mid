@@ -190,15 +190,16 @@
       return;
     }
     if(!prev){first();return}
-    var last=Number(g(AK)||0);
+    var last=Number(g(AK)||0);var IDLE=1800000;
     /* 261116: 45초 안에 이미 맞췄으면(이름 넣고 들어온 직후·앱 안에서 화면을 옮길 때) 다시 받지 않고, 올릴 것이 있을 때만 올린다 */
-    if(Date.now()-last>45000)sync(id,true).then(function(rl){if(rl)reloadOnce()}).catch(function(){});
+    /* 261118: 같은 기기로 계속 푸는 동안에는 다시 받지 않는다. 받는 때는 (1) 이름을 넣을 때 (2) 30분 넘게 주고받은 것이 없다가 다시 열 때. 올리기(저장)는 그대로 */
+    if(Date.now()-last>IDLE)sync(id,true).then(function(rl){if(rl)reloadOnce()}).catch(function(){});
     else if(pending().n)sched();
     setInterval(function(){if(!D.hidden&&pending().n)pushNow()},60000);
     var hid=0;
     D.addEventListener('visibilitychange',function(){
       if(D.hidden){hid=Date.now();push(id,true).catch(function(){})}
-      else if(hid&&Date.now()-hid>30000){sync(id,true).then(function(rl){if(rl)reloadOnce()}).catch(function(){})}
+      else if(hid&&Date.now()-hid>IDLE&&Date.now()-Number(g(AK)||0)>IDLE){sync(id,true).then(function(rl){if(rl)reloadOnce()}).catch(function(){})}
     });
     W.addEventListener('pagehide',function(){push(id,true).catch(function(){})});
   }
