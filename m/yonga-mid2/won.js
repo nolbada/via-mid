@@ -33,6 +33,7 @@ function pageAns(){
   var inn='';
   [['hangeul','빈칸 우리말 정답'],['eobeop','어법 선택형'],['dongsa','동사형'],['check','Check 정답'],['yeongeo','빈칸 영어 정답'],['pre','예상문제 PRE-STEP 정답·해설'],['yesang1','예상문제 1회 정답·해설'],['yesang2','예상문제 2회 정답·해설']].forEach(function(x){inn+=lrow('L'+u+'/'+x[0]+'.html',x[1],'정답·해설')});
   h+=acc('교과서 '+u+'과',false,inn)});
+ h+=acc('실전 문제지',false,lrow('exam/donga7_1.html','7과 실전 문제지 1회','정답·해설'));
  app.innerHTML=h;
  app.appendChild(foot());tabs()}
 
