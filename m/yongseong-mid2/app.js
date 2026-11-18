@@ -231,7 +231,7 @@ function pageIndex(app){
  var lo=el('a','lc or','<div><b>오답 노트</b><small>1차 오답은 자동 저장, 2차 오답은 별표(★) 표시</small></div><span>열기</span>');lo.href='wrong.html';if(CFG.rounds)app.appendChild(lo);
  if(SH){var lp=el('a','lc','<div><b>학습 인증</b><small>오늘 푼 내용 확인 화면</small></div><span>열기</span>');lp.href='index.html?proof=1';app.appendChild(lp)}
  var lb=el('a','lc bl','<div><b>전체 랜덤 20문항</b><small>전체에서 20문항씩, 또는 원하는 유형만 골라 풀어요</small></div><span>시작</span>');lb.href='mix.html';if(CFG.rounds)app.appendChild(lb);
- if(D.TK&&D.TK.length){var lt=el('a','lc bl','<div><b>7종 특훈 시리즈</b><small>유형별 3회 · 개념 → 실전 → 고난도</small></div><span>시작</span>');lt.href='tk.html';app.appendChild(lt)}
+ if(D.TK&&D.TK.length){var lt=el('a','lc bl','<div><b>7종 특훈 시리즈</b><small>유형별 3회 · 개념 → 실전 → 고난도</small></div><span>시작</span>');lt.href='tk.html?from=idx';app.appendChild(lt)}
 
  /* 5. exam title row */
  var wk0=mondayOf(today),wk1=addDays(wk0,6),wcnt=0;
@@ -486,15 +486,18 @@ function pageWrong(app){
 function tkFind(sid){var f=null;(D.TK||[]).forEach(function(t){t.sets.forEach(function(st){if(st.sid===sid)f=st})});return f}
 function tkSc(st){var o=jg('tk:'+st.sid,{}),n=0,c=0;st.ids.forEach(function(id){if(o[id]){n++;if(o[id][1])c++}});return{n:n,c:c,all:n===st.ids.length}}
 function pageTk(app){
- var p=qs(),sid=p.s;
- var bar=el('div','bar');var home=el('a','pill','‹ 처음');home.href='index.html';bar.appendChild(home);
- if(sid){var back=el('a','pill','특훈 목록');back.href='tk.html';bar.appendChild(back)}
+ var p=qs(),sid=p.s,fu=p.u?+p.u:0;
+ try{if(p.from)sessionStorage.setItem('tkfrom',p.from)}catch(e){}
+ var fw='';try{fw=sessionStorage.getItem('tkfrom')||''}catch(e){}
+ var lu=fu||(sid?+String(sid).split('-')[0]:0);
+ var bar=el('div','bar');var home=el('a','pill',fw==='won'?'‹ 원문':'‹ 처음');home.href=fw==='won'?'won.html':'index.html';bar.appendChild(home);
+ if(sid){var back=el('a','pill','특훈 목록');back.href='tk.html'+(lu?'?u='+lu:'');bar.appendChild(back)}
  app.appendChild(bar);
  if(!sid){
   app.appendChild(el('h1',null,'7종 특훈 시리즈'));
   var us=[];(D.TK||[]).forEach(function(t){if(us.indexOf(t.u)<0)us.push(t.u)});
   us.forEach(function(u,ui){
-   var dt=el('details','acc');if(ui===0)dt.open=true;
+   var dt=el('details','acc');if(fu?u===fu:ui===0)dt.open=true;
    dt.appendChild(el('summary',null,'교과서 '+u+'과'));
    var inn=el('div','in');
    var hasB=(D.TK||[]).some(function(x){return x.u===u&&x.k==='BLANK'});

@@ -21,6 +21,7 @@ function pageWon(){
  var h='';
  h+=acc('교과서 7과',true,lrow('jwa.html','좌본문 우해석')+lrow('gram.html','문법 설명')+lrow('https://nolbada.github.io/via/mid/dongah-yun/l7/basic/','문장 성분 연습','기본 · 핵심 문장 26개')+lrow('https://nolbada.github.io/via/mid/dongah-yun/l7/adv/','문장 성분 연습','심화 · 핵심 문장 26개'));
  h+=acc('교과서 8과',false,lrow('jwa8.html','좌본문 우해석')+lrow('gram8.html','문법 설명'));
+ if(window.TKU){h+=acc('7종 특훈 시리즈',false,window.TKU.map(function(u){return lrow('tk.html?u='+u+'&from=won','교과서 '+u+'과 특훈','7가지 유형 · 각 3회')}).join(''))}
  app.innerHTML=h;
  app.appendChild(foot());tabs()}
 
