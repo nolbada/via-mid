@@ -21,7 +21,7 @@ var IDX={};
 Object.keys(D.R).forEach(function(r){TY.forEach(function(t){(D.R[r][t.k]||[]).forEach(function(id,i){IDX[id]={r:+r,t:t.k,n:i+1}})})});
 D.VX.forEach(function(v){v.ids.forEach(function(id,i){IDX[id]={x:v.s,t:'X',n:i+1}})});
 /* 261118: 7종 특훈 시리즈 */
-var TKN=['VOCAB','DIALOG','GRAMMAR','EOBEOP','ORDER','INSERT','CONTENT'],TKL={VOCAB:'어휘 특훈',DIALOG:'대화문 특훈',GRAMMAR:'문법 특훈',EOBEOP:'어법·어휘 다지기',ORDER:'순서 다지기',INSERT:'삽입 다지기',CONTENT:'내용·지칭 특훈'};
+var TKN=['VOCAB','DIALOG','GRAMMAR','EOBEOP','ORDER','INSERT','CONTENT'],TKL={BLANK:'빈칸 다지기',VOCAB:'어휘 특훈',DIALOG:'대화문 특훈',GRAMMAR:'문법 특훈',EOBEOP:'어법·어휘 다지기',ORDER:'순서 다지기',INSERT:'삽입 다지기',CONTENT:'내용·지칭 특훈'};
 (D.TK||[]).forEach(function(t){t.sets.forEach(function(st){var sid=t.u+'-'+t.k+'-'+st.r;st.sid=sid;st.t=t;st.ids.forEach(function(id,i){IDX[id]={tk:sid,t:'TK',n:i+1,lab:t.u+'과 '+t.nm+' '+st.r+'회'}})})});
 function ansHref(id){var o=IDX[id];if(!o)return'#';if(o.tk)return 'tk.html?s='+o.tk;return o.x!=null?'answer.html?x='+o.x+'#q'+o.n:'answer.html?r='+o.r+'&t='+o.t+'#q'+o.n}
 function testHref(id){var o=IDX[id];if(!o)return'#';if(o.tk)return 'tk.html?s='+o.tk;return o.x!=null?'vocabx.html?s='+o.x+'#q'+o.n:'test.html?r='+o.r+'&t='+o.t+'#q'+o.n}
@@ -52,7 +52,7 @@ function seenGet(){return listGet('seen')}
 function markSeen(id){listAdd('seen',id)}
 
 /* cards */
-function isLab(q){return q.c&&q.c.every(function(c){return /^[ⓐ-ⓔ]$/.test(c)})}
+function isLab(q){return q.c&&q.c.every(function(c){return /^[ⓐ-ⓔ①-⑤]$/.test(c)})}
 function sameSet(a,b){if(a.length!==b.length)return false;var x=a.slice().sort(),y=b.slice().sort();return x.every(function(v,i){return v===y[i]})}
 function buildCard(q,no,o){
  o=o||{};
@@ -122,14 +122,14 @@ function explainOc(c,q,sel){
  var w=(q.r&&q.r.w&&q.r.w[0])||{};
  if(w.l&&w.l.length){var b=el('div','part');b.appendChild(el('span','lbl','해설'));(q.st?w.l.slice(0,1):w.l).forEach(function(l){b.appendChild(el('div','ln',l))});c.appendChild(b)}
  var box=el('div','ocs');
- if(q.st){box.appendChild(el('span','lbl','문장 풀이'));q.st.forEach(function(x,i){
-  var d=el('div','oc '+(x.ok?'good':'bad'));
-  d.innerHTML='<div class="oh"><span class="on">'+'ⓐⓑⓒⓓⓔⓕⓖ'.charAt(i)+'</span><span class="oe">'+x.en+'</span><span class="ob '+(x.ok?'g':'b')+'">'+(x.ok?'맞음':'틀림')+'</span></div>'+(x.ko?'<div class="ok2">'+x.ko+'</div>':'')+'<div class="oy">'+x.y+'</div>';
+ if(q.st){box.appendChild(el('span','lbl',q.stl||'문장 풀이'));q.st.forEach(function(x,i){
+  var nb=(x.ok===1||x.ok===0||x.ok===true||x.ok===false),lb=x.lb||'ⓐⓑⓒⓓⓔⓕⓖ'.charAt(i);var d=el('div','oc'+(nb?(x.ok?' good':' bad'):''));
+  d.innerHTML='<div class="oh"><span class="on">'+lb+'</span><span class="oe">'+x.en+'</span>'+(nb?'<span class="ob '+(x.ok?'g':'b')+'">'+(x.ok?'맞음':'틀림')+'</span>':'')+'</div>'+(x.ko?'<div class="ok2">'+x.ko+'</div>':'')+'<div class="oy">'+x.y+'</div>';
   box.appendChild(d)})}
  else{box.appendChild(el('span','lbl','보기 풀이'));q.oc.forEach(function(x,i){
   var cor=i===q.n,me=(sel===i&&!cor);
   var d=el('div','oc'+(cor?' cor':'')+(me?' me':''));
-  d.innerHTML='<div class="oh"><span class="on">'+LAB[i]+'</span><span class="oe">'+q.c[i]+'</span>'+(cor?'<span class="ob g">정답</span>':'')+(me?'<span class="ob b">내가 고름</span>':'')+'</div>'+(x.ko?'<div class="ok2">'+x.ko+'</div>':'')+'<div class="oy">'+x.y+'</div>';
+  d.innerHTML='<div class="oh"><span class="on">'+(isLab(q)?'':LAB[i])+'</span><span class="oe">'+q.c[i]+'</span>'+(cor?'<span class="ob g">정답</span>':'')+(me?'<span class="ob b">내가 고름</span>':'')+'</div>'+(x.ko?'<div class="ok2">'+x.ko+'</div>':'')+'<div class="oy">'+x.y+'</div>';
   box.appendChild(d)})}
  c.appendChild(box);
  if(w.p){var pit=el('div','pit');pit.appendChild(el('span','pt',w.p.k||'쉬운 문법'));pit.appendChild(el('div','tt',w.p.t));
@@ -231,6 +231,7 @@ function pageIndex(app){
  var lo=el('a','lc or','<div><b>오답 노트</b><small>1차 오답은 자동 저장, 2차 오답은 별표(★) 표시</small></div><span>열기</span>');lo.href='wrong.html';app.appendChild(lo);
  if(SH){var lp=el('a','lc','<div><b>학습 인증</b><small>오늘 푼 내용 확인 화면</small></div><span>열기</span>');lp.href='index.html?proof=1';app.appendChild(lp)}
  var lb=el('a','lc bl','<div><b>전체 랜덤 20문항</b><small>전체에서 20문항씩, 또는 원하는 유형만 골라 풀어요</small></div><span>시작</span>');lb.href='mix.html';app.appendChild(lb);
+ if(D.TK&&D.TK.length){var lt=el('a','lc bl','<div><b>7종 특훈 시리즈</b><small>유형별 3회 · 개념 → 실전 → 고난도</small></div><span>시작</span>');lt.href='tk.html';app.appendChild(lt)}
 
  /* 5. exam title row */
  var wk0=mondayOf(today),wk1=addDays(wk0,6),wcnt=0;
@@ -503,7 +504,9 @@ function pageTk(app){
    var dt=el('details','acc');if(ui===0)dt.open=true;
    dt.appendChild(el('summary',null,'교과서 '+u+'과'));
    var inn=el('div','in');
-   TKN.forEach(function(k){
+   var hasB=(D.TK||[]).some(function(x){return x.u===u&&x.k==='BLANK'});
+   TKN.forEach(function(k0){
+    var k=(k0==='DIALOG'&&hasB)?'BLANK':k0;
     var t=null;(D.TK||[]).forEach(function(x){if(x.u===u&&x.k===k)t=x});
     var box=el('div','tkr'+(t?'':' off'));
     box.appendChild(el('div','tkn',(t?t.nm:TKL[k])+(t?'':'<small>준비 중</small>')));
