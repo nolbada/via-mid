@@ -42,7 +42,7 @@ mark.sm{background:var(--bg);border:1px dashed var(--line)}
 </style><script src="rec.js?v=261025f"></script></head><body data-page="bf"><div class="wrap" id="app"></div><script src="data.js?v=261025f"></script><script>(function(){var u=(/[?&]u=(\d+)/.exec(location.search)||[0,"7"])[1];document.write('<script src="bf'+u+'.js?v='+(window.BFV||"2611182001")+'"><\/script>')})()</script><script>
 (function(){
 var U=(/[?&]u=(\d+)/.exec(location.search)||[0,'7'])[1],ALL=(window.BF||{})[U]||[],N=10;
-var PF=(window.CFG&&CFG.pfx)||'mid7:',K=PF+'bf:'+U,KS=PF+'bf:'+U+':seen';
+var PF=(window.CFG&&CFG.pfx)||'mid7:',K=PF+'bf:'+U,KS=PF+'bf:'+U+':seen',KH=PF+'bfh:'+U;
 var app=document.getElementById('app');
 function jg(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function js(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -104,7 +104,7 @@ function render(){
   h+='<div class="qa">위 문장과 뜻이 같을까요?</div><div class="two"><button type="button" data-a="1">같은 말</button><button type="button" data-a="0">다른 말</button></div>';
   c.innerHTML=h;app.appendChild(c);
   [].forEach.call(c.querySelectorAll('.two button'),function(btn){btn.onclick=function(){
-   st.a[st.i]=+btn.getAttribute('data-a');js(K,st);markSeen(b.id,x[1]);render()}});
+   st.a[st.i]=+btn.getAttribute('data-a');(st.o=st.o||[])[st.i]=((!!st.a[st.i])===(!!v.same))?1:0;js(K,st);markSeen(b.id,x[1]);render()}});
  }else{
   var ok=(!!ans)===(!!v.same);
   h+='<div class="en org">'+hl(b.en,marks(b,v,0))+'</div><div class="kr">'+esc(b.ko)+'</div>';
@@ -120,7 +120,8 @@ function render(){
 function endScreen(){
  var n=st.q.length,sc=0,miss=[];
  st.q.forEach(function(x,i){var b=byId(x[0]),v=b.v[x[1]];if((!!st.a[i])===(!!v.same))sc++;else miss.push([b,v])});
- var e=document.createElement('div');e.className='end';
+ if(!st.lg){st.lg=1;js(K,st);var HH=jg(KH,[]);HH.push([Date.now(),sc,n]);js(KH,HH.slice(-30))}
+  var e=document.createElement('div');e.className='end';
  e.innerHTML='<div class="sc">'+sc+' <small>/ '+n+'</small></div><p>'+(miss.length?'틀린 문제를 다시 보고 가요':'모두 맞았어요')+'</p>';
  app.appendChild(e);
  miss.forEach(function(m){var b=m[0],v=m[1],d=document.createElement('div');d.className='ms';
