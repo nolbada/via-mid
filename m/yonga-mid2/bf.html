@@ -28,6 +28,8 @@ mark.cx{background:var(--hx);box-shadow:inset 0 -2px 0 var(--ng)}
 .swr.x{border-left-color:var(--ng);background:linear-gradient(90deg,var(--ngBg),transparent 85%)}
 .swr b{font-weight:800}.swr .k{display:block;color:var(--sub);font-size:13.5px}.swr .ln{display:block}
 .swr .y{display:block;margin-top:3px;font-weight:700}
+mark.sm{background:var(--bg);border:1px dashed var(--line)}
+.swr.nt{border-left-color:var(--pri);background:linear-gradient(90deg,var(--priL),transparent 85%);font-size:13.5px;color:var(--sub);font-weight:700}
 .nx{display:block;width:100%;margin:14px 0 4px;padding:14px;border:0;border-radius:12px;background:var(--pri);color:#fff;font-weight:800;font-size:16.5px}
 .end{background:var(--card);border:1.5px solid var(--pri);border-radius:16px;padding:16px 14px;margin:14px 0;text-align:center}
 .end .sc{font-size:34px;font-weight:800;color:var(--pri);line-height:1.2}.end .sc small{font-size:18px;color:var(--sub)}
@@ -37,7 +39,7 @@ mark.cx{background:var(--hx);box-shadow:inset 0 -2px 0 var(--ng)}
 .ms .an{font-size:13px;font-weight:800;color:var(--ok);margin-top:4px}
 .lk2{display:flex;gap:8px;margin:10px 0}.lk2 a,.lk2 button{flex:1;text-align:center;padding:12px 6px;border:1.5px solid var(--pri);border-radius:12px;font-weight:800;font-size:15.5px;color:var(--pri);background:var(--card)}
 .lk2 .pr{background:var(--pri);color:#fff}
-</style><script src="rec.js?v=261025d"></script></head><body data-page="bf"><div class="wrap" id="app"></div><script src="data.js?v=261025d"></script><script src="bf-data.js?v=261118a"></script><script>
+</style><script src="rec.js?v=261025d"></script></head><body data-page="bf"><div class="wrap" id="app"></div><script src="data.js?v=261025d"></script><script src="bf-data.js?v=261118c"></script><script>
 (function(){
 var U=(/[?&]u=(\d+)/.exec(location.search)||[0,'7'])[1],ALL=(window.BF||{})[U]||[],N=10;
 var PF=(window.CFG&&CFG.pfx)||'mid7:',K=PF+'bf:'+U,KS=PF+'bf:'+U+':seen';
@@ -56,13 +58,16 @@ function hl(text,marks){
  R.sort(function(a,b){return a[0]-b[0]});
  var o='',p=0;R.forEach(function(r){o+=esc(text.slice(p,r[0]))+'<mark class="'+r[2]+'">'+esc(text.slice(r[0],r[1]))+'</mark>';p=r[1]});
  return o+esc(text.slice(p))}
+/* 같은 말 개수는 판마다 3~7개(무작위), 같은 답이 4번 넘게 이어지지 않게 섞기 */
+function mix(n){var lo=Math.max(0,Math.round(n*0.3)),hi=Math.min(n,Math.round(n*0.7)),k=lo+Math.floor(Math.random()*(hi-lo+1)),a,t=0;
+ do{a=[];for(var i=0;i<n;i++)a.push(i<k?1:0);shuf(a);t++}while(t<200&&/1111|0000/.test(a.join('')));return a}
 /* 새 판 만들기: 기본 문장 10개(중복 없음), 같은 말·다른 말 반반, 최근에 본 문장 피하기 */
 function newRound(){
  var seen=jg(KS,[]);
  function cnt(b){var c=0;b.v.forEach(function(v,i){if(seen.indexOf(b.id+'.'+i)>=0)c++});return c+Math.random()*0.9}
  var bs=ALL.map(function(b){return [cnt(b),b]}).sort(function(a,b){return a[0]-b[0]}).slice(0,N).map(function(x){return x[1]});
  bs=shuf(bs);
- var want=shuf([1,1,1,1,1,0,0,0,0,0].slice(0,N));
+ var want=mix(bs.length);
  var q=bs.map(function(b,k){
   var c=[];b.v.forEach(function(v,i){if(!!v.same===!!want[k])c.push(i)});
   if(!c.length)b.v.forEach(function(v,i){c.push(i)});
@@ -79,10 +84,12 @@ function head(){
  app.appendChild(bar);
  var h=document.createElement('div');h.className='bfh';h.innerHTML='<b>'+U+'과 바꿔치기 감별</b><small>매번 다른 문제</small>';app.appendChild(h)}
 function prog(){var n=st.q.length,d=Math.min(st.i,n);var e=document.createElement('div');e.className='sq';e.innerHTML='<span>'+Math.min(st.i+1,n)+' / '+n+'</span><div class="sqb"><i style="width:'+(d/n*100)+'%"></i></div>';return e}
+function has(t,q){return String(q).split(' … ').every(function(p){return rex(p).test(t)})}
 function swRows(b,v){
- if(v.same)return v.sw.map(function(p,i){return '<div class="swr"><mark class="c'+(i%4)+'">'+esc(p[0])+'</mark> = <mark class="c'+(i%4)+'">'+esc(p[1])+'</mark> <span class="k">'+esc(p[2]||'')+'</span></div>'}).join('');
+ if(v.same)return v.sw.map(function(p,i){var lit=has(b.en,p[0])&&has(v.en,p[1]),c=lit?'c'+(i%4):'sm';
+  return '<div class="swr"><mark class="'+c+'">'+esc(p[0])+'</mark> ↔ <mark class="'+c+'">'+esc(p[1])+'</mark> <span class="k">'+esc(p[2]||'')+'</span></div>'}).join('')+(v.n?'<div class="swr nt">'+esc(v.n)+'</div>':'');
  var d=v.diff;return '<div class="swr x"><span class="ln">원래 <b>'+esc(d[0])+'</b> <span class="k" style="display:inline">'+esc(d[2])+'</span></span><span class="ln">바뀜 <mark class="cx">'+esc(d[1])+'</mark> <span class="k" style="display:inline">'+esc(d[3])+'</span></span><span class="y">'+esc(v.y)+'</span></div>'}
-function marks(v,side){if(v.same)return v.sw.map(function(p,i){return [p[side],'c'+(i%4)]});return [[v.diff[side],'cx']]}
+function marks(b,v,side){if(v.same)return v.sw.filter(function(p){return has(b.en,p[0])&&has(v.en,p[1])}).map(function(p){return [p[side],'c'+(v.sw.indexOf(p)%4)]});return [[v.diff[side],'cx']]}
 
 function render(){
  app.innerHTML='';head();
@@ -100,8 +107,8 @@ function render(){
    st.a[st.i]=+btn.getAttribute('data-a');js(K,st);markSeen(b.id,x[1]);render()}});
  }else{
   var ok=(!!ans)===(!!v.same);
-  h+='<div class="en org">'+hl(b.en,marks(v,0))+'</div><div class="kr">'+esc(b.ko)+'</div>';
-  h+='<div class="lb">바꾼 문장</div><div class="en rw">'+hl(v.en,marks(v,1))+'</div><div class="kr">'+esc(v.ko)+'</div>';
+  h+='<div class="en org">'+hl(b.en,marks(b,v,0))+'</div><div class="kr">'+esc(b.ko)+'</div>';
+  h+='<div class="lb">바꾼 문장</div><div class="en rw">'+hl(v.en,marks(b,v,1))+'</div><div class="kr">'+esc(v.ko)+'</div>';
   h+='<div class="two">'+[1,0].map(function(a){var cl=(a===(v.same?1:0))?'cor':(a===ans?'me':'');var bd=cl==='cor'?'<em>정답</em>':(cl==='me'?'<em>내가 고름</em>':'');return '<button type="button" class="'+cl+'">'+(a?'같은 말':'다른 말')+bd+'</button>'}).join('')+'</div>';
   h+='<div class="rs '+(ok?'o':'x')+'">'+(ok?'맞았어요':'틀렸어요')+' · '+(v.same?'뜻이 같아요':'뜻이 달라져요')+'</div>';
   h+='<div class="sws">'+swRows(b,v)+'</div>';
@@ -117,7 +124,7 @@ function endScreen(){
  e.innerHTML='<div class="sc">'+sc+' <small>/ '+n+'</small></div><p>'+(miss.length?'틀린 문제를 다시 보고 가요':'모두 맞았어요')+'</p>';
  app.appendChild(e);
  miss.forEach(function(m){var b=m[0],v=m[1],d=document.createElement('div');d.className='ms';
-  d.innerHTML='<div class="tag"><i'+(b.src==='대화'?' class="dl"':'')+'>'+b.src+'</i>'+esc(b.where)+'</div><div class="en">'+hl(b.en,marks(v,0))+'</div><div class="kr">'+esc(b.ko)+'</div><div class="lb">바꾼 문장</div><div class="en">'+hl(v.en,marks(v,1))+'</div><div class="kr">'+esc(v.ko)+'</div><div class="an">정답: '+(v.same?'같은 말':'다른 말')+'</div><div class="sws">'+swRows(b,v)+'</div>';
+  d.innerHTML='<div class="tag"><i'+(b.src==='대화'?' class="dl"':'')+'>'+b.src+'</i>'+esc(b.where)+'</div><div class="en">'+hl(b.en,marks(b,v,0))+'</div><div class="kr">'+esc(b.ko)+'</div><div class="lb">바꾼 문장</div><div class="en">'+hl(v.en,marks(b,v,1))+'</div><div class="kr">'+esc(v.ko)+'</div><div class="an">정답: '+(v.same?'같은 말':'다른 말')+'</div><div class="sws">'+swRows(b,v)+'</div>';
   app.appendChild(d)});
  var l=document.createElement('div');l.className='lk2';l.innerHTML='<a href="won.html">원문으로</a><button type="button" class="pr">다시 (새 문제)</button>';
  app.appendChild(l);
