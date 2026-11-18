@@ -66,7 +66,7 @@ function buildCard(q,no,o){
  function finish(sel,ok,silent){
   done=true;c.classList.add('done');markSeen(q.id);
   fb.innerHTML='<span class="res '+(ok?'o':'x')+'">'+(ok?'정답':'오답')+'</span>';
-  var xe=el('div','xin');explain(xe,q);fb.appendChild(xe);
+  var xe=el('div','xin');explain(xe,q,sel);fb.appendChild(xe);
   if(o.onDone)o.onDone(q,sel,ok,!!silent);
  }
  if(q.k==='bk'){
@@ -116,7 +116,29 @@ function buildCard(q,no,o){
 }
 
 /* this question's answer + explanation (used inline after answering and on the answer page) */
-function explain(c,q){
+function explainOc(c,q,sel){
+ c.appendChild(el('div','answ','정답: '+ansText(q)));
+ if(q.pk&&!q.st)c.appendChild(el('div','ko',q.pk));
+ var w=(q.r&&q.r.w&&q.r.w[0])||{};
+ if(w.l&&w.l.length){var b=el('div','part');b.appendChild(el('span','lbl','해설'));(q.st?w.l.slice(0,1):w.l).forEach(function(l){b.appendChild(el('div','ln',l))});c.appendChild(b)}
+ var box=el('div','ocs');
+ if(q.st){box.appendChild(el('span','lbl','문장 풀이'));q.st.forEach(function(x,i){
+  var d=el('div','oc '+(x.ok?'good':'bad'));
+  d.innerHTML='<div class="oh"><span class="on">'+'ⓐⓑⓒⓓⓔⓕⓖ'.charAt(i)+'</span><span class="oe">'+x.en+'</span><span class="ob '+(x.ok?'g':'b')+'">'+(x.ok?'맞음':'틀림')+'</span></div>'+(x.ko?'<div class="ok2">'+x.ko+'</div>':'')+'<div class="oy">'+x.y+'</div>';
+  box.appendChild(d)})}
+ else{box.appendChild(el('span','lbl','보기 풀이'));q.oc.forEach(function(x,i){
+  var cor=i===q.n,me=(sel===i&&!cor);
+  var d=el('div','oc'+(cor?' cor':'')+(me?' me':''));
+  d.innerHTML='<div class="oh"><span class="on">'+LAB[i]+'</span><span class="oe">'+q.c[i]+'</span>'+(cor?'<span class="ob g">정답</span>':'')+(me?'<span class="ob b">내가 고름</span>':'')+'</div>'+(x.ko?'<div class="ok2">'+x.ko+'</div>':'')+'<div class="oy">'+x.y+'</div>';
+  box.appendChild(d)})}
+ c.appendChild(box);
+ if(w.p){var pit=el('div','pit');pit.appendChild(el('span','pt',w.p.k||'쉬운 문법'));pit.appendChild(el('div','tt',w.p.t));
+  if(w.p.l&&w.p.l.length){var ul=el('ul');w.p.l.forEach(function(l){ul.appendChild(el('li',null,l))});pit.appendChild(ul)}
+  if(w.p.e)pit.appendChild(el('div','pex','<div>'+w.p.e[0]+'<span>'+(w.p.e[1]||'')+'</span></div>'));
+  c.appendChild(pit)}
+}
+function explain(c,q,sel){
+ if(q.oc||q.st){explainOc(c,q,sel);return}
  c.appendChild(el('div','answ','정답: '+ansText(q)));
  if(q.pk)c.appendChild(el('div','ko',q.pk));
  if(q.gk)c.appendChild(el('div','ko',q.gk));

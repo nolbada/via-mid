@@ -399,3 +399,17 @@ body[data-page=index]{--off:#e9eef8;--offInk:#6b7a93}
 .seqnext{margin:12px 0 6px;padding:14px;font-size:16.5px}
 .xin{flex:1 1 100%;min-width:0}
 .xin .answ{font-size:18px;font-weight:800;margin:4px 0}
+
+/* 261118 특훈 보기 풀이 카드 */
+.ocs{margin:10px 0}
+.oc{border:1.5px solid var(--line);border-radius:14px;padding:10px 12px 9px;margin:8px 0;background:var(--card)}
+.oc.cor,.oc.good{border-color:var(--ok);background:linear-gradient(135deg,var(--okBg),var(--card) 70%)}
+.oc.me,.oc.bad{border-color:var(--ng);background:linear-gradient(135deg,var(--ngBg),var(--card) 70%)}
+.oc .oh{display:flex;align-items:flex-start;gap:8px}
+.oc .on{flex:none;color:var(--sub);font-weight:700}
+.oc .oe{flex:1;font-weight:700;font-size:16px;line-height:1.45}
+.oc .ob{flex:none;font-size:12.5px;font-weight:800;border:1.5px solid;border-radius:999px;padding:1px 9px;margin-top:2px}
+.oc .ob.g{color:var(--ok)}.oc .ob.b{color:var(--ng)}
+.oc .ok2{color:var(--sub);font-size:14.5px;margin:2px 0 0 26px}
+.oc .oy{font-size:14.5px;margin:6px 0 0 26px;padding-left:9px;border-left:3px solid var(--line)}
+.oc.cor .oy,.oc.good .oy{border-left-color:var(--ok)}.oc.me .oy,.oc.bad .oy{border-left-color:var(--ng)}
