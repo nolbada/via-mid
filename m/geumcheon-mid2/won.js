@@ -21,7 +21,7 @@ var BC={5:35,6:35,7:35,8:48};
 function pageWon(){
  var h='';
  APP.lessons.forEach(function(L,i){
-  h+=acc('교과서 '+L.u+'과',i===0,lrow('jwa.html?u='+L.u,'좌본문 우해석')+lrow('gram.html?u='+L.u,'문법 설명')+(BC[L.u]?lrow('bc'+L.u+'.html','문장 성분 연습','문장 '+BC[L.u]+'개'):''))});
+  h+=acc('교과서 '+L.u+'과',i===0,lrow('jwa.html?u='+L.u,'좌본문 우해석')+lrow('gram.html?u='+L.u,'문법 설명')+(BC[L.u]?lrow('bc'+L.u+'.html','문장 성분 연습','문장 '+BC[L.u]+'개'):'')+lrow('bf.html?u='+L.u,'바꿔치기 감별','매번 다른 문제'))});
  if(window.TKU){h+=acc('7종 특훈 시리즈',false,window.TKU.map(function(u){return lrow('tk.html?u='+u+'&from=won','교과서 '+u+'과 특훈','7가지 유형 · 각 3회')}).join(''))}
  app.innerHTML=h;
  app.appendChild(foot());tabs()}

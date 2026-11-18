@@ -1,0 +1,136 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><script src="../common/base.js?v=261105a"></script><meta name="theme-color" content="#0f766e"><title>바꿔치기 감별</title><link rel="icon" type="image/svg+xml" href="icon.svg"><link rel="apple-touch-icon" href="icon-180.png"><meta name="apple-mobile-web-app-title" content="금천중2"><link rel="stylesheet" href="style.css?v=261118a"><style>
+:root{--h0:#fde68a;--h1:#bfdbfe;--h2:#bbf7d0;--h3:#fbcfe8;--hx:#fecaca}
+@media(prefers-color-scheme:dark){:root{--h0:#5c4a12;--h1:#1e3a66;--h2:#14532d;--h3:#5b2147;--hx:#6b1f1f}}
+.bfh{display:flex;align-items:baseline;gap:8px;margin:4px 0 0}
+.bfh b{font-size:17px}.bfh small{font-size:12.5px;color:var(--sub);font-weight:700}
+.bfc{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin:12px 0}
+.tag{display:inline-flex;gap:6px;align-items:center;font-size:12.5px;font-weight:800;color:var(--sub);margin-bottom:6px}
+.tag i{font-style:normal;padding:1px 8px;border-radius:999px;background:var(--priL);color:var(--pri)}
+.tag i.dl{background:var(--exL);color:var(--ex)}
+.lb{font-size:12.5px;font-weight:800;color:var(--sub);margin:10px 0 3px}
+.en{font-size:17px;line-height:1.65;font-weight:600;white-space:pre-line;overflow-wrap:break-word}
+.en.org{padding:10px 12px;background:var(--bg);border-radius:10px}
+.en.rw{padding:10px 12px;border:1.5px dashed var(--pri);border-radius:10px;font-weight:700}
+.kr{font-size:14.5px;color:var(--sub);white-space:pre-line;margin:3px 2px 0;line-height:1.55}
+.qa{font-size:14.5px;font-weight:800;margin:12px 0 0;text-align:center}
+.two{display:flex;gap:10px;margin:8px 0 2px}
+.two button{position:relative;flex:1;padding:14px 6px;border:1.5px solid var(--line);border-radius:13px;background:var(--card);font-weight:800;font-size:18px}
+.two button.cor{border-color:var(--ok);background:linear-gradient(135deg,var(--okBg),var(--card) 75%);color:var(--ok)}
+.two button.me{border-color:var(--ng);background:linear-gradient(135deg,var(--ngBg),var(--card) 75%);color:var(--ng)}
+.two button em{position:absolute;top:-9px;right:8px;font-style:normal;font-size:11.5px;font-weight:800;padding:0 8px;border-radius:999px;background:var(--card);border:1.5px solid}
+.done .two button{pointer-events:none}
+.rs{font-weight:800;font-size:15px;margin:12px 0 2px}.rs.o{color:var(--ok)}.rs.x{color:var(--ng)}
+mark{color:inherit;border-radius:4px;padding:0 2px}
+mark.c0{background:var(--h0)}mark.c1{background:var(--h1)}mark.c2{background:var(--h2)}mark.c3{background:var(--h3)}
+mark.cx{background:var(--hx);box-shadow:inset 0 -2px 0 var(--ng)}
+.sws{margin:10px 0 0;display:flex;flex-direction:column;gap:6px}
+.swr{font-size:14.5px;line-height:1.55;padding:7px 10px;border-left:3px solid var(--ok);border-radius:0 9px 9px 0;background:linear-gradient(90deg,var(--okBg),transparent 85%)}
+.swr.x{border-left-color:var(--ng);background:linear-gradient(90deg,var(--ngBg),transparent 85%)}
+.swr b{font-weight:800}.swr .k{display:block;color:var(--sub);font-size:13.5px}.swr .ln{display:block}
+.swr .y{display:block;margin-top:3px;font-weight:700}
+mark.sm{background:var(--bg);border:1px dashed var(--line)}
+.swr.nt{border-left-color:var(--pri);background:linear-gradient(90deg,var(--priL),transparent 85%);font-size:13.5px;color:var(--sub);font-weight:700}
+.nx{display:block;width:100%;margin:14px 0 4px;padding:14px;border:0;border-radius:12px;background:var(--pri);color:#fff;font-weight:800;font-size:16.5px}
+.end{background:var(--card);border:1.5px solid var(--pri);border-radius:16px;padding:16px 14px;margin:14px 0;text-align:center}
+.end .sc{font-size:34px;font-weight:800;color:var(--pri);line-height:1.2}.end .sc small{font-size:18px;color:var(--sub)}
+.end p{margin:4px 0 0;font-size:14px;color:var(--sub);font-weight:700}
+.ms{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 12px;margin:8px 0}
+.ms .en{font-size:15px}.ms .kr{font-size:13.5px}
+.ms .an{font-size:13px;font-weight:800;color:var(--ok);margin-top:4px}
+.lk2{display:flex;gap:8px;margin:10px 0}.lk2 a,.lk2 button{flex:1;text-align:center;padding:12px 6px;border:1.5px solid var(--pri);border-radius:12px;font-weight:800;font-size:15.5px;color:var(--pri);background:var(--card)}
+.lk2 .pr{background:var(--pri);color:#fff}
+</style><script src="rec.js?v=261025f"></script></head><body data-page="bf"><div class="wrap" id="app"></div><script src="data.js?v=261025f"></script><script>(function(){var u=(/[?&]u=(\d+)/.exec(location.search)||[0,"7"])[1];document.write('<script src="bf'+u+'.js?v='+(window.BFV||"2611181800")+'"><\/script>')})()</script><script>
+(function(){
+var U=(/[?&]u=(\d+)/.exec(location.search)||[0,'7'])[1],ALL=(window.BF||{})[U]||[],N=10;
+var PF=(window.CFG&&CFG.pfx)||'mid7:',K=PF+'bf:'+U,KS=PF+'bf:'+U+':seen';
+var app=document.getElementById('app');
+function jg(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
+function js(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function shuf(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
+function byId(id){for(var i=0;i<ALL.length;i++)if(ALL[i].id===id)return ALL[i];return null}
+function rex(q){var e=q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');return new RegExp((/^\w/.test(q)?'\\b':'')+e+(/\w$/.test(q)?'\\b':''))}
+/* 문장 안의 표현에 색칠: marks=[[표현,색이름],...] ('…'로 떨어진 표현은 조각마다 칠함) */
+function hl(text,marks){
+ var R=[];
+ marks.forEach(function(m){String(m[0]).split(' … ').forEach(function(p){var r=rex(p).exec(text);if(!r)return;var s=r.index,e=s+p.length;
+  for(var i=0;i<R.length;i++)if(s<R[i][1]&&e>R[i][0])return;R.push([s,e,m[1]])})});
+ R.sort(function(a,b){return a[0]-b[0]});
+ var o='',p=0;R.forEach(function(r){o+=esc(text.slice(p,r[0]))+'<mark class="'+r[2]+'">'+esc(text.slice(r[0],r[1]))+'</mark>';p=r[1]});
+ return o+esc(text.slice(p))}
+/* 같은 말 개수는 판마다 3~7개(무작위), 같은 답이 4번 넘게 이어지지 않게 섞기 */
+function mix(n){var lo=Math.max(0,Math.round(n*0.3)),hi=Math.min(n,Math.round(n*0.7)),k=lo+Math.floor(Math.random()*(hi-lo+1)),a,t=0;
+ do{a=[];for(var i=0;i<n;i++)a.push(i<k?1:0);shuf(a);t++}while(t<200&&/1111|0000/.test(a.join('')));return a}
+/* 새 판 만들기: 기본 문장 10개(중복 없음), 같은 말·다른 말 반반, 최근에 본 문장 피하기 */
+function newRound(){
+ var seen=jg(KS,[]);
+ function cnt(b){var c=0;b.v.forEach(function(v,i){if(seen.indexOf(b.id+'.'+i)>=0)c++});return c+Math.random()*0.9}
+ var bs=ALL.map(function(b){return [cnt(b),b]}).sort(function(a,b){return a[0]-b[0]}).slice(0,N).map(function(x){return x[1]});
+ bs=shuf(bs);
+ var want=mix(bs.length);
+ var q=bs.map(function(b,k){
+  var c=[];b.v.forEach(function(v,i){if(!!v.same===!!want[k])c.push(i)});
+  if(!c.length)b.v.forEach(function(v,i){c.push(i)});
+  var fresh=c.filter(function(i){return seen.indexOf(b.id+'.'+i)<0});
+  var pool=fresh.length?fresh:c;return [b.id,pool[Math.floor(Math.random()*pool.length)]]});
+ var st={q:q,a:[],i:0};js(K,st);return st}
+function markSeen(id,vi){var s=jg(KS,[]),k=id+'.'+vi,x=s.indexOf(k);if(x>=0)s.splice(x,1);s.push(k);if(s.length>140)s=s.slice(-140);js(KS,s)}
+var st=jg(K,null);
+if(!st||!st.q||!st.q.length||st.q.some(function(x){var b=byId(x[0]);return !b||!b.v[x[1]]}))st=newRound();
+
+function head(){
+ var bar=document.createElement('div');bar.className='bar';
+ bar.innerHTML='<a class="pill" href="won.html">‹ 원문</a>';
+ app.appendChild(bar);
+ var h=document.createElement('div');h.className='bfh';h.innerHTML='<b>'+U+'과 바꿔치기 감별</b><small>매번 다른 문제</small>';app.appendChild(h)}
+function prog(){var n=st.q.length,d=Math.min(st.i,n);var e=document.createElement('div');e.className='sq';e.innerHTML='<span>'+Math.min(st.i+1,n)+' / '+n+'</span><div class="sqb"><i style="width:'+(d/n*100)+'%"></i></div>';return e}
+function has(t,q){return String(q).split(' … ').every(function(p){return rex(p).test(t)})}
+function swRows(b,v){
+ if(v.same)return v.sw.map(function(p,i){var lit=has(b.en,p[0])&&has(v.en,p[1]),c=lit?'c'+(i%4):'sm';
+  return '<div class="swr"><mark class="'+c+'">'+esc(p[0])+'</mark> ↔ <mark class="'+c+'">'+esc(p[1])+'</mark> <span class="k">'+esc(p[2]||'')+'</span></div>'}).join('')+(v.n?'<div class="swr nt">'+esc(v.n)+'</div>':'');
+ var d=v.diff;return '<div class="swr x"><span class="ln">원래 <b>'+esc(d[0])+'</b> <span class="k" style="display:inline">'+esc(d[2])+'</span></span><span class="ln">바뀜 <mark class="cx">'+esc(d[1])+'</mark> <span class="k" style="display:inline">'+esc(d[3])+'</span></span><span class="y">'+esc(v.y)+'</span></div>'}
+function marks(b,v,side){if(v.same)return v.sw.filter(function(p){return has(b.en,p[0])&&has(v.en,p[1])}).map(function(p){return [p[side],'c'+(v.sw.indexOf(p)%4)]});return [[v.diff[side],'cx']]}
+
+function render(){
+ app.innerHTML='';head();
+ if(st.i>=st.q.length)return endScreen();
+ app.appendChild(prog());
+ var x=st.q[st.i],b=byId(x[0]),v=b.v[x[1]],ans=st.a[st.i];
+ var c=document.createElement('div');c.className='bfc'+(ans!=null?' done':'');
+ var dl=b.src==='대화';
+ var h='<div class="tag"><i'+(dl?' class="dl"':'')+'>'+b.src+'</i>'+esc(b.where)+'</div>';
+ if(ans==null){
+  h+='<div class="en org">'+esc(b.en)+'</div><div class="lb">바꾼 문장</div><div class="en rw">'+esc(v.en)+'</div>';
+  h+='<div class="qa">위 문장과 뜻이 같을까요?</div><div class="two"><button type="button" data-a="1">같은 말</button><button type="button" data-a="0">다른 말</button></div>';
+  c.innerHTML=h;app.appendChild(c);
+  [].forEach.call(c.querySelectorAll('.two button'),function(btn){btn.onclick=function(){
+   st.a[st.i]=+btn.getAttribute('data-a');js(K,st);markSeen(b.id,x[1]);render()}});
+ }else{
+  var ok=(!!ans)===(!!v.same);
+  h+='<div class="en org">'+hl(b.en,marks(b,v,0))+'</div><div class="kr">'+esc(b.ko)+'</div>';
+  h+='<div class="lb">바꾼 문장</div><div class="en rw">'+hl(v.en,marks(b,v,1))+'</div><div class="kr">'+esc(v.ko)+'</div>';
+  h+='<div class="two">'+[1,0].map(function(a){var cl=(a===(v.same?1:0))?'cor':(a===ans?'me':'');var bd=cl==='cor'?'<em>정답</em>':(cl==='me'?'<em>내가 고름</em>':'');return '<button type="button" class="'+cl+'">'+(a?'같은 말':'다른 말')+bd+'</button>'}).join('')+'</div>';
+  h+='<div class="rs '+(ok?'o':'x')+'">'+(ok?'맞았어요':'틀렸어요')+' · '+(v.same?'뜻이 같아요':'뜻이 달라져요')+'</div>';
+  h+='<div class="sws">'+swRows(b,v)+'</div>';
+  h+='<button type="button" class="nx">'+(st.i+1<st.q.length?'다음 문제':'결과 보기')+'</button>';
+  c.innerHTML=h;app.appendChild(c);
+  c.querySelector('.nx').onclick=function(){st.i++;js(K,st);render();window.scrollTo(0,0)};
+ }
+ foot()}
+function endScreen(){
+ var n=st.q.length,sc=0,miss=[];
+ st.q.forEach(function(x,i){var b=byId(x[0]),v=b.v[x[1]];if((!!st.a[i])===(!!v.same))sc++;else miss.push([b,v])});
+ var e=document.createElement('div');e.className='end';
+ e.innerHTML='<div class="sc">'+sc+' <small>/ '+n+'</small></div><p>'+(miss.length?'틀린 문제를 다시 보고 가요':'모두 맞았어요')+'</p>';
+ app.appendChild(e);
+ miss.forEach(function(m){var b=m[0],v=m[1],d=document.createElement('div');d.className='ms';
+  d.innerHTML='<div class="tag"><i'+(b.src==='대화'?' class="dl"':'')+'>'+b.src+'</i>'+esc(b.where)+'</div><div class="en">'+hl(b.en,marks(b,v,0))+'</div><div class="kr">'+esc(b.ko)+'</div><div class="lb">바꾼 문장</div><div class="en">'+hl(v.en,marks(b,v,1))+'</div><div class="kr">'+esc(v.ko)+'</div><div class="an">정답: '+(v.same?'같은 말':'다른 말')+'</div><div class="sws">'+swRows(b,v)+'</div>';
+  app.appendChild(d)});
+ var l=document.createElement('div');l.className='lk2';l.innerHTML='<a href="won.html">원문으로</a><button type="button" class="pr">다시 (새 문제)</button>';
+ app.appendChild(l);
+ l.querySelector('button').onclick=function(){st=newRound();render();window.scrollTo(0,0)};
+ foot()}
+function foot(){var f=document.createElement('div');f.className='foot';f.textContent='비타민 영어클리닉 · '+((window.CFG&&CFG.school)||'');app.appendChild(f)}
+render();
+})();
+</script></body></html>
