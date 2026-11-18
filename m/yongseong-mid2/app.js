@@ -508,7 +508,7 @@ function pageTk(app){
     box.appendChild(el('div','tkn',(t?t.nm:TKL[k])+(t?'':'<small>준비 중</small>')));
     if(t){
      var ch=el('div','tkc');
-     t.sets.forEach(function(st){var sc=tkSc(st),a=el('a',sc.all?'on':(sc.n?'ing':''),st.r+'회<small>'+(sc.all?sc.c+'/'+st.ids.length:(sc.n?'이어서':st.ids.length+'문항'))+'</small>');a.href='tk.html?s='+st.sid;ch.appendChild(a)});
+     var pd=false;t.sets.forEach(function(st){var sc=tkSc(st),nxt=!sc.all&&!sc.n&&pd,a=el('a',sc.all?'on':((sc.n||nxt)?'ing':''),st.r+'회<small>'+(sc.all?sc.c+'/'+st.ids.length:(sc.n?'이어서':(nxt?'다음':st.ids.length+'문항')))+'</small>');a.href='tk.html?s='+st.sid;ch.appendChild(a);pd=sc.all});
      box.appendChild(ch);
      var any=t.sets.some(function(st){return tkSc(st).n>0});
      var hist=jg('tkh:'+u+'-'+k,[]);
