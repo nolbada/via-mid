@@ -20,8 +20,11 @@ function nl(s){return s}
 var IDX={};
 Object.keys(D.R).forEach(function(r){TY.forEach(function(t){(D.R[r][t.k]||[]).forEach(function(id,i){IDX[id]={r:+r,t:t.k,n:i+1}})})});
 D.VX.forEach(function(v){v.ids.forEach(function(id,i){IDX[id]={x:v.s,t:'X',n:i+1}})});
-function ansHref(id){var o=IDX[id];if(!o)return'#';return o.x!=null?'answer.html?x='+o.x+'#q'+o.n:'answer.html?r='+o.r+'&t='+o.t+'#q'+o.n}
-function testHref(id){var o=IDX[id];if(!o)return'#';return o.x!=null?'vocabx.html?s='+o.x+'#q'+o.n:'test.html?r='+o.r+'&t='+o.t+'#q'+o.n}
+/* 261118: 7종 특훈 시리즈 */
+var TKN=['VOCAB','DIALOG','GRAMMAR','EOBEOP','ORDER','INSERT','CONTENT'],TKL={BLANK:'빈칸 다지기',VOCAB:'어휘 특훈',DIALOG:'대화문 특훈',GRAMMAR:'문법 특훈',EOBEOP:'어법·어휘 다지기',ORDER:'순서 다지기',INSERT:'삽입 다지기',CONTENT:'내용·지칭 특훈'};
+(D.TK||[]).forEach(function(t){t.sets.forEach(function(st){var sid=t.u+'-'+t.k+'-'+st.r;st.sid=sid;st.t=t;st.ids.forEach(function(id,i){IDX[id]={tk:sid,t:'TK',n:i+1,lab:t.u+'과 '+t.nm+' '+st.r+'회'}})})});
+function ansHref(id){var o=IDX[id];if(!o)return'#';if(o.tk)return 'tk.html?s='+o.tk;return o.x!=null?'answer.html?x='+o.x+'#q'+o.n:'answer.html?r='+o.r+'&t='+o.t+'#q'+o.n}
+function testHref(id){var o=IDX[id];if(!o)return'#';if(o.tk)return 'tk.html?s='+o.tk;return o.x!=null?'vocabx.html?s='+o.x+'#q'+o.n:'test.html?r='+o.r+'&t='+o.t+'#q'+o.n}
 
 /* state */
 function doneT(r,t){return sg('done:'+r+':'+t)==='1'}
@@ -49,7 +52,7 @@ function seenGet(){return listGet('seen')}
 function markSeen(id){listAdd('seen',id)}
 
 /* cards */
-function isLab(q){return q.c&&q.c.every(function(c){return /^[ⓐ-ⓔ]$/.test(c)})}
+function isLab(q){return q.c&&q.c.every(function(c){return /^[ⓐ-ⓔ①-⑤]$/.test(c)})}
 function sameSet(a,b){if(a.length!==b.length)return false;var x=a.slice().sort(),y=b.slice().sort();return x.every(function(v,i){return v===y[i]})}
 function buildCard(q,no,o){
  o=o||{};
@@ -63,7 +66,7 @@ function buildCard(q,no,o){
  function finish(sel,ok,silent){
   done=true;c.classList.add('done');markSeen(q.id);
   fb.innerHTML='<span class="res '+(ok?'o':'x')+'">'+(ok?'정답':'오답')+'</span>';
-  var xe=el('div','xin');explain(xe,q);fb.appendChild(xe);
+  var xe=el('div','xin');explain(xe,q,sel);fb.appendChild(xe);
   if(o.onDone)o.onDone(q,sel,ok,!!silent);
  }
  if(q.k==='bk'){
@@ -113,7 +116,29 @@ function buildCard(q,no,o){
 }
 
 /* this question's answer + explanation (used inline after answering and on the answer page) */
-function explain(c,q){
+function explainOc(c,q,sel){
+ c.appendChild(el('div','answ','정답: '+ansText(q)));
+ if(q.pk&&!q.st)c.appendChild(el('div','ko',q.pk));
+ var w=(q.r&&q.r.w&&q.r.w[0])||{};
+ if(w.l&&w.l.length){var b=el('div','part');b.appendChild(el('span','lbl','해설'));(q.st?w.l.slice(0,1):w.l).forEach(function(l){b.appendChild(el('div','ln',l))});c.appendChild(b)}
+ var box=el('div','ocs');
+ if(q.st){box.appendChild(el('span','lbl',q.stl||'문장 풀이'));q.st.forEach(function(x,i){
+  var nb=(x.ok===1||x.ok===0||x.ok===true||x.ok===false),lb=x.lb||'ⓐⓑⓒⓓⓔⓕⓖ'.charAt(i);var d=el('div','oc'+(nb?(x.ok?' good':' bad'):''));
+  d.innerHTML='<div class="oh"><span class="on">'+lb+'</span><span class="oe">'+x.en+'</span>'+(nb?'<span class="ob '+(x.ok?'g':'b')+'">'+(x.ok?'맞음':'틀림')+'</span>':'')+'</div>'+(x.ko?'<div class="ok2">'+x.ko+'</div>':'')+'<div class="oy">'+x.y+'</div>';
+  box.appendChild(d)})}
+ else{box.appendChild(el('span','lbl','보기 풀이'));q.oc.forEach(function(x,i){
+  var cor=i===q.n,me=(sel===i&&!cor);
+  var d=el('div','oc'+(cor?' cor':'')+(me?' me':''));
+  d.innerHTML='<div class="oh"><span class="on">'+(isLab(q)?'':LAB[i])+'</span><span class="oe">'+q.c[i]+'</span>'+(cor?'<span class="ob g">정답</span>':'')+(me?'<span class="ob b">내가 고름</span>':'')+'</div>'+(x.ko?'<div class="ok2">'+x.ko+'</div>':'')+'<div class="oy">'+x.y+'</div>';
+  box.appendChild(d)})}
+ c.appendChild(box);
+ if(w.p){var pit=el('div','pit');pit.appendChild(el('span','pt',w.p.k||'쉬운 문법'));pit.appendChild(el('div','tt',w.p.t));
+  if(w.p.l&&w.p.l.length){var ul=el('ul');w.p.l.forEach(function(l){ul.appendChild(el('li',null,l))});pit.appendChild(ul)}
+  if(w.p.e)pit.appendChild(el('div','pex','<div>'+w.p.e[0]+'<span>'+(w.p.e[1]||'')+'</span></div>'));
+  c.appendChild(pit)}
+}
+function explain(c,q,sel){
+ if(q.oc||q.st){explainOc(c,q,sel);return}
  c.appendChild(el('div','answ','정답: '+ansText(q)));
  if(q.pk)c.appendChild(el('div','ko',q.pk));
  if(q.gk)c.appendChild(el('div','ko',q.gk));
@@ -206,6 +231,7 @@ function pageIndex(app){
  var lo=el('a','lc or','<div><b>오답 노트</b><small>1차 오답은 자동 저장, 2차 오답은 별표(★) 표시</small></div><span>열기</span>');lo.href='wrong.html';if(CFG.rounds)app.appendChild(lo);
  if(SH){var lp=el('a','lc','<div><b>학습 인증</b><small>오늘 푼 내용 확인 화면</small></div><span>열기</span>');lp.href='index.html?proof=1';app.appendChild(lp)}
  var lb=el('a','lc bl','<div><b>전체 랜덤 20문항</b><small>전체에서 20문항씩, 또는 원하는 유형만 골라 풀어요</small></div><span>시작</span>');lb.href='mix.html';if(CFG.rounds)app.appendChild(lb);
+ if(D.TK&&D.TK.length){var lt=el('a','lc bl','<div><b>7종 특훈 시리즈</b><small>유형별 3회 · 개념 → 실전 → 고난도</small></div><span>시작</span>');lt.href='tk.html';app.appendChild(lt)}
 
  /* 5. exam title row */
  var wk0=mondayOf(today),wk1=addDays(wk0,6),wcnt=0;
@@ -447,7 +473,7 @@ function pageWrong(app){
  }
  if(!list.length){app.appendChild(el('div','empty',only?'별표가 없습니다.':'담긴 오답이 없습니다.'));app.appendChild(foot());return}
  var left=0,res={};
- seq(app,list.map(function(id){var o=IDX[id];return{id:id,tag:(isStar(id)?'<b class="stm">별표</b> ':'')+o.r+'회차 · '+TN[o.t]}}),{
+ seq(app,list.map(function(id){var o=IDX[id];return{id:id,tag:(isStar(id)?'<b class="stm">별표</b> ':'')+(o.lab||o.r+'회차 · '+TN[o.t])}}),{
   get:function(id){return res[id]},
   save:function(id,sel,ok){res[id]=[sel,ok?1:0];if(!ok){recWrong(id);left++}},
   deco:function(c,id){
@@ -459,6 +485,60 @@ function pageWrong(app){
    }
   },
   fin:function(){return '<p>다시 틀린 문제 '+left+'개</p><div class="lk"><a href="index.html">처음 화면</a></div>'}
+ });
+ app.appendChild(foot());
+}
+
+/* 7종 특훈 시리즈 (261118) — 한 회 5문항, 회마다 기록 남김, 특훈마다 다시 풀기 */
+function tkFind(sid){var f=null;(D.TK||[]).forEach(function(t){t.sets.forEach(function(st){if(st.sid===sid)f=st})});return f}
+function tkSc(st){var o=jg('tk:'+st.sid,{}),n=0,c=0;st.ids.forEach(function(id){if(o[id]){n++;if(o[id][1])c++}});return{n:n,c:c,all:n===st.ids.length}}
+function pageTk(app){
+ var p=qs(),sid=p.s;
+ var bar=el('div','bar');var home=el('a','pill','‹ 처음');home.href='index.html';bar.appendChild(home);
+ if(sid){var back=el('a','pill','특훈 목록');back.href='tk.html';bar.appendChild(back)}
+ app.appendChild(bar);
+ if(!sid){
+  app.appendChild(el('h1',null,'7종 특훈 시리즈'));
+  var us=[];(D.TK||[]).forEach(function(t){if(us.indexOf(t.u)<0)us.push(t.u)});
+  us.forEach(function(u,ui){
+   var dt=el('details','acc');if(ui===0)dt.open=true;
+   dt.appendChild(el('summary',null,'교과서 '+u+'과'));
+   var inn=el('div','in');
+   var hasB=(D.TK||[]).some(function(x){return x.u===u&&x.k==='BLANK'});
+   TKN.forEach(function(k0){
+    var k=(k0==='DIALOG'&&hasB)?'BLANK':k0;
+    var t=null;(D.TK||[]).forEach(function(x){if(x.u===u&&x.k===k)t=x});
+    var box=el('div','tkr'+(t?'':' off'));
+    box.appendChild(el('div','tkn',(t?t.nm:TKL[k])+(t?'':'<small>준비 중</small>')));
+    if(t){
+     var ch=el('div','tkc');
+     t.sets.forEach(function(st){var sc=tkSc(st),a=el('a',sc.all?'on':(sc.n?'ing':''),st.r+'회<small>'+(sc.all?sc.c+'/'+st.ids.length:(sc.n?'이어서':st.ids.length+'문항'))+'</small>');a.href='tk.html?s='+st.sid;ch.appendChild(a)});
+     box.appendChild(ch);
+     var any=t.sets.some(function(st){return tkSc(st).n>0});
+     var hist=jg('tkh:'+u+'-'+k,[]);
+     if(hist.length)box.appendChild(el('div','tkh','지난 기록 · '+hist.slice(-3).map(function(h){return h.d+' '+h.c+'/'+h.n}).join(' · ')));
+     if(any){var rb=el('button','tkreset','다시 풀기');rb.type='button';rb.onclick=function(){
+      var c=0,n=0;t.sets.forEach(function(st){var sc=tkSc(st);c+=sc.c;n+=sc.n});
+      var h=jg('tkh:'+u+'-'+k,[]);var d=new Date();h.push({d:(d.getMonth()+1)+'/'+d.getDate(),c:c,n:n});js('tkh:'+u+'-'+k,h.slice(-10));
+      t.sets.forEach(function(st){js('tk:'+st.sid,{})});
+      app.innerHTML='';pageTk(app)};box.appendChild(rb)}
+    }
+    inn.appendChild(box);
+   });
+   dt.appendChild(inn);app.appendChild(dt);
+  });
+  app.appendChild(foot());return}
+ var st=tkFind(sid);
+ if(!st){app.appendChild(el('div','empty','특훈을 찾을 수 없습니다.'));return}
+ var t=st.t;
+ app.appendChild(el('h1',null,t.u+'과 '+t.nm+' · '+st.r+'회'));
+ var rec=jg('tk:'+sid,{});
+ seq(app,st.ids.map(function(id){return{id:id}}),{
+  get:function(id){return rec[id]},
+  save:function(id,sel,ok){rec[id]=[sel,ok?1:0];js('tk:'+sid,rec);if(!ok)recWrong(id)},
+  fin:function(){
+   var sc=tkSc(st),nx=null;t.sets.forEach(function(x){if(x.r===st.r+1)nx=x});
+   return '<p>'+t.u+'과 '+t.nm+' '+st.r+'회 마침 · '+sc.c+' / '+st.ids.length+'</p><div class="lk"><a href="tk.html">특훈 목록</a>'+(nx?'<a class="pr" href="tk.html?s='+nx.sid+'">'+nx.r+'회 풀기</a>':'')+'</div>'}
  });
  app.appendChild(foot());
 }
@@ -665,7 +745,7 @@ function pageExam(app){
 
 var pg=document.body.getAttribute('data-page'),app=document.getElementById('app');
 /* time on screen: q=problems, w=wrong-note review, h=other; counted only while visible and active */
-var TMB={test:'q',mix:'q',vocabx:'q',exam:'q',wrong:'w'};
+var TMB={test:'q',mix:'q',vocabx:'q',tk:'q',exam:'q',wrong:'w'};
 function devId(){var v='x';try{v=localStorage.getItem('midq:dev');if(!v){v=Math.random().toString(36).slice(2,6);localStorage.setItem('midq:dev',v)}}catch(e){}return v}
 function tmKey(b){return 'tm:'+ymd(new Date())+':'+devId()+':'+b}
 (function(){var b=TMB[pg]||'h',acc=0,last=Date.now(),act=Date.now();
@@ -687,6 +767,6 @@ function lockPage(app){
  else{app.appendChild(el('div','empty','이름을 먼저 등록해야 문제를 풀 수 있어요.'));var a=el('a','mode pr','<b>처음 화면에서 이름 등록</b>');a.href='index.html';app.appendChild(a)}
  app.appendChild(foot());
 }
-(regOK()?({index:pageIndex,test:pageTest,wrong:pageWrong,vocabx:pageVx,answer:pageAnswer,mix:pageMix,exam:pageExam})[pg]:lockPage)(app);
+(regOK()?({index:pageIndex,test:pageTest,wrong:pageWrong,vocabx:pageVx,tk:pageTk,answer:pageAnswer,mix:pageMix,exam:pageExam})[pg]:lockPage)(app);
 if(location.hash){var h=document.getElementById(location.hash.slice(1));if(h)h.scrollIntoView()}
 })();
