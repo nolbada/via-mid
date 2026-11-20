@@ -1,0 +1,180 @@
+<!doctype html><html lang="ko" translate="no"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="google" content="notranslate"><script src="../common/base.js?v=261105a"></script><meta name="theme-color" content="#0f766e"><title>한 판 승부</title><link rel="icon" type="image/svg+xml" href="icon.svg"><link rel="apple-touch-icon" href="icon-180.png"><meta name="apple-mobile-web-app-title" content="용아중2"><link rel="stylesheet" href="style.css?v=261118a"><style>
+.hh{display:flex;align-items:baseline;gap:8px;margin:6px 0 2px;flex-wrap:wrap}.hh b{font-size:19px}.hh small{font-size:13px;color:var(--sub);font-weight:700}
+.dots{display:inline-flex;gap:5px;margin-left:auto;align-items:center}.dots em{font-style:normal;font-size:12.5px;font-weight:800;color:var(--sub);margin-right:2px}
+.dots i{font-style:normal;width:26px;height:26px;line-height:23px;text-align:center;border:1.5px solid var(--line);border-radius:99px;font-size:13px;font-weight:800;color:var(--sub);background:var(--card)}
+.dots i.on{border-color:var(--pri);background:var(--pri);color:#fff}.dots i.x{border-color:var(--ng);background:var(--ngBg);color:var(--ng)}.dots i.o{border-color:var(--ok);background:var(--ok);color:#fff}
+.sc{margin:20px 2px 4px;font-weight:800;font-size:15.5px;color:var(--pri);display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}.sc small{color:var(--sub);font-size:13px;font-weight:700}
+.qc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 14px 12px;margin:10px 0;scroll-margin-top:70px}
+.qn{font-size:12.5px;font-weight:800;color:var(--pri);margin-bottom:2px}
+.sn{font-size:18px;line-height:2.15;font-weight:600;overflow-wrap:break-word}
+.kr,.eh,.pit,.exb,.dg,.hrow small,.sc small,details.ok .oi small{word-break:keep-all}.kr{font-size:14.5px;color:var(--sub);line-height:1.55;margin:6px 0 0;border-left:3px solid var(--line);padding-left:9px}
+.bl{display:inline-flex;flex-wrap:wrap;vertical-align:baseline;border:1.5px solid var(--line);border-radius:10px;overflow:hidden;margin:0 2px;background:var(--card);max-width:100%;line-height:1.5}
+.bl button{border:0;background:var(--card);padding:1px 9px;font-weight:700;font-size:16.5px;line-height:1.7;text-align:left;overflow-wrap:break-word;max-width:100%}
+.bl button+button{border-left:1.5px solid var(--line)}
+.bl button.on{background:var(--pri);color:#fff}.bl.set button:not(.on){color:var(--sub);background:var(--bg)}
+.bl.lg{display:flex;flex-direction:column;margin:6px 0;width:100%}.bl.lg button+button{border-left:0;border-top:1.5px solid var(--line)}
+.sub-btn{display:block;width:100%;margin:18px 0 4px;padding:14px;border:0;border-radius:12px;background:var(--pri);color:#fff;font-weight:800;font-size:17px}.sub-btn[disabled]{background:var(--line);color:var(--sub)}
+.end{background:var(--card);border:1.5px solid var(--pri);border-radius:16px;padding:20px 14px;margin:14px 0;text-align:center}
+.end.x{border-color:var(--ng);background:var(--ngBg)}.end.o{border-color:var(--ok);background:var(--okBg)}
+.end .big{font-size:26px;font-weight:800;line-height:1.3}.end.x .big{color:var(--ng)}.end.o .big{color:var(--ok)}.end p{margin:6px 0 0;font-size:15px;color:var(--sub);font-weight:700}
+.nx{display:block;width:100%;margin:12px 0 4px;padding:13px;border:0;border-radius:12px;background:var(--pri);color:#fff;font-weight:800;font-size:16.5px}
+.lk{display:block;text-align:center;margin:10px 0;padding:12px 6px;border:1.5px solid var(--pri);border-radius:12px;font-weight:800;font-size:15.5px;color:var(--pri);background:var(--card)}
+.hrow{display:flex;align-items:center;gap:10px;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:13px 14px;margin:10px 0}
+.hrow span{flex:1}.hrow b{display:block;font-size:17px}.hrow small{display:block;color:var(--sub);font-size:13px;font-weight:700}
+.hrow em{font-style:normal;font-size:12.5px;font-weight:800;padding:3px 10px;border-radius:99px;background:var(--priL);color:var(--pri);white-space:nowrap}
+.hrow em.o{background:var(--okBg);color:var(--ok)}.hrow em.x{background:var(--ngBg);color:var(--ng)}
+.dg{background:var(--card);border:1.5px solid var(--ng);border-radius:14px;padding:12px 14px;margin:12px 0}.dg b{font-size:17px;color:var(--ng)}.dg p{margin:4px 0 0;font-size:14.5px;color:var(--sub);font-weight:700;line-height:1.6}
+.pit{background:var(--pi);border:1.5px solid var(--piB);border-radius:6px 6px 14px 6px;padding:10px 13px;margin:6px 0 10px;color:var(--piInk);box-shadow:2px 3px 0 rgba(0,0,0,.06)}
+.pit .pl{font-size:12.5px;font-weight:800;color:var(--piSub)}.pit .pf{font-size:15.5px;font-weight:800;margin:3px 0;line-height:1.5}.pit .pn{font-size:14.5px;line-height:1.55}.pit .pw{font-size:13.5px;font-weight:800;margin-top:5px;color:var(--piSub)}
+.aw{color:var(--ink);border-bottom:2.5px solid var(--ok);font-weight:800;padding:0 1px}.aw.x{color:var(--ng);border-bottom-color:var(--ng)}
+.eb{border-top:1px dashed var(--line);margin-top:10px;padding-top:9px}
+.eh{font-size:16.5px;font-weight:800}.eh .mk{color:var(--pri);margin-right:3px}.eh small{color:var(--sub);font-weight:700;font-size:13.5px}
+.att{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0 4px}.att span{font-size:12.5px;font-weight:800;padding:2px 9px;border-radius:99px;border:1.5px solid}
+.att .x{color:var(--ng);border-color:var(--ng);background:var(--ngBg)}.att .o{color:var(--ok);border-color:var(--ok);background:var(--okBg)}
+.eb .ln{margin:4px 0;font-size:16px;line-height:1.7;word-break:keep-all;overflow-wrap:break-word}
+.exb{margin:8px 0 4px;background:var(--exL);border-left:4px solid var(--ex);border-radius:0 8px 8px 0;padding:7px 11px;font-size:15.5px}.exb .et{display:block;font-size:12px;font-weight:800;color:var(--ex)}.exb .nt{display:block;color:var(--sub);font-size:14px;margin-top:2px}
+.hty{margin-top:8px;font-size:13.5px;color:var(--sub);font-weight:700;line-height:1.65;word-break:keep-all}.hty b{color:var(--pri)}
+details.ok{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px;margin:14px 0}details.ok summary{font-weight:800;font-size:15px;cursor:pointer}
+details.ok .oi{margin:8px 0 0;font-size:15px;line-height:1.7;border-top:1px dashed var(--line);padding-top:6px}details.ok .oi small{color:var(--sub);font-weight:700}
+</style><script src="rec.js?v=261025d"></script></head><body data-page="hp"><div class="wrap notranslate" id="app"></div><script>(function(){var u=(/[?&]u=(\d+)/.exec(location.search)||[0,"7"])[1];document.write('<script src="hp'+u+'.js?v=261120a"><\/script>')})()</script><script>(function(){
+var QS=location.search;
+var U=(/[?&]u=(\d+)/.exec(QS)||[0,'7'])[1],CI=(/[?&]c=(\d+)/.exec(QS)||[0,''])[1];
+var D=(window.HP||{})[U],app=document.getElementById('app');
+var MX=/\/via-mid\/m\/(yonga-mid2|geumcheon-mid2|yongseong-mid2)\//.exec(location.pathname),SCH=MX?MX[1]:'yonga-mid2';
+var PF={'yonga-mid2':'mid7:','geumcheon-mid2':'gcm2:','yongseong-mid2':'ysm2:'}[SCH],SN={'yonga-mid2':'용아중2','geumcheon-mid2':'금천중2','yongseong-mid2':'용성중2'}[SCH];
+var MAXTRY=3;
+function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function jg(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
+function js(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function el(tag,cls,h){var e=document.createElement(tag);if(cls)e.className=cls;if(h!=null)e.innerHTML=h;return e}
+if(!D){app.innerHTML='<p class="sub">준비 중</p>';return}
+
+var QBY={},BL=[],TAGM={},SECBY={},CBY={};
+D.secs.forEach(function(s){SECBY[s.id]=s});D.chunks.forEach(function(c){CBY[c.id]=c});
+D.q.forEach(function(q){QBY[q.no]=q;q.t.forEach(function(t){if(typeof t==='object'){t.q=q.no;BL.push(t);(TAGM[t.tag]=TAGM[t.tag]||[]).push(t)}})});
+function chunkQs(c){return D.q.filter(function(q){return c.secs.indexOf(q.sec)>=0})}
+function chunkBl(c){return BL.filter(function(b){return c.secs.indexOf(QBY[b.q].sec)>=0})}
+function key(c){return PF+'hp:'+U+':'+c.id}
+function load(c){var s=jg(key(c),null);if(!s||typeof s!=='object')s={};s.n=s.n||0;s.sel=s.sel||{};s.h=s.h||{};s.ok=s.ok||0;s.ex=s.ex||0;s.cy=s.cy||0;return s}
+function save(c,s){s.t=Date.now();js(key(c),s)}
+function wrongIn(b,h){return h&&h[b.id]!==b.a}
+
+function head(back,label){var d=el('div','bar');var a=el('a','pill','‹ '+label);a.href=back;d.appendChild(a);return d}
+function foot(href,label){var a=el('a','lk',label);a.href=href;app.appendChild(a);app.appendChild(el('div','foot','비타민 영어클리닉 · '+SN))}
+function dots(c,st){
+ var h='<em>도전</em>';
+ for(var k=1;k<=MAXTRY;k++){var cl='';if(st.ok===k)cl='o';else if(k<=st.n)cl='x';else if(!st.ok&&!st.ex&&k===st.n+1)cl='on';h+='<i class="'+cl+'">'+k+'</i>'}
+ return '<span class="dots">'+h+'</span>'}
+
+/* 목록 */
+function viewHome(){
+ app.innerHTML='';
+ var t=el('div','bar');var a=el('a','pill','‹ 원문');a.href='won.html';t.appendChild(a);app.appendChild(t);
+ app.appendChild(el('div','hh','<b>'+U+'과 한 판 승부</b>'));
+ D.chunks.forEach(function(c){
+  var st=load(c),n=chunkBl(c).length,tx='',cl='';
+  if(st.ok){tx='클리어 · '+st.ok+'회째';cl='o'}else if(st.ex){tx='해설 열림';cl='x'}else if(st.n>0){tx='도전 중 · '+st.n+'회 사용'}
+  var r=el('a','hrow','<span><b>'+c.id+'판 '+esc(c.name)+'</b><small>'+esc(c.sub)+' · '+n+'칸</small></span>'+(tx?'<em class="'+cl+'">'+tx+'</em>':''));
+  r.href='hp.html?u='+U+'&c='+c.id;app.appendChild(r)});
+ app.appendChild(el('div','foot','비타민 영어클리닉 · '+SN))}
+
+/* 문제 화면 */
+function sentence(q,mode,st,c){
+ var h='';
+ q.t.forEach(function(t){
+  if(typeof t==='string'){h+=esc(t);return}
+  if(mode==='play'){
+   var lg=t.o[0].length>20||t.o[1].length>20,sel=st.sel[t.id];
+   h+='<span class="bl'+(lg?' lg':'')+(sel!=null?' set':'')+'" data-b="'+t.id+'">'+t.o.map(function(o,i){return '<button type="button" data-i="'+i+'"'+(sel===i?' class="on"':'')+'>'+esc(o)+'</button>'}).join('')+'</span>'}
+  else{var w=false;for(var k=1;k<=MAXTRY;k++)if(wrongIn(t,st.h[k]))w=true;h+='<b class="aw'+(w?' x':'')+'">'+esc(t.w)+'</b>'}});
+ return h}
+
+function viewPlay(c,st){
+ app.innerHTML='';
+ var bar=head('hp.html?u='+U,'목록');bar.insertAdjacentHTML('beforeend',dots(c,st));app.appendChild(bar);
+ app.appendChild(el('div','hh','<b>'+U+'과 한 판 승부 '+c.id+'판</b><small>'+esc(c.name)+'</small>'));
+ var bl=chunkBl(c),cur=0;
+ c.secs.forEach(function(sid){
+  var s=SECBY[sid];
+  app.appendChild(el('div','sc',esc(s.en)+'<small>'+esc(s.ko)+'</small>'));
+  chunkQs(c).filter(function(q){return q.sec===sid}).forEach(function(q){
+   var d=el('div','qc','<div class="qn">'+q.no+'번</div><div class="sn">'+sentence(q,'play',st,c)+'</div><div class="kr">'+esc(q.ko)+'</div>');
+   app.appendChild(d)})});
+ var btn=el('button','sub-btn');btn.type='button';app.appendChild(btn);
+ function cnt(){var n=0;bl.forEach(function(b){if(st.sel[b.id]!=null)n++});return n}
+ function upd(){var n=cnt(),all=n===bl.length;btn.disabled=!all;btn.textContent=all?'제출하기':(bl.length-n)+'칸 남음'}
+ upd();
+ app.onclick=function(e){
+  var b=e.target.closest&&e.target.closest('.bl button');if(!b)return;
+  var w=b.parentNode,id=w.getAttribute('data-b'),i=+b.getAttribute('data-i');
+  st.sel[id]=i;save(c,st);
+  [].forEach.call(w.querySelectorAll('button'),function(x){x.className=(+x.getAttribute('data-i')===i)?'on':''});w.className=w.className.replace(' set','')+' set';upd()};
+ btn.onclick=function(){
+  if(cnt()<bl.length)return;
+  var h={},wr=0;bl.forEach(function(b){h[b.id]=st.sel[b.id];if(st.sel[b.id]!==b.a)wr++});
+  st.n++;st.h[st.n]=h;st.sel={};
+  if(!wr)st.ok=st.n;else if(st.n>=MAXTRY)st.ex=1;
+  save(c,st);app.onclick=null;
+  if(st.ok)viewClear(c,st);else if(st.ex)viewEx(c,st);else viewFail(c,st);
+  window.scrollTo(0,0)};
+}
+
+function viewFail(c,st){
+ app.innerHTML='';
+ var bar=head('hp.html?u='+U,'목록');bar.insertAdjacentHTML('beforeend',dots(c,st));app.appendChild(bar);
+ app.appendChild(el('div','hh','<b>'+U+'과 한 판 승부 '+c.id+'판</b><small>'+esc(c.name)+'</small>'));
+ var e=el('div','end x','<div class="big">100점이 아니에요</div><p>처음으로 돌아갑니다 · 남은 기회 '+(MAXTRY-st.n)+'번</p>');app.appendChild(e);
+ var b=el('button','nx',(st.n+1)+'회 도전');b.type='button';b.onclick=function(){viewPlay(c,st);window.scrollTo(0,0)};app.appendChild(b);
+ foot('hp.html?u='+U,'목록으로')}
+
+function viewClear(c,st){
+ app.innerHTML='';
+ var bar=head('hp.html?u='+U,'목록');bar.insertAdjacentHTML('beforeend',dots(c,st));app.appendChild(bar);
+ app.appendChild(el('div','hh','<b>'+U+'과 한 판 승부 '+c.id+'판</b><small>'+esc(c.name)+'</small>'));
+ app.appendChild(el('div','end o','<div class="big">100점</div><p>'+st.ok+'회째 도전에서 클리어</p>'));
+ foot('hp.html?u='+U,'목록으로')}
+
+/* 해설 (세 번 모두 100점이 아닐 때만) */
+function viewEx(c,st){
+ app.innerHTML='';
+ var bar=head('hp.html?u='+U,'목록');bar.insertAdjacentHTML('beforeend',dots(c,st));app.appendChild(bar);
+ app.appendChild(el('div','hh','<b>'+U+'과 한 판 승부 '+c.id+'판 해설</b><small>'+esc(c.name)+'</small>'));
+ var bl=chunkBl(c),miss={},tg={},per=[];
+ bl.forEach(function(b){var a=[];for(var k=1;k<=st.n;k++)if(wrongIn(b,st.h[k]))a.push(k);if(a.length){miss[b.id]=a;tg[b.tag]=(tg[b.tag]||0)+1}});
+ for(var k=1;k<=st.n;k++){var n=0;bl.forEach(function(b){if(wrongIn(b,st.h[k]))n++});per.push(k+'회 '+n+'칸')}
+ var nm=Object.keys(miss).length;
+ var tl=Object.keys(tg).sort(function(a,b){return tg[b]-tg[a]}).map(function(t){return esc(D.tags[t])+' '+tg[t]+'칸'}).join(' · ');
+ app.appendChild(el('div','dg','<b>틀린 칸 '+nm+'개</b><p>'+per.join(' · ')+' 틀림</p>'+(tl?'<p>'+tl+'</p>':'')));
+ var okList=[];
+ c.secs.forEach(function(sid){
+  var s=SECBY[sid],cd=s.card;
+  app.appendChild(el('div','sc',esc(s.en)+'<small>'+esc(s.ko)+'</small>'));
+  app.appendChild(el('div','pit','<div class="pl">본문 흐름</div><div class="pf">'+esc(cd.flow)+'</div><div class="pn">'+esc(cd.line)+'</div><div class="pw">'+cd.w.map(function(w){return esc(w[0])+' '+esc(w[1])}).join(' · ')+'</div>'));
+  chunkQs(c).filter(function(q){return q.sec===sid}).forEach(function(q){
+   var bs=q.t.filter(function(t){return typeof t==='object'}),mb=bs.filter(function(b){return miss[b.id]});
+   if(!mb.length){okList.push(q);return}
+   var h='<div class="qn">'+q.no+'번</div><div class="sn">'+sentence(q,'ex',st,c)+'</div><div class="kr">'+esc(q.ko)+'</div>';
+   mb.forEach(function(b){
+    h+='<div class="eb"><div class="eh"><span class="mk">'+esc(b.mk)+'</span>정답 <b>'+esc(b.w)+'</b> <small>'+esc(b.g)+'</small></div><div class="att">';
+    for(var k=1;k<=st.n;k++){h+=wrongIn(b,st.h[k])?'<span class="x">'+k+'회 틀림 · '+esc(b.o[st.h[k][b.id]])+'</span>':'<span class="o">'+k+'회 맞힘</span>'}
+    h+='</div>'+b.ln.map(function(l){return '<div class="ln">'+esc(l)+'</div>'}).join('');
+    if(b.ex&&b.ex[0])h+='<div class="exb"><span class="et">쉬운 예</span>'+esc(b.ex[0])+(b.ex[1]?'<span class="nt">'+esc(b.ex[1])+'</span>':'')+'</div>';
+    var same=TAGM[b.tag].filter(function(x){return x!==b});
+    h+='<div class="hty">유형 <b>'+esc(D.tags[b.tag])+'</b>'+(same.length?' · 이 단원 같은 유형: '+same.map(function(x){return x.q+'번'+(QBY[x.q].t.filter(function(t){return typeof t==='object'}).length>1?' '+esc(x.mk):'')}).join(', '):'')+'</div></div>'});
+   app.appendChild(el('div','qc',h))})});
+ if(okList.length){
+  var d=el('details','ok','<summary>계속 맞힌 문제 '+okList.length+'개</summary>');
+  okList.forEach(function(q){d.insertAdjacentHTML('beforeend','<div class="oi"><small>'+q.no+'번</small> '+sentence(q,'ex',st,c)+'<br><small>'+esc(q.ko)+'</small></div>')});
+  app.appendChild(d)}
+ var b=el('button','nx','처음부터 다시 도전');b.type='button';
+ b.onclick=function(){st.n=0;st.h={};st.sel={};st.ex=0;st.cy++;save(c,st);viewPlay(c,st);window.scrollTo(0,0)};app.appendChild(b);
+ foot('hp.html?u='+U,'목록으로')}
+
+function start(){
+ var c=CBY[CI];if(!c)return viewHome();
+ if(/[?&]reset=1/.test(QS)){var f={n:0,sel:{},h:{},ok:0,ex:0,cy:0};save(c,f);history.replaceState(null,'','hp.html?u='+U+'&c='+c.id)}
+ var st=load(c);
+ if(st.ok)viewClear(c,st);else if(st.ex)viewEx(c,st);else viewPlay(c,st)}
+start();
+})();
+</script></body></html>
