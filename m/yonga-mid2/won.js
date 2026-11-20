@@ -24,7 +24,7 @@ function pageWon(){
  h+=acc('수행평가 말하기',false,lrow('speak.html','말하기 수행평가','학습모드 · 실전모드'));
  if(window.TKU){h+=acc('7종 특훈 시리즈',false,window.TKU.map(function(u){return lrow('tk.html?u='+u+'&from=won','교과서 '+u+'과 특훈','7가지 유형 · 각 3회')}).join(''))}
  h+=acc('바꿔치기 감별',false,lrow('bf.html?u=7','교과서 7과 바꿔치기 감별','매번 다른 문제')+lrow('bf.html?u=8','교과서 8과 바꿔치기 감별','매번 다른 문제'));
- h+=acc('한 판 승부',false,lrow('hp.html?u=7','7과 어법선택','양자택일 · 2판')+lrow('hp.html?u=8','8과 어법선택','양자택일 · 2판')+lrow('sd.html?u=7&m=ko','7과 한글 순서배열','4지문')+lrow('sd.html?u=7&m=en&l=1','7과 영어 순서배열 1단계','덩어리')+lrow('sd.html?u=7&m=en&l=2','7과 영어 순서배열 2단계','문장'));
+ h+=acc('한 판 승부',false,[7,8].map(function(u){return lrow('hp.html?u='+u,u+'과 어법선택','양자택일 · 2판')+lrow('sd.html?u='+u+'&m=ko',u+'과 한글 순서배열','4지문')+lrow('sd.html?u='+u+'&m=en&l=1',u+'과 영어 순서배열 1단계','덩어리')+lrow('sd.html?u='+u+'&m=en&l=2',u+'과 영어 순서배열 2단계','문장')}).join(''));
  app.innerHTML=h;
  app.appendChild(foot());tabs()}
 
