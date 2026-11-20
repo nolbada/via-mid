@@ -42,7 +42,7 @@ var U=(/[?&]u=(\d+)/.exec(QS)||[0,'7'])[1],CI=(/[?&]c=(\d+)/.exec(QS)||[0,''])[1
 var D=(window.HP||{})[U],app=document.getElementById('app');
 var MX=/\/via-mid\/m\/(yonga-mid2|geumcheon-mid2|yongseong-mid2)\//.exec(location.pathname),SCH=MX?MX[1]:'yonga-mid2';
 var PF={'yonga-mid2':'mid7:','geumcheon-mid2':'gcm2:','yongseong-mid2':'ysm2:'}[SCH],SN={'yonga-mid2':'용아중2','geumcheon-mid2':'금천중2','yongseong-mid2':'용성중2'}[SCH];
-var MAXTRY=3;
+var MAXTRY=3,TOTAL=4;
 function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 function jg(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function js(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -63,7 +63,7 @@ function head(back,label){var d=el('div','bar');var a=el('a','pill','‹ '+label
 function foot(href,label){var a=el('a','lk',label);a.href=href;app.appendChild(a);app.appendChild(el('div','foot','비타민 영어클리닉 · '+SN))}
 function dots(c,st){
  var h='<em>도전</em>';
- for(var k=1;k<=MAXTRY;k++){var cl='';if(st.ok===k)cl='o';else if(k<=st.n)cl='x';else if(!st.ok&&!st.ex&&k===st.n+1)cl='on';h+='<i class="'+cl+'">'+k+'</i>'}
+ for(var k=1;k<=TOTAL;k++){var cl='';if(st.ok===k)cl='o';else if(k<=st.n)cl='x';else if(!st.ok&&k===st.n+1)cl='on';h+='<i class="'+cl+'">'+(k===TOTAL?'끝':k)+'</i>'}
  return '<span class="dots">'+h+'</span>'}
 
 /* 목록 */
@@ -73,7 +73,7 @@ function viewHome(){
  app.appendChild(el('div','hh','<b>'+U+'과 한 판 승부</b>'));
  D.chunks.forEach(function(c){
   var st=load(c),n=chunkBl(c).length,tx='',cl='';
-  if(st.ok){tx='클리어 · '+st.ok+'회째';cl='o'}else if(st.ex){tx='해설 열림';cl='x'}else if(st.n>0){tx='도전 중 · '+st.n+'회 사용'}
+  if(st.ok){tx='클리어 · '+st.ok+'회째';cl='o'}else if(st.ex){tx=st.n>=TOTAL?'끝판 실패':'끝판왕 도전 가능';cl='x'}else if(st.n>0){tx='도전 중 · '+st.n+'회 사용'}
   var r=el('a','hrow','<span><b>'+c.id+'판 '+esc(c.name)+'</b><small>'+esc(c.sub)+' · '+n+'칸</small></span>'+(tx?'<em class="'+cl+'">'+tx+'</em>':''));
   r.href='hp.html?u='+U+'&c='+c.id;app.appendChild(r)});
  app.appendChild(el('div','foot','비타민 영어클리닉 · '+SN))}
@@ -86,13 +86,13 @@ function sentence(q,mode,st,c){
   if(mode==='play'){
    var lg=t.o[0].length>20||t.o[1].length>20,sel=st.sel[t.id];
    h+='<span class="bl'+(lg?' lg':'')+(sel!=null?' set':'')+'" data-b="'+t.id+'">'+t.o.map(function(o,i){return '<button type="button" data-i="'+i+'"'+(sel===i?' class="on"':'')+'>'+esc(o)+'</button>'}).join('')+'</span>'}
-  else{var w=false;for(var k=1;k<=MAXTRY;k++)if(wrongIn(t,st.h[k]))w=true;h+='<b class="aw'+(w?' x':'')+'">'+esc(t.w)+'</b>'}});
+  else{var w=false;for(var k=1;k<=TOTAL;k++)if(wrongIn(t,st.h[k]))w=true;h+='<b class="aw'+(w?' x':'')+'">'+esc(t.w)+'</b>'}});
  return h}
 
 function viewPlay(c,st){
  app.innerHTML='';
  var bar=head('hp.html?u='+U,'목록');bar.insertAdjacentHTML('beforeend',dots(c,st));app.appendChild(bar);
- app.appendChild(el('div','hh','<b>'+U+'과 한 판 승부 '+c.id+'판</b><small>'+esc(c.name)+'</small>'));
+ app.appendChild(el('div','hh','<b>'+U+'과 한 판 승부 '+c.id+'판</b><small>'+esc(c.name)+(st.n===MAXTRY?' · 끝판왕 마지막 1번':'')+'</small>'));
  var bl=chunkBl(c),cur=0;
  c.secs.forEach(function(sid){
   var s=SECBY[sid];
@@ -115,7 +115,7 @@ function viewPlay(c,st){
   st.n++;st.h[st.n]=h;st.sel={};
   if(!wr)st.ok=st.n;else if(st.n>=MAXTRY)st.ex=1;
   save(c,st);app.onclick=null;
-  if(st.ok)viewClear(c,st);else if(st.ex)viewEx(c,st);else viewFail(c,st);
+  if(st.ok||st.ex)viewEx(c,st);else viewFail(c,st);
   window.scrollTo(0,0)};
 }
 
@@ -127,31 +127,25 @@ function viewFail(c,st){
  var b=el('button','nx',(st.n+1)+'회 도전');b.type='button';b.onclick=function(){viewPlay(c,st);window.scrollTo(0,0)};app.appendChild(b);
  foot('hp.html?u='+U,'목록으로')}
 
-function viewClear(c,st){
- app.innerHTML='';
- var bar=head('hp.html?u='+U,'목록');bar.insertAdjacentHTML('beforeend',dots(c,st));app.appendChild(bar);
- app.appendChild(el('div','hh','<b>'+U+'과 한 판 승부 '+c.id+'판</b><small>'+esc(c.name)+'</small>'));
- app.appendChild(el('div','end o','<div class="big">100점</div><p>'+st.ok+'회째 도전에서 클리어</p>'));
- foot('hp.html?u='+U,'목록으로')}
-
-/* 해설 (세 번 모두 100점이 아닐 때만) */
+/* 해설: 100점이 나오면 바로, 세 번 안에 못 맞히면 열림 (이후 끝판왕 1번) */
 function viewEx(c,st){
  app.innerHTML='';
  var bar=head('hp.html?u='+U,'목록');bar.insertAdjacentHTML('beforeend',dots(c,st));app.appendChild(bar);
  app.appendChild(el('div','hh','<b>'+U+'과 한 판 승부 '+c.id+'판 해설</b><small>'+esc(c.name)+'</small>'));
  var bl=chunkBl(c),miss={},tg={},per=[];
  bl.forEach(function(b){var a=[];for(var k=1;k<=st.n;k++)if(wrongIn(b,st.h[k]))a.push(k);if(a.length){miss[b.id]=a;tg[b.tag]=(tg[b.tag]||0)+1}});
- for(var k=1;k<=st.n;k++){var n=0;bl.forEach(function(b){if(wrongIn(b,st.h[k]))n++});per.push(k+'회 '+n+'칸')}
+ for(var k=1;k<=st.n;k++){var n=0;bl.forEach(function(b){if(wrongIn(b,st.h[k]))n++});if(n)per.push(k+'회 '+n+'칸')}
  var nm=Object.keys(miss).length;
  var tl=Object.keys(tg).sort(function(a,b){return tg[b]-tg[a]}).map(function(t){return esc(D.tags[t])+' '+tg[t]+'칸'}).join(' · ');
- app.appendChild(el('div','dg','<b>틀린 칸 '+nm+'개</b><p>'+per.join(' · ')+' 틀림</p>'+(tl?'<p>'+tl+'</p>':'')));
+ if(st.ok)app.appendChild(el('div','end o','<div class="big">100점</div><p>'+st.ok+'회째 도전에서 클리어</p>'));
+ if(nm||!st.ok)app.appendChild(el('div','dg','<b>'+(st.ok?'틀렸던':'틀린')+' 칸 '+nm+'개</b><p>'+per.join(' · ')+' 틀림</p>'+(tl?'<p>'+tl+'</p>':'')));
  var okList=[];
  c.secs.forEach(function(sid){
   var s=SECBY[sid],cd=s.card;
   app.appendChild(el('div','sc',esc(s.en)+'<small>'+esc(s.ko)+'</small>'));
   app.appendChild(el('div','pit','<div class="pl">본문 흐름</div><div class="pf">'+esc(cd.flow)+'</div><div class="pn">'+esc(cd.line)+'</div><div class="pw">'+cd.w.map(function(w){return esc(w[0])+' '+esc(w[1])}).join(' · ')+'</div>'));
   chunkQs(c).filter(function(q){return q.sec===sid}).forEach(function(q){
-   var bs=q.t.filter(function(t){return typeof t==='object'}),mb=bs.filter(function(b){return miss[b.id]});
+   var bs=q.t.filter(function(t){return typeof t==='object'}),mb=st.ok?bs:bs.filter(function(b){return miss[b.id]});
    if(!mb.length){okList.push(q);return}
    var h='<div class="qn">'+q.no+'번</div><div class="sn">'+sentence(q,'ex',st,c)+'</div><div class="kr">'+esc(q.ko)+'</div>';
    mb.forEach(function(b){
@@ -166,15 +160,14 @@ function viewEx(c,st){
   var d=el('details','ok','<summary>계속 맞힌 문제 '+okList.length+'개</summary>');
   okList.forEach(function(q){d.insertAdjacentHTML('beforeend','<div class="oi"><small>'+q.no+'번</small> '+sentence(q,'ex',st,c)+'<br><small>'+esc(q.ko)+'</small></div>')});
   app.appendChild(d)}
- var b=el('button','nx','처음부터 다시 도전');b.type='button';
- b.onclick=function(){st.n=0;st.h={};st.sel={};st.ex=0;st.cy++;save(c,st);viewPlay(c,st);window.scrollTo(0,0)};app.appendChild(b);
+ if(!st.ok&&st.n===MAXTRY){var b=el('button','nx','끝판왕 도전 · 마지막 1번');b.type='button';b.onclick=function(){viewPlay(c,st);window.scrollTo(0,0)};app.appendChild(b)}
  foot('hp.html?u='+U,'목록으로')}
 
 function start(){
  var c=CBY[CI];if(!c)return viewHome();
  if(/[?&]reset=1/.test(QS)){var f={n:0,sel:{},h:{},ok:0,ex:0,cy:0};save(c,f);history.replaceState(null,'','hp.html?u='+U+'&c='+c.id)}
  var st=load(c);
- if(st.ok)viewClear(c,st);else if(st.ex)viewEx(c,st);else viewPlay(c,st)}
+ if(st.ok||st.ex)viewEx(c,st);else viewPlay(c,st)}
 start();
 })();
 </script></body></html>
