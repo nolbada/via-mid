@@ -9,15 +9,15 @@
 .hrow em.o{background:var(--okBg);color:var(--ok)}.hrow em.x{background:var(--ngBg);color:var(--ng)}
 .hrow,.hrow small,.dg,.pit,.eb,.exb,.cl2{word-break:keep-all}
 .lab{font-weight:800;font-size:15.5px;margin:12px 2px 8px;color:var(--pri)}
-.cd{text-align:left;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:11px 13px;margin-bottom:8px;font-size:15.5px;line-height:1.5;position:relative;user-select:none;-webkit-user-select:none}
-.cd.fix{background:var(--bg);color:var(--sub);border-style:dashed}
-.cd.mv{touch-action:none;cursor:grab;padding-left:34px}
-.cd.mv:before{content:'';position:absolute;left:12px;top:50%;width:12px;height:10px;margin-top:-5px;border-top:2px solid #b8bec8;border-bottom:2px solid #b8bec8}
-.cd.mv:after{content:'';position:absolute;left:12px;top:50%;width:12px;height:2px;margin-top:-1px;background:#b8bec8}
-.l2 .cd.mv,.l2 .cd.fix{font-size:14px;line-height:1.4;padding:8px 10px 8px 30px;margin-bottom:6px}.l2 .cd.fix{padding-left:10px}
-.cd .fl{display:none}.cd.op .fl{display:inline}.cd.op .sh{display:none}
-.cd.drag{opacity:.95;box-shadow:0 8px 22px rgba(0,0,0,.18);border-color:var(--pri);z-index:5}
-.cd.ph{border:1.5px dashed var(--pri);background:var(--priL)}
+.sc{text-align:left;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:11px 13px;margin-bottom:8px;font-size:15.5px;line-height:1.5;position:relative;user-select:none;-webkit-user-select:none}
+.sc.fix{background:var(--bg);color:var(--sub);border-style:dashed}
+.sc.mv{touch-action:none;cursor:grab;padding-left:34px}
+.sc.mv:before{content:'';position:absolute;left:12px;top:50%;width:12px;height:10px;margin-top:-5px;border-top:2px solid #b8bec8;border-bottom:2px solid #b8bec8}
+.sc.mv:after{content:'';position:absolute;left:12px;top:50%;width:12px;height:2px;margin-top:-1px;background:#b8bec8}
+.l2 .sc.mv,.l2 .sc.fix{font-size:14px;line-height:1.4;padding:8px 10px 8px 30px;margin-bottom:6px}.l2 .sc.fix{padding-left:10px}
+.sc .sfl{display:none}.sc.op .sfl{display:inline}.sc.op .ssh{display:none}
+.sc.drag{opacity:.95;box-shadow:0 8px 22px rgba(0,0,0,.18);border-color:var(--pri);z-index:5}
+.sc.ph{border:1.5px dashed var(--pri);background:var(--priL)}
 .sub-btn{display:block;width:100%;margin:14px 0 4px;padding:14px;border:0;border-radius:12px;background:var(--pri);color:#fff;font-weight:800;font-size:17px}
 .end{background:var(--card);border:1.5px solid var(--pri);border-radius:16px;padding:20px 14px;margin:14px 0;text-align:center}
 .end.x{border-color:var(--ng);background:var(--ngBg)}.end.o{border-color:var(--ok);background:var(--okBg)}
@@ -63,7 +63,7 @@ function back(){return 'sd.html?u='+U+'&m='+M+(M==='en'?'&l='+LV:'')}
 function shuffle(a){var b=a.slice(),i,j,t;for(i=b.length-1;i>0;i--){j=Math.floor(Math.random()*(i+1));t=b[i];b[i]=b[j];b[j]=t}return b}
 function stext(p,i){return M==='ko'?p.sents[i].ko:p.sents[i].en}
 function utext(p,u){var a=[];for(var k=u[0];k<=u[1];k++)a.push(p.sents[k].en);return a.join(' ')}
-function cardTx(tx){var w=tx.split(' ');if(w.length<=8)return esc(tx);return '<span class="sh">'+esc(w.slice(0,7).join(' '))+' …</span><span class="fl">'+esc(tx)+'</span>'}
+function cardTx(tx){var w=tx.split(' ');if(w.length<=8)return esc(tx);return '<span class="ssh">'+esc(w.slice(0,7).join(' '))+' …</span><span class="sfl">'+esc(tx)+'</span>'}
 function ctext(p,u){return M==='ko'?esc(p.sents[u[0]].ko):(LV===1?esc(utext(p,u)):cardTx(utext(p,u)))}
 function unitLab(p){return M==='en'&&LV===1?p.chunks.length+'덩어리':p.sents.length+'문장'}
 var TITLEFULL=function(){return (D.t||U+'과')+' '+TITLE};
@@ -87,8 +87,8 @@ function viewPlay(p,st){
  app.appendChild(el('div','hh','<b>'+esc(p.label)+'</b><small>'+TITLE+(st.n===MAXTRY?' · 끝판왕 마지막 1번':'')+'</small>'));
  var us=units(p),mv=[],k;for(k=1;k<us.length;k++)mv.push(k);
  var o;do{o=shuffle(mv)}while(mv.length>1&&o.join()===mv.join());
- var h='<div class="'+(LV===2?'l2':'')+'"><div class="cd fix" lang="'+(M==='ko'?'ko':'en')+'" translate="no">'+ctext(p,us[0])+'</div><div id="bx">';
- o.forEach(function(k){h+='<div class="cd mv" data-k="'+k+'" lang="'+(M==='ko'?'ko':'en')+'" translate="no">'+ctext(p,us[k])+'</div>'});
+ var h='<div class="'+(LV===2?'l2':'')+'"><div class="sc fix" lang="'+(M==='ko'?'ko':'en')+'" translate="no">'+ctext(p,us[0])+'</div><div id="bx">';
+ o.forEach(function(k){h+='<div class="sc mv" data-k="'+k+'" lang="'+(M==='ko'?'ko':'en')+'" translate="no">'+ctext(p,us[k])+'</div>'});
  h+='</div></div>';
  app.appendChild(el('div',null,h));
  var btn=el('button','sub-btn','제출하기');btn.type='button';app.appendChild(btn);
@@ -109,7 +109,7 @@ function bind(){var bx=document.getElementById('bx');Array.prototype.forEach.cal
 function down(e){pc=e.currentTarget;px=e.clientX;py=e.clientY;e.preventDefault();try{pc.setPointerCapture(e.pointerId)}catch(x){}
  pc.addEventListener('pointermove',move);pc.addEventListener('pointerup',up);pc.addEventListener('pointercancel',up)}
 function startDrag(){var c=pc,r=c.getBoundingClientRect();dg=c;oy=py-r.top;
- ph=document.createElement('div');ph.className='cd ph';ph.style.height=r.height+'px';c.parentNode.insertBefore(ph,c);
+ ph=document.createElement('div');ph.className='sc ph';ph.style.height=r.height+'px';c.parentNode.insertBefore(ph,c);
  c.classList.add('drag');c.style.position='fixed';c.style.left=r.left+'px';c.style.width=r.width+'px';c.style.top=r.top+'px'}
 function move(e){if(!pc)return;e.preventDefault();
  if(!dg){if(Math.abs(e.clientY-py)+Math.abs(e.clientX-px)<7)return;startDrag()}
@@ -119,7 +119,7 @@ function move(e){if(!pc)return;e.preventDefault();
  if(put)bx.insertBefore(ph,put);else bx.appendChild(ph);
  if(e.clientY<60)window.scrollBy(0,-12);else if(e.clientY>window.innerHeight-60)window.scrollBy(0,12)}
 function up(e){var c=pc;if(!c)return;pc=null;c.removeEventListener('pointermove',move);c.removeEventListener('pointerup',up);c.removeEventListener('pointercancel',up);
- if(!dg){if(e.type==='pointerup'&&c.querySelector('.fl'))c.classList.toggle('op');return}
+ if(!dg){if(e.type==='pointerup'&&c.querySelector('.sfl'))c.classList.toggle('op');return}
  dg=null;c.classList.remove('drag');c.style.position='';c.style.left='';c.style.top='';c.style.width='';ph.parentNode.insertBefore(c,ph);ph.remove();ph=null}
 
 function viewFail(p,st){
