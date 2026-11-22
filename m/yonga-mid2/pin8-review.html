@@ -43,8 +43,6 @@ let D=null;
 try{const h=location.hash.replace(/^#d=/,"");D=JSON.parse(decodeURIComponent(escape(atob(h))));}catch(e){}
 if(!D||!D.a){$a.innerHTML="<div class='card'>핀포인트를 본 뒤 결과 화면에서 이 해설지로 이동해 주세요.<a class='btn' href='pin8.html'>핀포인트로</a></div>";}
 else{
- const key="pin8_"+D.n;let st={};try{st=JSON.parse(localStorage.getItem(key)||"{}");}catch(e){}
- function save(){try{localStorage.setItem(key,JSON.stringify(st));}catch(e){}}
  const sc=D.a.filter(x=>{const q=Q.find(z=>z.id===x[0]);return q&&q.cat!=="생각";}),ok=sc.filter(x=>x[1]).length;
  let h="<h1>"+esc(D.n)+"의 핀포인트 해설지</h1><div class='small'>중2 동아(윤) 8과 핀포인트 테스트 · A Butterfly That Changed the Future</div>";
  h+="<div class='card'><div style='font-size:20px'>결과 <b>"+ok+" / "+sc.length+"</b></div>"
@@ -61,10 +59,9 @@ else{
    h+="</div>";}
   const gc=q.cat==="생각"?"gn":(pass?"gw":"gb");
   h+="<div class='gbox "+gc+"'><div class='ev'>"+esc(q.ev)+"</div><div class='ko'>"+esc(q.ko)+"</div><div class='why'><b>친절 설명</b><div>"+nl(q.why)+"</div></div></div>";
-  h+="<div class='lbl'>memo</div><textarea data-m='"+q.id+"' placeholder='헷갈린 점이나 기억할 것을 적어 두세요'>"+esc(st["m_"+q.id]||"")+"</textarea></div>";});
+  h+="</div>";});
  h+="<a class='btn' href='pin8.html'>핀포인트로 돌아가기</a>";
  $a.innerHTML=h;
- $a.addEventListener("input",e=>{const t=e.target.closest("textarea");if(!t)return;st["m_"+t.dataset.m]=t.value;save();});
 }
 </script>
 </body>
