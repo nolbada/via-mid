@@ -43,6 +43,7 @@ button.lnk{background:none;color:#9fb0c0;font-size:15px;text-decoration:underlin
 .inv{visibility:hidden}
 .hide{display:none}
 </style>
+<script src="rec.js?v=261025d"></script>
 </head>
 <body>
 <div class="wrap">
@@ -110,6 +111,22 @@ let setNo=0,name="",picks=[],idx=0,results=[],rec=null,heard="",tries=0,tReady=n
 if(/KAKAOTALK/i.test(navigator.userAgent)){$("kakao").classList.remove("hide");}
 $("btn-ext").onclick=()=>{location.href="kakaotalk://web/openExternal?url="+encodeURIComponent(location.href);};
 if(!SR)$("nosupport").classList.remove("hide");
+
+const RK=(/\/via-mid\/m\/([a-z0-9-]+)\//.exec(location.pathname)||[])[1]||"";
+const PFXS={"yonga-mid2":"mid7:","geumcheon-mid2":"gcm2:","yongseong-mid2":"ysm2:","undong-mid2":"udm2:"};
+const PFX=PFXS[RK]||"";
+let SH=false;try{SH=/[?&]shared=1/.test(location.search)||(!!PFX&&sessionStorage.getItem(PFX+"shared")==="1");if(/[?&]shared=0/.test(location.search))SH=false;if(/[?&]t=1/.test(location.search))SH=true;}catch(e){}
+let REG="";try{REG=(localStorage.getItem("recm_name"+(RK==="yonga-mid2"?"":"_"+RK))||"").replace(/\s+/g,"");}catch(e){}
+const REC_ON=!!PFX&&!SH;
+const KEY=n=>PFX+"pin8:"+n;
+function rd(n){try{return JSON.parse(localStorage.getItem(KEY(n))||"null");}catch(e){return null;}}
+function saveRound(ok,tot){if(!REC_ON||!REG)return;try{const old=rd(SETS[setNo].n)||{};
+ const a=results.map(r=>[r.id,r.pass,(r.said||"").slice(0,80)]);
+ const b=(old.best&&old.best.ok>ok)?old.best:{ok:ok,tot:tot};
+ localStorage.setItem(KEY(SETS[setNo].n),JSON.stringify({t:Date.now(),n:(old.n||0)+1,best:b,last:{ok:ok,tot:tot,a:a}}));}catch(e){}}
+if(REC_ON){$("name").classList.add("hide");if(REG){name=REG;}else{["btn-s0","btn-s1","btn-s2"].forEach(i=>$(i).classList.add("hide"));
+ const m=document.createElement("div");m.className="crit";m.style.marginTop="12px";m.innerHTML="이름을 먼저 등록해야 시작할 수 있어요.<a href='index.html' style='display:block;margin-top:10px;padding:14px;border-radius:8px;background:#c9a227;color:#222;text-align:center;text-decoration:none;font-size:18px'>처음 화면에서 이름 등록</a>";
+ $("s-name").insertBefore(m,$("btn-s0"));}}
 function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;");}
 function showQ(){const it=picks[idx];heard="";tries=0;finished=false;qn++;rid++;clearTimeout(tSil);clearInterval(tRec);try{rec&&rec.abort();}catch(e){}
  $("s-q").classList.remove("hide");
@@ -156,7 +173,7 @@ function finishTry(){if(finished)return;stopAll();
 function reviewURL(){const d={n:name,a:results.map(r=>[r.id,r.pass,r.said,r.hit.join("")])};
  return "pin8-review.html#d="+btoa(unescape(encodeURIComponent(JSON.stringify(d))));}
 function showEnd(){$("s-q").classList.add("hide");$("s-end").classList.remove("hide");
- const scored=results.filter((r,i)=>picks[i].cat!=="생각"),ok=scored.filter(r=>r.pass).length;
+ const scored=results.filter((r,i)=>picks[i].cat!=="생각"),ok=scored.filter(r=>r.pass).length;saveRound(ok,scored.length);
  let h="<div style='font-size:20px;margin-bottom:8px'>"+esc(name)+" 핀포인트 "+SETS[setNo].n+"회 결과 &nbsp; <b>"+ok+" / "+scored.length+"</b></div>";
  results.forEach((r,i)=>{const it=picks[i];let line;
   if(it.cat==="생각")line="<span class='small'>기록</span> "+esc(r.said||"(인식된 말 없음)");
@@ -170,7 +187,7 @@ $("btn-next").onclick=()=>{setNo=(setNo+1)%SETS.length;begin(setNo);};
 function begin(k){if(!name)name=$("name").value.trim();if(!name){$("name").focus();return;}
  if(!SR)return;setNo=k;picks=draw(k);idx=0;results=[];$("s-name").classList.add("hide");$("s-end").classList.add("hide");
  navigator.mediaDevices&&navigator.mediaDevices.getUserMedia?navigator.mediaDevices.getUserMedia({audio:true}).then(s=>{s.getTracks().forEach(t=>t.stop());showQ();}).catch(()=>{showQ();}):showQ();}
-SETS.forEach((S,k)=>{$("btn-s"+k).textContent=S.n+"회 시작 (10문항)";$("btn-s"+k).onclick=()=>begin(k);});
+SETS.forEach((S,k)=>{const r=rd(S.n);$("btn-s"+k).textContent=S.n+"회 시작 (10문항)"+(REC_ON&&r&&r.best?" · 완료 "+r.best.ok+"/"+r.best.tot:"");$("btn-s"+k).onclick=()=>begin(k);});
 </script>
 </body>
 </html>
