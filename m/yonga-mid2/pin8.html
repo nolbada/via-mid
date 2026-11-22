@@ -115,7 +115,7 @@ if(!SR)$("nosupport").classList.remove("hide");
 const RK=(/\/via-mid\/m\/([a-z0-9-]+)\//.exec(location.pathname)||[])[1]||"";
 const PFXS={"yonga-mid2":"mid7:","geumcheon-mid2":"gcm2:","yongseong-mid2":"ysm2:","undong-mid2":"udm2:"};
 const PFX=PFXS[RK]||"";
-let SH=false;try{SH=/[?&]shared=1/.test(location.search)||(!!PFX&&sessionStorage.getItem(PFX+"shared")==="1");if(/[?&]shared=0/.test(location.search))SH=false;if(/[?&]t=1/.test(location.search))SH=true;}catch(e){}
+let SH=false;try{SH=/[?&]shared=1/.test(location.search)||(!!PFX&&sessionStorage.getItem(PFX+"shared")==="1");if(/[?&]shared=0/.test(location.search))SH=false;}catch(e){}
 let REG="";try{REG=(localStorage.getItem("recm_name"+(RK==="yonga-mid2"?"":"_"+RK))||"").replace(/\s+/g,"");}catch(e){}
 const REC_ON=!!PFX&&!SH;
 const KEY=n=>PFX+"pin8:"+n;
