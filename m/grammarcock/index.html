@@ -227,6 +227,10 @@
   .summary .explain p{ color:var(--ink); }
   .summary .kw{ font-weight:700; color:var(--good); }
   .summary .example{ border-top-color:rgba(0,0,0,.08); }
+  .failbox{ background:#fdecec; border:1.5px solid #e9a5a5; border-radius:12px; padding:14px 16px; text-align:center; }
+  .failbox .failhead{ font-size:17px; font-weight:800; color:var(--bad); margin-bottom:6px; }
+  .failbox .failsub{ font-size:14.5px; line-height:1.7; color:#5a2a2a; margin-bottom:12px; }
+  .failbox .again{ font-size:16px; font-weight:800; color:#fff; background:var(--bad); border:0; border-radius:10px; padding:12px 22px; cursor:pointer; }
   .locked{
     display:flex; align-items:center; gap:10px; padding:14px 16px;
     border:1.5px dashed var(--line); border-radius:14px; color:var(--ink-soft); font-size:13px;
@@ -449,6 +453,7 @@ const state = DATA.map(c => ({
   quizDone: {},                 // qi -> true
   quizWrong: {},                // qi -> Set of wrong picks
   exSpoken: new Set(),          // example indices already auto-spoken
+  pass: 0,                      // 몇 번째 도전인지 (80% 미만이면 처음부터 다시)
 }));
 
 let current = 0;
@@ -470,11 +475,41 @@ function isExampleDone(c, s, xi){
   return keys.every(k => s.revealed.has(k) || s.choiceDone.has(k));
 }
 
+// 개념 정리가 열리는 조건: 설명·예문의 빈칸을 전부 누르고, 확인 문제를 전부 풀고,
+// 선택형(빈칸 선택 + 확인 문제)에서 '처음 고른 답'의 정답률이 80% 이상일 것
+const PASS_RATE = 0.8;
+function conceptStats(c, s){
+  let total = 0, ok = 0, blanksDone = true;
+  const scan = (segs, prefix) => {
+    let n = 0;
+    segs.forEach(seg => {
+      if (seg.t !== 'blank') return;
+      const key = prefix + '-' + (n++);
+      if (seg.choices){
+        total++;
+        if (!(s.choiceWrong[key] && s.choiceWrong[key].size > 0)) ok++;
+        if (!s.choiceDone.has(key)) blanksDone = false;
+      } else if (!s.revealed.has(key)) blanksDone = false;
+    });
+  };
+  c.explain.forEach((segs, pi) => scan(segs, 'p' + pi));
+  c.examples.forEach((ex, xi) => scan(ex.en, 'xa' + xi));
+  let quizDone = true;
+  c.check.forEach((q, qi) => {
+    total++;
+    if (!(s.quizWrong[qi] && s.quizWrong[qi].size > 0)) ok++;
+    if (!s.quizDone[qi]) quizDone = false;
+  });
+  const finished = blanksDone && quizDone;
+  const rate = total ? ok / total : 0;
+  return { total, ok, rate, finished, passed: finished && rate >= PASS_RATE };
+}
 function isConceptDone(i){
   const c = DATA[i], s = state[i];
   if (!c.check.length) return false;
-  return c.check.every((q, qi) => s.quizDone[qi]);
+  return conceptStats(c, s).passed;
 }
+function rot(arr, n){ if (!n || arr.length < 2) return arr; n = n % arr.length; return arr.slice(n).concat(arr.slice(0, n)); }
 
 let finderOpen = false, finderQuery = '', finderMode = 'all';
 function renderNav(){
@@ -558,7 +593,7 @@ function renderSegs(segs, prefix, s){
         return '<span class="blank revealed" data-key="' + key + '">' + escapeHtml(seg.v) + '</span>';
       }
       const wrongSet = s.choiceWrong[key] || new Set();
-      const btns = seg.choices.map(choice => {
+      const btns = rot(seg.choices, s.pass).map(choice => {
         let cls = 'cbtn';
         let dis = '';
         if (wrongSet.has(choice)){
@@ -602,7 +637,8 @@ function render(){
   const c = DATA[current];
   const s = state[current];
   const host = document.getElementById('cardHost');
-  const done = isConceptDone(current);
+  const stats = conceptStats(c, s);
+  const done = c.check.length ? stats.passed : false;
 
   const explainHtml = c.explain.map((segs, pi) => '<p>' + renderSegs(segs, 'p' + pi, s) + '</p>').join('');
 
@@ -622,7 +658,7 @@ function render(){
   const quizHtml = c.check.map((q, qi) => {
     const qDone = s.quizDone[qi];
     const wrongSet = s.quizWrong[qi] || new Set();
-    const choicesHtml = q.choices.map(choice => {
+    const choicesHtml = rot(q.choices, s.pass).map(choice => {
       let cls = 'choice', dis = '';
       if (qDone){
         dis = 'disabled';
@@ -670,8 +706,15 @@ function render(){
           '</div>'
         : '') +
       '</div>';
+  } else if (stats.finished){
+    const pct = Math.round(stats.rate * 100);
+    summaryHtml = '<div class="section"><div class="failbox">' +
+      '<div class="failhead">처음 고른 답 정답률 ' + pct + '% (' + stats.ok + '/' + stats.total + ')</div>' +
+      '<div class="failsub">80% 이상이어야 개념 정리가 열려요. 설명부터 천천히 읽고 처음부터 다시 풀어 봐요.</div>' +
+      '<button class="again" id="againBtn">처음부터 다시</button>' +
+    '</div></div>';
   } else {
-    summaryHtml = '<div class="section"><div class="locked">' + LOCK_ICON + '문제를 모두 맞히면 이 개념의 정리 노트가 열린다.</div></div>';
+    summaryHtml = '<div class="section"><div class="locked">' + LOCK_ICON + '빈칸과 문제를 모두 풀고, 처음 고른 답이 80% 이상 맞아야 개념 정리가 열려요.</div></div>';
   }
 
   host.innerHTML =
@@ -756,11 +799,16 @@ function render(){
   const listenAllBtn = document.getElementById('listenAllBtn');
   if (listenAllBtn) listenAllBtn.onclick = () => speakQueue(c.examples.map(ex => plainText(ex.en)));
 
-  document.getElementById('resetBtn').onclick = () => {
+  const restart = () => {
     s.revealed.clear(); s.choiceDone.clear(); s.choiceWrong = {};
     s.quizDone = {}; s.quizWrong = {}; s.exSpoken.clear();
+    s.pass++;
     render();
+    window.scrollTo(0, 0);
   };
+  document.getElementById('resetBtn').onclick = restart;
+  const againBtn = document.getElementById('againBtn');
+  if (againBtn) againBtn.onclick = restart;
   document.getElementById('prevBtn').onclick = () => { if (current > 0){ current--; render(); } };
   document.getElementById('nextBtn').onclick = () => { if (current < DATA.length - 1){ current++; render(); } };
 }
