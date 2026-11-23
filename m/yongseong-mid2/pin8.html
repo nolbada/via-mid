@@ -90,7 +90,7 @@ button.lnk{background:none;color:#9fb0c0;font-size:15px;text-decoration:underlin
 </div>
 <script src="pin8-data.js"></script>
 <script>
-const LIMIT=20, SILENCE=2500;
+const LIMIT=20, SILENCE=4000;
 const SETS=[
  {"n":1,"ids":["m1","m2","m3","m4","m5","m6","m7","m8","m9"],"t":"t1"},
  {"n":2,"ids":["k1","k2","k3","k4","k5","k6","k7","k8","k9"],"t":"t2"},
@@ -148,7 +148,7 @@ function startRec(){heard="";finished=false;$("heard").textContent="";
  const my=++rid;
  try{rec=new SR();}catch(e){manual();return;}
  rec.lang="ko-KR";rec.continuous=true;rec.interimResults=true;
- rec.onresult=e=>{if(my!==rid||finished)return;let t="";for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript+" ";heard=t.trim();$("heard").textContent=heard;
+ rec.onresult=e=>{if(my!==rid||finished)return;const a=[],n=[];for(let i=0;i<e.results.length;i++){const x=e.results[i][0].transcript.trim();a.push(x);n.push(x.replace(/\s+/g,""));}let t="";for(let i=0;i<a.length;i++){let k=false;for(let j=i+1;j<a.length;j++)if(n[j].startsWith(n[i])){k=true;break;}if(!k)t+=a[i]+" ";}heard=t.trim();$("heard").textContent=heard;
   clearTimeout(tSil);tSil=setTimeout(()=>finishTry(),SILENCE);};
  rec.onerror=e=>{if(my!==rid||finished)return;if(e.error==="not-allowed"||e.error==="service-not-allowed"){manual();}};
  rec.onend=()=>{if(my===rid&&!finished&&t0&&Date.now()-t0<LIMIT*1000-300){try{rec.start();}catch(e){}}};
