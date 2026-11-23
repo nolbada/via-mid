@@ -145,13 +145,13 @@ function ready(){rt=rs=readySec(picks[idx]);$("rbtns").classList.remove("hide");
   if(rs<=0){clearInterval(tReady);startRec();}else say();},1000);}
 function startRec(){heard="";finished=false;$("heard").textContent="";
  $("rbtns").classList.add("hide");
- const my=++rid;
+ const my=++rid;let base="";
  try{rec=new SR();}catch(e){manual();return;}
  rec.lang="ko-KR";rec.continuous=true;rec.interimResults=true;
- rec.onresult=e=>{if(my!==rid||finished)return;const a=[],n=[];for(let i=0;i<e.results.length;i++){const x=e.results[i][0].transcript.trim();a.push(x);n.push(x.replace(/\s+/g,""));}let t="";for(let i=0;i<a.length;i++){let k=false;for(let j=i+1;j<a.length;j++)if(n[j].startsWith(n[i])){k=true;break;}if(!k)t+=a[i]+" ";}heard=t.trim();$("heard").textContent=heard;
+ rec.onresult=e=>{if(my!==rid||finished)return;const a=[],n=[];for(let i=0;i<e.results.length;i++){const x=e.results[i][0].transcript.trim();a.push(x);n.push(x.replace(/\s+/g,""));}let t="";for(let i=0;i<a.length;i++){let k=false;for(let j=i+1;j<a.length;j++)if(n[j].startsWith(n[i])){k=true;break;}if(!k)t+=a[i]+" ";}heard=(base+t).trim();$("heard").textContent=heard;
   clearTimeout(tSil);tSil=setTimeout(()=>finishTry(),SILENCE);};
  rec.onerror=e=>{if(my!==rid||finished)return;if(e.error==="not-allowed"||e.error==="service-not-allowed"){manual();}};
- rec.onend=()=>{if(my===rid&&!finished&&t0&&Date.now()-t0<LIMIT*1000-300){try{rec.start();}catch(e){}}};
+ rec.onend=()=>{if(my===rid&&!finished&&t0&&Date.now()-t0<LIMIT*1000-300){base=heard?heard+" ":"";try{rec.start();}catch(e){}}};
  try{rec.start();}catch(e){manual();return;}
  t0=Date.now();$("btn-done").classList.remove("hide");$("btn-rec").classList.add("hide");
  $("state").textContent="녹음 중 · 말씀하세요";setBar(0,true);
