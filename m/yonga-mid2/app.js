@@ -232,6 +232,7 @@ function pageIndex(app){
  if(SH){var lp=el('a','lc','<div><b>학습 인증</b><small>오늘 푼 내용 확인 화면</small></div><span>열기</span>');lp.href='index.html?proof=1';app.appendChild(lp)}
  var lb=el('a','lc bl','<div><b>전체 랜덤 20문항</b><small>전체에서 20문항씩, 또는 원하는 유형만 골라 풀어요</small></div><span>시작</span>');lb.href='mix.html';app.appendChild(lb);
  if(D.TK&&D.TK.length){var lt=el('a','lc bl','<div><b>7종 특훈 시리즈</b><small>유형별 3회 · 개념 → 실전 → 고난도</small></div><span>시작</span>');lt.href='tk.html?from=idx';app.appendChild(lt)}
+ [7,8].forEach(function(u){var pn=el('a','lc bl','<div><b>핀포인트 말하기 테스트 · '+u+'과</b><small>본문 내용 질문 · 3회</small></div><span>시작</span>');pn.href='pin'+u+'.html';app.appendChild(pn)});
 
  /* 5. exam title row */
  var wk0=mondayOf(today),wk1=addDays(wk0,6),wcnt=0;
