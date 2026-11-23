@@ -144,7 +144,7 @@ function loadSmp(){var ids=Object.keys(PFXS).map(function(s){return 'RECM|'+s+'|
   fetch('https://firestore.googleapis.com/v1/projects/h-roadmap/databases/(default)/documents:batchGet',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({documents:names})}).then(function(r){return r.json()}).then(function(j){
     var M={};(Array.isArray(j)?j:[]).forEach(function(x){if(!x.found)return;var f=x.found.fields||{},id=f.id&&f.id.stringValue,m={};if(!id)return;try{m=JSON.parse(f.j.stringValue)}catch(e){}M[id]=M[id]||{};Object.keys(m).forEach(function(k){var v;try{v=JSON.parse(m[k][0])}catch(e){v=m[k][0]}M[id][k]={t:m[k][1],v:v}})});
     var out=[];Object.keys(M).forEach(function(id){if(!Object.keys(M[id]).length)return;var keep=ALL[id];ALL[id]=M[id];try{out.push(info(id))}catch(e){}if(keep)ALL[id]=keep;else delete ALL[id]});
-    SMP=out;draw();
+    SMP=out;draw();var q=document.getElementById('smp');if(q)q.scrollIntoView();
   }).catch(function(){SMP=[];draw()})}
 var SEL='';try{SEL=localStorage.getItem('recm_sel')||''}catch(e){}
 function draw(){
@@ -168,7 +168,7 @@ function draw(){
     h+='<div class="rw"><div class="av" style="--sc:'+r.color+'">'+esc(r.short)+'</div><div class="bd"><div class="tp"><div class="nm"><b>'+esc(r.name||'?')+'</b><span class="s">'+esc(r.school)+'</span></div><span class="l">'+(r.last?fd(r.last):'기록 없음')+'</span></div>'
     +'<div class="gr">'+r.stats.map(function(c){return '<div><span>'+esc(c[0])+'</span><b>'+esc(c[1])+'</b></div>'}).join('')+'</div><div class="mt">'+esc(r.sub)+'</div>'+tkHtml(r.tk)+pnHtml(r.pn)+bfHtml(r.bf)+'</div></div>';
   });h+='</div>'}
-  if(SMP){h+=SMP.length?'<div class="msg"><b>샘플2 기록</b> (학생 명단·통계에 들어가지 않음)</div><div class="lst">'+SMP.map(rowH).join('')+'</div>':'<div class="msg">샘플2 기록이 없어요.</div>'}
+  if(SMP){h+=SMP.length?'<div class="msg" id="smp"><b>샘플2 기록</b> (학생 명단·통계에 들어가지 않음)</div><div class="lst">'+SMP.map(rowH).join('')+'</div>':'<div class="msg" id="smp">샘플2 기록이 없어요.</div>'}
   h+='<div class="foot">비타민 영어클리닉</div>';
   app.innerHTML=h;
   document.getElementById('rf').onclick=load;document.getElementById('sm').onclick=loadSmp;
