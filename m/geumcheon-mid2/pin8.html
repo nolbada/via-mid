@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ko" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="google" content="notranslate">
+<title>중2 YBM(김) 8과 핀포인트 테스트</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:"Malgun Gothic","Apple SD Gothic Neo",sans-serif;background:#1d2733;color:#eef1f4}
+.wrap{max-width:560px;margin:0 auto;padding:22px 16px 250px}
+h1{font-size:22px;letter-spacing:1px;margin:6px 0 4px}
+.sub{font-size:14px;color:#9fb0c0;margin-bottom:18px}
+.card{background:#f7f6f2;color:#222;border-radius:10px;padding:18px;margin-bottom:14px}
+.dark{background:#273445;color:#eef1f4}
+.tag{display:inline-block;font-size:13px;background:#2f4858;color:#fff;border-radius:4px;padding:2px 8px;margin-right:6px}
+.tag.d{background:#7a4b2a}
+.ctx{background:#fff;border:1px solid #ddd9cf;border-radius:8px;padding:12px;font-size:17px;line-height:1.7;margin:10px 0}
+.ctx b{background:#ffe27a;padding:0 2px}
+.q{font-size:21px;line-height:1.6;margin:10px 0}
+input[type=text]{width:100%;font-size:18px;padding:12px;border:1px solid #bbb;border-radius:8px}
+button{font-family:inherit;font-size:18px;border:0;border-radius:8px;padding:15px 18px;background:#c9a227;color:#222;width:100%;margin-top:12px}
+button.g{background:#3a4a5d;color:#eef1f4}
+.bar{height:8px;background:#3a4a5d;border-radius:4px;overflow:hidden;margin-top:10px}
+.bar i{display:block;height:100%;width:0;background:#c9a227}
+.bar.rec i{background:#d9503c}
+.state{text-align:center;font-size:18px;margin-top:12px;min-height:26px}
+.timer{font-size:34px;text-align:center;font-variant-numeric:tabular-nums}
+.heard{min-height:50px;margin-top:10px;padding:10px;border:1px dashed #6d7f93;border-radius:8px;font-size:16px;line-height:1.5;color:#c9d3dd}
+.crit{font-size:14px;line-height:1.7;color:#c9d3dd}
+.row{border-top:1px solid #e3e0d6;padding:10px 0;font-size:16px;line-height:1.6}
+.row:first-child{border-top:0}
+.ok{color:#1f7a4d;font-weight:bold}.no{color:#b3402f;font-weight:bold}
+.small{font-size:14px;color:#666}
+.row2{display:flex;gap:10px}.row2 button{flex:1}
+button.lnk{background:none;color:#9fb0c0;font-size:15px;text-decoration:underline;padding:10px;margin-top:6px}
+.pg{height:6px;background:#e3e0d6;border-radius:3px;margin-top:10px;overflow:hidden}.pg i{display:block;height:100%;background:#2f4858}
+#ctl{position:fixed;left:0;right:0;bottom:0;background:#273445;box-shadow:0 -6px 18px rgba(0,0,0,.35);padding:10px 16px 12px;z-index:5}
+#ctl .in{max-width:560px;margin:0 auto}
+#ctl .state{margin-top:2px}
+#ctl button{margin-top:8px;padding:13px 16px}
+.slot{min-height:56px}
+.inv{visibility:hidden}
+.hide{display:none}
+</style>
+<script src="rec.js?v=261025d"></script>
+</head>
+<body>
+<div class="wrap">
+<h1>PINPOINT</h1>
+<div class="sub">중2 YBM(김) 8과 &middot; 3회 &middot; 회당 10문항</div>
+
+<div id="s-name" class="card dark">
+ <div class="crit">질문이 나오면 글 길이에 따라 10~25초의 준비 시간이 주어지고, 끝나면 자동으로 녹음이 시작됩니다. 미리 준비가 되었으면 “지금 답하기”를 누르고, 시간이 모자라면 “+5초”를 누르세요. 한 문항에 한 번만 답할 수 있습니다.<br>
+ 채점은 문장을 그대로 외웠는지가 아니라 핵심어가 들어 있는지를 봅니다. 한국어든 영어든 괜찮고, 핵심어가 같은 뜻이면 인정됩니다. 마지막 화면에서 내 해설지로 이동합니다.</div>
+ <input type="text" id="name" placeholder="이름" autocomplete="off" style="margin-top:12px">
+ <button id="btn-s0"></button>
+ <button id="btn-s1"></button>
+ <button id="btn-s2"></button>
+ <div id="kakao" class="hide crit" style="margin-top:12px">카카오톡 안에서는 마이크가 막힐 수 있습니다.<button id="btn-ext" class="g">다른 브라우저로 열기</button></div>
+ <div id="nosupport" class="hide crit" style="margin-top:12px;color:#ff9b8a">이 브라우저는 음성인식을 지원하지 않습니다. 크롬으로 열어 주세요.</div>
+</div>
+
+<div id="s-q" class="hide">
+ <div class="card">
+  <div><span class="tag" id="tag"></span><span class="small" id="prog"></span></div>
+  <div class="pg"><i id="pgf"></i></div>
+  <div class="ctx" id="ctx"></div>
+  <div class="q" id="qtext"></div>
+ </div>
+ <div class="heard" id="heard"></div>
+ <div id="ctl"><div class="in">
+  <div class="state" id="state"></div>
+  <div class="bar" id="bar"><i id="fill"></i></div>
+  <div class="slot">
+   <div id="rbtns" class="row2 hide"><button id="btn-go">지금 답하기</button><button id="btn-plus" class="g">+5초</button></div>
+   <button id="btn-done" class="g hide">답변 끝</button>
+   <button id="btn-rec" class="hide">녹음 시작</button>
+  </div>
+  <button id="btn-skip" class="lnk inv">이 문항 넘기기</button>
+ </div></div>
+</div>
+
+<div id="s-end" class="hide">
+ <div class="card" id="summary"></div>
+ <button id="btn-review">내 해설지 보기</button>
+ <button id="btn-next" class="g hide">다음 회차 하기</button>
+ <button id="btn-reset" class="g">다음 학생</button>
+</div>
+</div>
+<script src="pin8-data.js"></script>
+<script>
+const LIMIT=20, SILENCE=2500;
+const SETS=[
+ {"n":1,"ids":["m1","m2","m3","m4","m5","m6","m7","m8","m9"],"t":"t1"},
+ {"n":2,"ids":["k1","k2","k3","k4","k5","k6","k7","k8","k9"],"t":"t2"},
+ {"n":3,"ids":["z1","z2","z3","z4","z5","z6","z7","z8","z9"],"t":"t3"}];
+const norm=s=>(s||"").toLowerCase().replace(/[\s.,!?'"“”‘’~·\-]/g,"");
+function judge(it,text){const t=norm(text);if(it.free)return{pass:t.length>=it.min,hit:[]};
+ const hit=it.keys.map(g=>g.some(w=>t.includes(norm(w))));return{pass:hit.filter(Boolean).length>=it.need,hit};}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function pickDistinct(cat,n){const out=[],used={};shuffle(Q.filter(q=>q.cat===cat)).forEach(q=>{if(out.length<n&&!used[q.grp]){used[q.grp]=1;out.push(q);}});return out;}
+function draw(k){const S=SETS[k],byId={};Q.forEach(q=>byId[q.id]=q);
+ let a=shuffle(S.ids.map(id=>byId[id]));
+ for(let n=0;n<40;n++){let bad=false;for(let i=1;i<a.length;i++)if(a[i].p===a[i-1].p){bad=true;const j=Math.floor(Math.random()*a.length);const t=a[i];a[i]=a[j];a[j]=t;}if(!bad)break;}
+ return a.concat([byId[S.t]]);}
+function readySec(it){const L=P[it.p].slice(it.r[0],it.r[1]).join(" ").length+it.q.length;return Math.max(10,Math.min(25,Math.round(5+L/16)));}
+const $=id=>document.getElementById(id);
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+let setNo=0,name="",picks=[],idx=0,results=[],rec=null,heard="",tries=0,tReady=null,tRec=null,tSil=null,t0=0,finished=false;
+if(/KAKAOTALK/i.test(navigator.userAgent)){$("kakao").classList.remove("hide");}
+$("btn-ext").onclick=()=>{location.href="kakaotalk://web/openExternal?url="+encodeURIComponent(location.href);};
+if(!SR)$("nosupport").classList.remove("hide");
+
+const RK=(/\/via-mid\/m\/([a-z0-9-]+)\//.exec(location.pathname)||[])[1]||"";
+const PFXS={"yonga-mid2":"mid7:","geumcheon-mid2":"gcm2:","yongseong-mid2":"ysm2:","undong-mid2":"udm2:"};
+const PFX=PFXS[RK]||"";
+let SH=false;try{SH=/[?&]shared=1/.test(location.search)||(!!PFX&&sessionStorage.getItem(PFX+"shared")==="1");if(/[?&]shared=0/.test(location.search))SH=false;}catch(e){}
+let REG="";try{REG=(localStorage.getItem("recm_name"+(RK==="yonga-mid2"?"":"_"+RK))||"").replace(/\s+/g,"");}catch(e){}
+const REC_ON=!!PFX&&!SH;
+const KEY=n=>PFX+"pin8:"+n;
+function rd(n){try{return JSON.parse(localStorage.getItem(KEY(n))||"null");}catch(e){return null;}}
+function saveRound(ok,tot){if(!REC_ON||!REG)return;try{const old=rd(SETS[setNo].n)||{};
+ const a=results.map(r=>[r.id,r.pass,(r.said||"").slice(0,80)]);
+ const b=(old.best&&old.best.ok>ok)?old.best:{ok:ok,tot:tot};
+ localStorage.setItem(KEY(SETS[setNo].n),JSON.stringify({t:Date.now(),n:(old.n||0)+1,best:b,last:{ok:ok,tot:tot,a:a}}));}catch(e){}}
+if(REC_ON){$("name").classList.add("hide");if(REG){name=REG;}else{["btn-s0","btn-s1","btn-s2"].forEach(i=>$(i).classList.add("hide"));
+ const m=document.createElement("div");m.className="crit";m.style.marginTop="12px";m.innerHTML="이름을 먼저 등록해야 시작할 수 있어요.<a href='index.html' style='display:block;margin-top:10px;padding:14px;border-radius:8px;background:#c9a227;color:#222;text-align:center;text-decoration:none;font-size:18px'>처음 화면에서 이름 등록</a>";
+ $("s-name").insertBefore(m,$("btn-s0"));}}
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;");}
+function showQ(){const it=picks[idx];heard="";tries=0;finished=false;qn++;rid++;clearTimeout(tSil);clearInterval(tRec);try{rec&&rec.abort();}catch(e){}
+ $("s-q").classList.remove("hide");
+ $("tag").textContent=it.cat==="생각"?"생각 묻기":it.cat+" · "+it.type;
+ $("prog").textContent=(idx+1)+" / "+picks.length;
+ let c=P[it.p].slice(it.r[0],it.r[1]).map(esc).join(it.cat==="대화문"?"<br>":" ");
+ if(it.mk)c=c.split(esc(it.mk)).join("<b>"+esc(it.mk)+"</b>");
+ $("ctx").innerHTML=c;$("qtext").textContent=it.q;$("heard").textContent="";
+ $("btn-done").classList.add("hide");$("btn-rec").classList.add("hide");$("pgf").style.width=(idx/picks.length*100)+"%";
+ ready();}
+function setBar(p,r){$("fill").style.width=p+"%";$("bar").className="bar"+(r?" rec":"");}
+let rs=0,rt=0,rid=0,qn=0;
+function ready(){rt=rs=readySec(picks[idx]);$("rbtns").classList.remove("hide");$("btn-skip").classList.remove("inv");
+ const say=()=>{$("state").textContent="준비 "+rs+"초 · 질문을 읽으세요";};say();setBar(0,false);
+ clearInterval(tReady);tReady=setInterval(()=>{rs--;setBar((rt-rs)/rt*100,false);
+  if(rs<=0){clearInterval(tReady);startRec();}else say();},1000);}
+function startRec(){heard="";finished=false;$("heard").textContent="";
+ $("rbtns").classList.add("hide");
+ const my=++rid;
+ try{rec=new SR();}catch(e){manual();return;}
+ rec.lang="ko-KR";rec.continuous=true;rec.interimResults=true;
+ rec.onresult=e=>{if(my!==rid||finished)return;let t="";for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript+" ";heard=t.trim();$("heard").textContent=heard;
+  clearTimeout(tSil);tSil=setTimeout(()=>finishTry(),SILENCE);};
+ rec.onerror=e=>{if(my!==rid||finished)return;if(e.error==="not-allowed"||e.error==="service-not-allowed"){manual();}};
+ rec.onend=()=>{if(my===rid&&!finished&&t0&&Date.now()-t0<LIMIT*1000-300){try{rec.start();}catch(e){}}};
+ try{rec.start();}catch(e){manual();return;}
+ t0=Date.now();$("btn-done").classList.remove("hide");$("btn-rec").classList.add("hide");
+ $("state").textContent="녹음 중 · 말씀하세요";setBar(0,true);
+ clearInterval(tRec);tRec=setInterval(()=>{const p=(Date.now()-t0)/(LIMIT*1000)*100;setBar(Math.min(p,100),true);
+  if(p>=100)finishTry();},200);}
+function manual(){clearInterval(tReady);$("rbtns").classList.add("hide");$("state").textContent="녹음 시작 버튼을 눌러 주세요";$("btn-rec").classList.remove("hide");}
+$("btn-rec").onclick=()=>{$("btn-rec").classList.add("hide");startRec();};
+$("btn-done").onclick=()=>finishTry();
+$("btn-go").onclick=()=>{clearInterval(tReady);startRec();};
+$("btn-plus").onclick=()=>{rs+=5;rt+=5;$("state").textContent="준비 "+rs+"초 · 질문을 읽으세요";};
+$("btn-skip").onclick=()=>{if(finished)return;heard="";tries=9;finishTry();};
+function stopAll(){finished=true;rid++;$("rbtns").classList.add("hide");$("btn-skip").classList.add("inv");clearInterval(tRec);clearInterval(tReady);clearTimeout(tSil);t0=0;try{rec&&rec.abort();}catch(e){}$("btn-done").classList.add("hide");}
+function finishTry(){if(finished)return;stopAll();
+ if(!heard&&tries<1){tries++;$("state").textContent="소리가 인식되지 않았습니다. 다시 한 번 말씀하세요.";const q0=qn;setTimeout(()=>{if(q0!==qn||!finished)return;finished=false;startRec();},1500);return;}
+ const it=picks[idx],j=judge(it,heard);
+ results.push({id:it.id,pass:j.pass?1:0,hit:j.hit.map(h=>h?1:0),said:heard});
+ $("state").textContent="답변이 기록되었습니다";setBar(100,false);
+ const q1=qn;setTimeout(()=>{if(q1!==qn)return;idx++;if(idx<picks.length)showQ();else showEnd();},1400);}
+function reviewURL(){const d={n:name,a:results.map(r=>[r.id,r.pass,r.said,r.hit.join("")])};
+ return "pin8-review.html#d="+btoa(unescape(encodeURIComponent(JSON.stringify(d))));}
+function showEnd(){$("s-q").classList.add("hide");$("s-end").classList.remove("hide");
+ const scored=results.filter((r,i)=>picks[i].cat!=="생각"),ok=scored.filter(r=>r.pass).length;saveRound(ok,scored.length);
+ let h="<div style='font-size:20px;margin-bottom:8px'>"+esc(name)+" 핀포인트 "+SETS[setNo].n+"회 결과 &nbsp; <b>"+ok+" / "+scored.length+"</b></div>";
+ results.forEach((r,i)=>{const it=picks[i];let line;
+  if(it.cat==="생각")line="<span class='small'>기록</span> "+esc(r.said||"(인식된 말 없음)");
+  else{const m=it.keys.map((g,k)=>r.hit[k]?g[0]:null).filter(Boolean);
+   line=(r.pass?"<span class='ok'>통과</span>":"<span class='no'>다시 확인</span>")+" <span class='small'>인정된 핵심어: "+(m.length?m.map(esc).join(", "):"없음")+"</span>";}
+  h+="<div class='row'><div class='small'>"+(i+1)+". "+esc(it.cat+" · "+it.type)+"</div>"+esc(it.q)+"<br>"+line+"</div>";});
+ $("summary").innerHTML=h;$("btn-next").textContent=(SETS[(setNo+1)%SETS.length].n)+"회 이어서 하기";$("btn-next").classList.remove("hide");}
+$("btn-review").onclick=()=>{location.href=reviewURL();};
+$("btn-reset").onclick=()=>location.reload();
+$("btn-next").onclick=()=>{setNo=(setNo+1)%SETS.length;begin(setNo);};
+function begin(k){if(!name)name=$("name").value.trim();if(!name){$("name").focus();return;}
+ if(!SR)return;setNo=k;picks=draw(k);idx=0;results=[];$("s-name").classList.add("hide");$("s-end").classList.add("hide");
+ navigator.mediaDevices&&navigator.mediaDevices.getUserMedia?navigator.mediaDevices.getUserMedia({audio:true}).then(s=>{s.getTracks().forEach(t=>t.stop());showQ();}).catch(()=>{showQ();}):showQ();}
+SETS.forEach((S,k)=>{const r=rd(S.n);$("btn-s"+k).textContent=S.n+"회 시작 (10문항)"+(REC_ON&&r&&r.best?" · 완료 "+r.best.ok+"/"+r.best.tot:"");$("btn-s"+k).onclick=()=>begin(k);});
+</script>
+</body>
+</html>
