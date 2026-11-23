@@ -111,12 +111,13 @@ function bfHtml(a){if(!a)return '';var c=a[0],h=a[1],us={},L=[];Object.keys(c).c
     if(cu&&cu[1]>0){if(cu[1]<cu[0])s.push('푸는 중 '+cu[1]+'/'+cu[0]+(cu[3]?' (맞음 '+cu[2]+')':''));else if(!cu[4]){s.push(cu[3]?cu[2]+'/'+cu[0]:'한 판 완료')}}
     if(s.length)L.push(esc(u+'과 '+s.join(' · ')))});
   return L.length?'<div class="mt" style="margin-top:6px"><b>바꿔치기 감별</b> · '+L.join(' / ')+'</div>':''}
+function pnHtml(a){if(!a||!a.length)return '';var by={};a.forEach(function(x){(by[x[0]]=by[x[0]]||[]).push(x)});var L=Object.keys(by).sort(function(p,q){return p-q}).map(function(u){return esc(u+'과 '+by[u].sort(function(p,q){return p[1]-q[1]}).map(function(x){return x[1]+'회 '+x[2]+'/'+x[3]+(x[4]>1?'('+x[4]+'번)':'')}).join(' · '))});return '<div class="mt" style="margin-top:6px"><b>핀포인트 말하기</b> · '+L.join(' / ')+'</div>'}
 function tkHtml(a){if(!a||!a.length)return '';var tn=0,tc=0,L=[];a.forEach(function(x){tn+=x[1];tc+=x[2];var m=/^(\d+)-([A-Z]+)-(\d+)$/.exec(x[0]);if(L.length<8)L.push(esc((m?m[1]+'과 '+(TKL[m[2]]||m[2])+' '+m[3]+'회':x[0])+' '+x[2]+'/'+x[1]+(x[1]<5?'(푸는 중)':'')))});return '<div class="mt" style="margin-top:6px"><b>7종 특훈 '+tc+'/'+tn+'문제</b> · 최근 '+L.join(' · ')+'</div>'}
 function info(id){
   var d=ALL[id],ks=Object.keys(d),p=id.split('|'),sk=p[1],pf=PFXS[sk]||'mid7:';
   var o={id:id,name:p[2],sk:sk,school:SCN[sk]||sk,short:SCS[sk]||String(sk).slice(0,2),color:SCC[sk]||'#94a3b8',last:0};
   var t0=day0(Date.now()),tmR=new RegExp('^'+rx(pf)+'tm:(\\d{4})-(\\d\\d)-(\\d\\d):[^:]+:([qwh])$'),stR=new RegExp('^'+rx(pf)+'(?:st:\\d+:[^:]+|xst:\\d+)$'),dnR=new RegExp('^'+rx(pf)+'done:'),dtR=new RegExp('^'+rx(pf)+'doneAt:');
-  var bfR=new RegExp('^'+rx(pf)+'bf:(\\d+)$'),bfhR=new RegExp('^'+rx(pf)+'bfh:(\\d+)$'),bfc={},bfh={},tkR=new RegExp('^'+rx(pf)+'tk:(\\d+-[A-Z]+-\\d+)$'),tkl=[],tt=0,td=0,qg=0,qok=0,qoff=0,wrong=0,done=0,rtd={},lc=null,days={},anR=new RegExp('^'+rx(pf)+'ans:(L\\d+:[a-z0-9]+)$'),CT=CNKM[sk]||{};
+  var bfR=new RegExp('^'+rx(pf)+'bf:(\\d+)$'),bfhR=new RegExp('^'+rx(pf)+'bfh:(\\d+)$'),bfc={},bfh={},tkR=new RegExp('^'+rx(pf)+'tk:(\\d+-[A-Z]+-\\d+)$'),tkl=[],pnl=[],pnR=new RegExp('^'+rx(pf)+'pin(\\d+):(\\d+)$'),tt=0,td=0,qg=0,qok=0,qoff=0,wrong=0,done=0,rtd={},lc=null,days={},anR=new RegExp('^'+rx(pf)+'ans:(L\\d+:[a-z0-9]+)$'),CT=CNKM[sk]||{};
   ks.forEach(function(k){var t=d[k].t;if(t>1&&t>o.last)o.last=t;
     var m=tmR.exec(k);
     if(m){var v=+val(d[k])||0;if(v>0){tt+=v;if(new Date(+m[1],+m[2]-1,+m[3]).getTime()===t0)td+=v}}
@@ -125,12 +126,13 @@ function info(id){
     var bfm=bfR.exec(k);if(bfm){var bv=val(d[k]);if(bv&&bv.q&&bv.q.length){var bn=bv.q.length,ba=0,bk=0;(bv.a||[]).forEach(function(x,i){if(x!=null){ba++;if(bv.o&&bv.o[i])bk++}});bfc[bfm[1]]=[bn,ba,bk,!!bv.o,!!bv.lg]}}
     var bhm=bfhR.exec(k);if(bhm){var hv=val(d[k]);if(Array.isArray(hv))bfh[bhm[1]]=hv}
     var tkm=tkR.exec(k);if(tkm){var tv=val(d[k]);if(tv&&typeof tv==='object'){var tn=0,tc=0;Object.keys(tv).forEach(function(q){tn++;if(tv[q]&&tv[q][1])tc++});if(tn)tkl.push([tkm[1],tn,tc,d[k].t])}}
+    var pm=pnR.exec(k);if(pm){var pv=val(d[k]);if(pv&&pv.best&&pv.best.tot)pnl.push([+pm[1],+pm[2],pv.best.ok,pv.best.tot,pv.n||0,d[k].t])}
     if(k===pf+'w'){var w=val(d[k]);if(Array.isArray(w))wrong=w.length}
     if(dnR.test(k)&&String(val(d[k]))==='1')done++;
     if(dtR.test(k)){var x=val(d[k]);if(x){var dt=new Date(x);var lm=/doneAt:([^:]+):/.exec(k),d0=day0(dt.getTime());if(lm&&(!lc||d0>lc.d||(d0===lc.d&&+lm[1]>+lc.n)))lc={d:d0,n:lm[1]};days[dt.getFullYear()+'-'+dt.getMonth()+'-'+dt.getDate()]=1;if(day0(dt.getTime())===t0){var rm=/doneAt:([^:]+):/.exec(k);if(rm)rtd[rm[1]]=1}}}
   });
   o.stats=[['누적 이용시간',dur(tt)],['오늘 이용시간',dur(td)],['누적 풀코스',qg+'문제'],['마지막 회차',lc?lc.n+'회차 · '+(new Date(lc.d).getMonth()+1)+'/'+new Date(lc.d).getDate():'없음'],['누적 채점',qoff+'문제'],['오답노트',wrong+'개']];
-  tkl.sort(function(a,b){return b[3]-a[3]});o.tk=tkl;o.bf=[bfc,bfh];
+  tkl.sort(function(a,b){return b[3]-a[3]});o.tk=tkl;o.bf=[bfc,bfh];o.pn=pnl;
   o.sub='완료 유형 '+done+'개 · 학습한 날 '+Object.keys(days).length+'일';
   return o;
 }
@@ -154,7 +156,7 @@ function draw(){
   if(!all0.length)h+='<div class="msg">아직 기록이 있는 학생이 없어요.</div>';
   if(rows.length){h+='<div class="lst">';rows.forEach(function(r){
     h+='<div class="rw"><div class="av" style="--sc:'+r.color+'">'+esc(r.short)+'</div><div class="bd"><div class="tp"><div class="nm"><b>'+esc(r.name||'?')+'</b><span class="s">'+esc(r.school)+'</span></div><span class="l">'+(r.last?fd(r.last):'기록 없음')+'</span></div>'
-    +'<div class="gr">'+r.stats.map(function(c){return '<div><span>'+esc(c[0])+'</span><b>'+esc(c[1])+'</b></div>'}).join('')+'</div><div class="mt">'+esc(r.sub)+'</div>'+tkHtml(r.tk)+bfHtml(r.bf)+'</div></div>';
+    +'<div class="gr">'+r.stats.map(function(c){return '<div><span>'+esc(c[0])+'</span><b>'+esc(c[1])+'</b></div>'}).join('')+'</div><div class="mt">'+esc(r.sub)+'</div>'+tkHtml(r.tk)+pnHtml(r.pn)+bfHtml(r.bf)+'</div></div>';
   });h+='</div>'}
   h+='<div class="foot">비타민 영어클리닉</div>';
   app.innerHTML=h;
