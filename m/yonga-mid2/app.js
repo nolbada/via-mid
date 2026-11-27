@@ -283,7 +283,7 @@ function pageIndex(app){
   g.innerHTML='';
   function bOf(r){var u=unitOf(r);return typeof u==='number'?u+'과':'최종'}
   function nOf(r){return r}
-  function stOf(r){if(r>CFG.rounds)return 'lock';if(doneR(r))return 'done';if(!SH)for(var j=1;j<r;j++)if(!doneR(j))return 'lock';return 'now'}
+  function stOf(r){if(r>CFG.rounds)return 'lock';if(doneR(r))return 'done';if(!SH)for(var j=1;j<r;j++)if(!doneR(j))return 'open';return 'now'}
   g.appendChild(el('div','sgh','<b>유형 풀코스</b><span>'+PLAN+'회 중 '+M+'회</span>'));
   var sg2=el('div','sgrid');
   for(var rb=1;rb<=PLAN;rb++)sg2.appendChild(el('button','stb '+stOf(rb)+(rb===viewR?' sel':''),'<span class="sbd">'+bOf(rb)+'</span><span class="sno">'+nOf(rb)+'회</span>')).setAttribute('data-stage',rb);
